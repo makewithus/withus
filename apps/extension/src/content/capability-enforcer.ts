@@ -51,7 +51,7 @@ async function initEnforcer() {
   // so there is zero visible flash of unrestricted content on repeat visits.
   try {
     const cached = await chrome.storage.session.get(WITHUS_CACHE_KEY);
-    const cachedRestrictions: string[] | undefined = cached[WITHUS_CACHE_KEY];
+    const cachedRestrictions = cached[WITHUS_CACHE_KEY] as string[] | undefined;
     if (cachedRestrictions && cachedRestrictions.length > 0) {
       injectCSS(config, cachedRestrictions);
     }
