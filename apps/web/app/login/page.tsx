@@ -87,8 +87,11 @@ function LoginForm() {
       </div>
 
       {/* Form Side (Right) */}
-      <div className="lg:col-span-7 flex items-center justify-center p-8 relative">
-        <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
+      <div className="lg:col-span-7 flex flex-col justify-between min-h-screen p-8 relative">
+        <div className="h-8 hidden lg:block"></div>
+        
+        <div className="flex-1 flex items-center justify-center py-6 w-full">
+          <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -154,6 +157,7 @@ function LoginForm() {
             </div>
           </div>
 
+
           <button
             type="submit"
             disabled={loading}
@@ -173,7 +177,23 @@ function LoginForm() {
             </Link>
           </div>
         </form>
-      </div>
+        </div>
+        </div>
+
+        <div className="text-center text-[11px] text-premium-muted font-medium max-w-md mx-auto w-full pt-4 pb-2">
+          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5">
+            <Link href="/privacy" className="hover:text-premium-main transition-colors hover:underline">Privacy Policy</Link>
+            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
+            <Link href="/terms" className="hover:text-premium-main transition-colors hover:underline">Terms & Conditions</Link>
+            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
+            <Link href="/security" className="hover:text-premium-main transition-colors hover:underline">Security & Data Protection</Link>
+            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
+            <Link href="/cookie-policy" className="hover:text-premium-main transition-colors hover:underline">Cookie Policy</Link>
+            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
+            <Link href="/refund-policy" className="hover:text-premium-main transition-colors hover:underline">Refund & Cancellation Policy</Link>
+          </div>
+        </div>
+
       </div>
     </div>
   );

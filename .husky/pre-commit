@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-cd sdap
+cd .
 npx lint-staged
