@@ -63,6 +63,19 @@ const PLATFORM_CAPABILITY_MAP: Record<string, { key: string; label: string; desc
     { key: 'linkedin.jobs', label: 'Jobs', description: 'Access job postings and applications' },
     { key: 'linkedin.messaging', label: 'Messaging', description: 'Access direct messages' },
     { key: 'linkedin.notifications', label: 'Notifications', description: 'View notifications' },
+    /*
+    { key: 'linkedin.page_dashboard', label: 'Dashboard', description: 'Access Page Dashboard' },
+    { key: 'linkedin.page_posts', label: 'Page Posts', description: 'Manage Page Posts' },
+    { key: 'linkedin.page_analytics', label: 'Analytics', description: 'View Page Analytics' },
+    { key: 'linkedin.page_feed', label: 'Feed', description: 'Access Page Feed' },
+    { key: 'linkedin.page_activity', label: 'Activity', description: 'View Page Activity' },
+    { key: 'linkedin.page_inbox', label: 'Inbox', description: 'Access Page Inbox' },
+    { key: 'linkedin.page_services', label: 'Services', description: 'Manage Page Services' },
+    { key: 'linkedin.page_posted_jobs', label: 'Posted Jobs', description: 'Manage Page Posted Jobs' },
+    { key: 'linkedin.page_edit', label: 'Edit Page', description: 'Edit Page settings' },
+    { key: 'linkedin.page_settings', label: 'Settings', description: 'Manage Page Settings' },
+    { key: 'linkedin.page_advertise', label: 'Advertise Today', description: 'Access advertising options' },
+    */
   ],
   shopify: [
     { key: 'shopify.orders', label: 'Orders', description: 'View and manage orders' },
@@ -76,6 +89,26 @@ const PLATFORM_CAPABILITY_MAP: Record<string, { key: string; label: string; desc
     { key: 'shopify.sales_channels', label: 'Sales Channels', description: 'Manage Online Store and other channels' },
     { key: 'shopify.apps', label: 'Apps', description: 'Manage installed applications' },
     { key: 'shopify.settings', label: 'Settings', description: 'Manage store settings' },
+  ],
+  gst: [
+    { key: 'gst.registration', label: 'Registration', description: 'Access GST Registration' },
+    { key: 'gst.ledgers', label: 'Ledgers', description: 'Access GST Ledgers' },
+    { key: 'gst.returns', label: 'Returns', description: 'Access GST Returns' },
+    { key: 'gst.payments', label: 'Payments', description: 'Access GST Payments' },
+    { key: 'gst.refunds', label: 'Refunds', description: 'Access GST Refunds' },
+  ],
+  razorpay: [
+    { key: 'razorpay.transactions', label: 'Transactions', description: 'Access Transactions' },
+    { key: 'razorpay.settlements', label: 'Settlements', description: 'Access Settlements' },
+    { key: 'razorpay.reports', label: 'Reports', description: 'Access Reports' },
+    { key: 'razorpay.payment_links', label: 'Payment Links', description: 'Access Payment Links' },
+    { key: 'razorpay.payment_pages', label: 'Payment Pages', description: 'Access Payment Pages' },
+    { key: 'razorpay.invoices', label: 'Invoices', description: 'Access Invoices' },
+    { key: 'razorpay.payment_button', label: 'Payment Button', description: 'Access Payment Buttons' },
+    { key: 'razorpay.subscriptions', label: 'Subscriptions', description: 'Access Subscriptions' },
+    { key: 'razorpay.smart_collect', label: 'Smart Collect', description: 'Access Smart Collect' },
+    { key: 'razorpay.optimizer', label: 'Optimizer', description: 'Access Optimizer' },
+    { key: 'razorpay.account_settings', label: 'Account & Settings', description: 'Access Account & Settings' },
   ],
 };
 

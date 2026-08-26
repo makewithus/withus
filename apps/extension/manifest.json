@@ -78,6 +78,9 @@
         "https://*.linkedin.com/*",
         "https://shopify.com/*",
         "https://*.shopify.com/*",
+        "https://*.razorpay.com/*",
+        "https://gst.gov.in/*",
+        "https://*.gst.gov.in/*",
         "http://localhost:8080/*",
         "http://127.0.0.1:8080/*",
         "http://mca.localhost:8080/*"

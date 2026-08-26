@@ -33,7 +33,11 @@ function injectCSS(config: ReturnType<typeof platformRegistry.getForHost>, restr
   if (!styleEl) {
     styleEl = document.createElement('style');
     styleEl.id = styleId;
-    document.documentElement.appendChild(styleEl);
+    if (document.head) {
+      document.head.appendChild(styleEl);
+    } else {
+      document.documentElement.appendChild(styleEl);
+    }
   }
   styleEl.textContent = stylesToInject
     .map(sel => `${sel} { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }`)
@@ -145,6 +149,48 @@ async function initEnforcer() {
   // 1. Inject/update permanent CSS to hide elements (injectCSS is idempotent)
   if (stylesToInject.length > 0) {
     injectCSS(config, restrictionsToApply);
+
+    // --- LINKEDIN SPA FIX ---
+    // LinkedIn's SPA dynamically wipes unknown elements from document.head on certain navigations.
+    // This strictly-scoped observer reinstates the exact same <style> element if removed.
+    if (config.id === 'LINKEDIN') {
+      if (!(window as any).__WITHUS_OBSERVER_LOADED__) {
+        (window as any).__WITHUS_OBSERVER_LOADED__ = true;
+        const styleId = 'withus-capability-enforcer-css';
+        
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+              for (let i = 0; i < mutation.removedNodes.length; i++) {
+                const removedNode = mutation.removedNodes[i];
+                if (removedNode instanceof HTMLStyleElement && removedNode.id === styleId) {
+                  injectCSS(config, restrictionsToApply);
+                }
+              }
+              // Catch complete <head> replacements by the SPA
+              for (let i = 0; i < mutation.addedNodes.length; i++) {
+                const addedNode = mutation.addedNodes[i];
+                if (addedNode instanceof HTMLHeadElement) {
+                  injectCSS(config, restrictionsToApply);
+                  observer.observe(addedNode, { childList: true }); // re-attach to new head
+                }
+              }
+            }
+          }
+        });
+        
+        const attachObserver = () => {
+          if (document.head) observer.observe(document.head, { childList: true });
+          if (document.documentElement) observer.observe(document.documentElement, { childList: true });
+        };
+        
+        if (document.head) {
+          attachObserver();
+        } else {
+          window.addEventListener('DOMContentLoaded', attachObserver, { once: true });
+        }
+      }
+    }
   }
 
   // 2. Intercept SPA routing

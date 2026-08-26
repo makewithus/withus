@@ -267,9 +267,8 @@ platformRegistry.register({
   id: 'RAZORPAY',
   name: 'Razorpay',
   // Only accounts.razorpay.com is the login/auth subdomain.
-  // dashboard.razorpay.com is the post-login dashboard — removing it prevents
-  // the extension from showing the "Logging you in..." toast on the dashboard page.
-  domains: ['accounts.razorpay.com'],
+  // dashboard.razorpay.com is the post-login dashboard, required here so capability enforcer runs on it.
+  domains: ['accounts.razorpay.com', 'dashboard.razorpay.com'],
   login: {
     url: 'https://accounts.razorpay.com/auth',
     usernameSelector: 'input[type="email"], input[type="text"], input[type="tel"], input[autocomplete="username"], input[autocomplete="email"]',
@@ -280,6 +279,19 @@ platformRegistry.register({
     'button[aria-label="Show password" i]',
     'button[data-blade-component="icon-button"] svg'
   ],
+  capabilityRestrictions: {
+    'razorpay.transactions': { hideElementsCSS: ['a[href="/app/payments"]'] },
+    'razorpay.settlements': { hideElementsCSS: ['a[href="/app/settlements"]'] },
+    'razorpay.reports': { hideElementsCSS: ['a[href="/app/reports"]'] },
+    'razorpay.payment_links': { hideElementsCSS: ['a[href="/app/paymentlinks"]'] },
+    'razorpay.payment_pages': { hideElementsCSS: ['a[href="/app/paymentpages"]'] },
+    'razorpay.invoices': { hideElementsCSS: ['a[href="/app/invoices"]'] },
+    'razorpay.payment_button': { hideElementsCSS: ['a[href="/app/paymentbuttons"]'] },
+    'razorpay.subscriptions': { hideElementsCSS: ['a[href="/app/subscriptions"]'] },
+    'razorpay.smart_collect': { hideElementsCSS: ['a[href="/app/smartcollect/virtualaccounts"]'] },
+    'razorpay.optimizer': { hideElementsCSS: ['a[href="/app/optimizer"]'] },
+    'razorpay.account_settings': { hideElementsCSS: ['a[href="/app/account-settings"]'] },
+  },
   otp: {
     type: 'EMAIL',
     inputSelector: 'input[name="otp"], input[autocomplete="one-time-code"], input[inputmode="numeric"][maxlength="1"], input[type="number"][maxlength="1"]',
@@ -296,7 +308,7 @@ platformRegistry.register({
   domains: ['linkedin.com'],
   login: {
     url: 'https://www.linkedin.com/login',
-    usernameSelector: 'input[name="session_key"], input#username, input[type="text"], input[type="email"]',
+    usernameSelector: 'input[name="session_key"], input#username, input[type="text"]:not([placeholder*="Search" i]):not(.search-global-typeahead__input), input[type="email"]',
     passwordSelector: 'input[name="session_password"], input#password, input[type="password"]',
     submitSelector: 'button[type="submit"], input[type="submit"], button[data-litms-control-urn="login-submit"]',
   },
@@ -318,6 +330,39 @@ platformRegistry.register({
     },
     'linkedin.notifications': {
       hideElementsCSS: ['a[href^="https://www.linkedin.com/notifications"]'],
+    },
+    'linkedin.page_dashboard': {
+      hideElementsCSS: ['[data-test-org-menu-item="HOME"]'],
+    },
+    'linkedin.page_posts': {
+      hideElementsCSS: ['[data-test-org-menu-item="POSTS"]'],
+    },
+    'linkedin.page_analytics': {
+      hideElementsCSS: ['[data-test-org-menu-item="ANALYTICS"]'],
+    },
+    'linkedin.page_feed': {
+      hideElementsCSS: ['[data-test-org-menu-item="FEED"]'],
+    },
+    'linkedin.page_activity': {
+      hideElementsCSS: ['[data-test-org-menu-item="ACTIVITY"]'],
+    },
+    'linkedin.page_inbox': {
+      hideElementsCSS: ['[data-test-org-menu-item="INBOX"]'],
+    },
+    'linkedin.page_services': {
+      hideElementsCSS: ['[data-test-org-menu-item="SERVICES"]'],
+    },
+    'linkedin.page_posted_jobs': {
+      hideElementsCSS: ['[data-test-org-menu-item="POSTED_JOBS"]'],
+    },
+    'linkedin.page_edit': {
+      hideElementsCSS: ['[data-test-org-menu-item="EDIT"]'],
+    },
+    'linkedin.page_settings': {
+      hideElementsCSS: ['[data-test-org-menu-item="SETTINGS"]'],
+    },
+    'linkedin.page_advertise': {
+      hideElementsCSS: ['[data-test-org-menu-item="ADVERTISE"]'],
     },
   },
 });
@@ -432,13 +477,30 @@ platformRegistry.register({
       'input[type="password"]',    // standard fallback
       'input[name="password"]',
     ].join(', '),
-    // No submitSelector Ã¢â‚¬â€ manualStepMessage prevents auto-submit
+    // No submitSelector — manualStepMessage prevents auto-submit
+  },
+  capabilityRestrictions: {
+    'gst.registration': {
+      hideElementsCSS: ['a[href*="/services/auth/quicklinks/registration"]'],
+    },
+    'gst.ledgers': {
+      hideElementsCSS: ['a[href*="/services/auth/quicklinks/ledgers"]'],
+    },
+    'gst.returns': {
+      hideElementsCSS: ['a[href*="/services/auth/quicklinks/returns"]'],
+    },
+    'gst.payments': {
+      hideElementsCSS: ['a[href*="/services/auth/quicklinks/payments"]'],
+    },
+    'gst.refunds': {
+      hideElementsCSS: ['a[href*="/services/auth/quicklinks/refunds"]'],
+    },
   },
   manualStepMessage: 'Credentials filled. Please complete the CAPTCHA and OTP verification to continue.',
 });
 
 /**
- * Udyam Portal Ã¢â‚¬â€ Partial Support
+ * Udyam Portal Ã¢â‚¬â€  Partial Support
  *
  * Authentication flow:
  *   Udyam Registration Number Ã¢â€ â€™ Mobile Number Ã¢â€ â€™ "Validate & Generate OTP" Ã¢â€ â€™ SMS OTP Ã¢â€ â€™ Login
