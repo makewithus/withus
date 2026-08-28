@@ -32,7 +32,7 @@ export default function CookiePolicyPage() {
               1. What Are Cookies
             </h2>
             <p className="text-base text-premium-muted leading-relaxed font-medium">
-              Cookies are small text files that are placed on your computer or mobile device when you access a website or application. We use cookies to make websites work efficiently, securely manage sessions, and provide anonymized usage insights.
+              Cookies are small text files that are placed on your computer or mobile device when you access a website or application. We use cookies primarily to make the website work efficiently and to securely manage authenticated sessions.
             </p>
           </section>
 
@@ -74,15 +74,8 @@ export default function CookiePolicyPage() {
             </h2>
             <div className="text-base text-premium-muted leading-relaxed font-medium space-y-4">
               <p>
-                The current makewithus application does not intentionally use non-essential analytics or marketing tracking cookies based on the presently implemented application configuration. Essential cookies may be used for authentication and core application functionality.
+                The current makewithus application does not use non-essential analytics or marketing tracking cookies. We utilize Sentry solely for application error and crash tracking to maintain platform stability. Essential cookies are used for authentication and core application functionality.
               </p>
-              <div className="mt-3 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client Confirmation</strong>
-                  Confirm if any third-party analytics or tracking tools (e.g., Google Analytics, Mixpanel, Vercel Analytics) will be integrated in production.
-                </span>
-              </div>
             </div>
           </section>
 

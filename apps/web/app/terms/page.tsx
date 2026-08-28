@@ -110,15 +110,8 @@ export default function TermsPage() {
             </h2>
             <div className="text-base text-premium-muted leading-relaxed font-medium space-y-4">
               <p>
-                Subscription and payment terms will be provided and detailed here when paid plans or merchant billing functionalities are formally introduced.
+                Subscriptions are intended to be offered on a monthly or yearly basis. Payment processing is expected to be provided through HDFC Bank as the preferred gateway, with Razorpay as an alternative, subject to final configuration.
               </p>
-              <div className="mt-3 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client Confirmation</strong>
-                  Confirm commercial billing rules, pricing cycles, payment terms, and processors once finalized.
-                </span>
-              </div>
             </div>
           </section>
 
@@ -132,13 +125,6 @@ export default function TermsPage() {
               <p>
                 Access to the platform may be suspended or terminated if a violation of these Terms, unauthorized data access, or threat to system infrastructure is detected.
               </p>
-              <div className="mt-3 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Legal/Client Review</strong>
-                  Confirm suspension/termination legal policy and notice requirements.
-                </span>
-              </div>
             </div>
           </section>
 
@@ -153,11 +139,7 @@ export default function TermsPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-premium-muted mt-2.5 flex-shrink-0"></span>
                 <div>
                   <strong className="text-premium-main block mb-1">Intellectual Property</strong>
-                  All rights to the WithUs platform and extension belong exclusively to makewithus.
-                  <div className="mt-2 p-2 bg-amber-50/40 dark:bg-amber-950/10 border border-amber-200/40 dark:border-amber-900/20 rounded-md text-[11px] font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                    <span>Confirm proprietary rights clauses.</span>
-                  </div>
+                  The WithUs platform, extension, and related materials are the proprietary property of makewithus, subject to applicable intellectual property laws.
                 </div>
               </li>
               <li className="flex gap-3 items-start">
@@ -165,23 +147,13 @@ export default function TermsPage() {
                 <div>
                   <strong className="text-premium-main block mb-1">Liability Limitations</strong>
                   Under no circumstances shall WithUs be liable for indirect, incidental, or consequential damages resulting from the use or inability to use the service.
-                  <div className="mt-2 p-2 bg-amber-50/40 dark:bg-amber-950/10 border border-amber-200/40 dark:border-amber-900/20 rounded-md text-[11px] font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                    <span>Confirm standard enterprise liability cap language.</span>
-                  </div>
                 </div>
               </li>
               <li className="flex gap-3 items-start">
                 <span className="w-1.5 h-1.5 rounded-full bg-premium-muted mt-2.5 flex-shrink-0"></span>
                 <div>
                   <strong className="text-premium-main block mb-1">Governing Law</strong>
-                  <div className="mt-2 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                    <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                    <span>
-                      <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client/Legal Confirmation</strong>
-                      Jurisdiction / governing law state and region.
-                    </span>
-                  </div>
+                  These Terms & Conditions are governed by and construed in accordance with the laws of India, and specifically subject to the jurisdiction of the courts in Kerala.
                 </div>
               </li>
             </ul>

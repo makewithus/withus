@@ -110,6 +110,11 @@ const PLATFORM_CAPABILITY_MAP: Record<string, { key: string; label: string; desc
     { key: 'razorpay.optimizer', label: 'Optimizer', description: 'Access Optimizer' },
     { key: 'razorpay.account_settings', label: 'Account & Settings', description: 'Access Account & Settings' },
   ],
+  udyam: [
+    { key: 'udyam.cancellation', label: 'Cancellation', description: 'Access Cancellation' },
+    { key: 'udyam.print_certificate', label: 'Print Certificate', description: 'Print Certificate' },
+    { key: 'udyam.edit_details', label: 'Edit Details', description: 'Edit Details' },
+  ],
 };
 
 function getCapabilitiesForSecret(secretName: string): { key: string; label: string; description: string }[] {

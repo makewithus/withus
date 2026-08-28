@@ -31,15 +31,10 @@ export default function RefundPolicyPage() {
               <Info className="w-5 h-5 text-premium-muted" />
               1. Commercial Terms Pending
             </h2>
-            
-            <div className="p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <strong className="block text-xs uppercase tracking-wider mb-1">Pending Client Confirmation Once Pricing Is Finalized</strong>
-                <span className="text-sm text-amber-600/90 dark:text-amber-500/90 font-medium">
-                  This page has been structurally prepared for the Refund & Cancellation Policy. Specific details regarding cancellation windows, refund eligibility, renewals, failed payments, and upgrades/downgrades will be published here once the commercial pricing model is finalized.
-                </span>
-              </div>
+            <div className="text-base text-premium-muted leading-relaxed font-medium space-y-4">
+              <p>
+                The commercial pricing model, including monthly and yearly subscription plans, is currently being finalized. Specific details regarding cancellation windows, refund eligibility, renewals, failed payments, and upgrades/downgrades will be published here prior to the commencement of any paid service.
+              </p>
             </div>
           </section>
 

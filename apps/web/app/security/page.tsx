@@ -111,14 +111,7 @@ export default function SecurityPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-premium-muted mt-2.5 flex-shrink-0"></span>
                 <div>
                   <strong className="text-premium-main block mb-1">Backup & Recovery</strong>
-                  makewithus includes database backup and restoration procedures for PostgreSQL data. The backup tooling uses PostgreSQL <code>pg_dump</code> and includes configurable local backup retention, currently configured for 7 days in the provided scripts.
-                  <div className="mt-3 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                    <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                    <span>
-                      <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client Confirmation</strong>
-                      Confirm scheduling, off-site storage, geographic redundancy, and RPO/RTO for the production environment.
-                    </span>
-                  </div>
+                  makewithus utilizes database backup and restoration procedures for PostgreSQL data. Data is backed up via continuous Point-In-Time Recovery (PITR) provided by our database infrastructure, which currently maintains a 6-hour recovery history window. We do not utilize separate off-site backups or scheduled snapshots.
                 </div>
               </li>
             </ul>
@@ -135,27 +128,14 @@ export default function SecurityPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-premium-muted mt-2.5 flex-shrink-0"></span>
                 <div>
                   <strong className="text-premium-main block mb-1">Security Monitoring</strong>
-                  makewithus implements application-level controls including API rate limiting, audit logging, and application error monitoring. Rate limiting is used to reduce abusive or excessive API requests, while application errors and exceptions can be captured through the configured monitoring integration (Sentry).
-                  <div className="mt-3 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                    <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                    <span>
-                      <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client/Operations Confirmation</strong>
-                      Confirm production infrastructure-level monitoring, WAF, firewalls, and IDS/IPS configuration.
-                    </span>
-                  </div>
+                  makewithus implements application-level controls including API rate limiting, audit logging, and application error monitoring. Rate limiting is used to reduce abusive or excessive API requests, while application errors and exceptions are captured through our monitoring integration (Sentry).
                 </div>
               </li>
               <li className="flex gap-3 items-start">
                 <span className="w-1.5 h-1.5 rounded-full bg-premium-muted mt-2.5 flex-shrink-0"></span>
                 <div>
-                  <strong className="text-premium-main block mb-1">Incident Handling</strong>
-                  <div className="mt-2 p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                    <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                    <span>
-                      <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client Confirmation</strong>
-                      Detail data-breach notification SLA windows, communication channels, and official incident response protocols.
-                    </span>
-                  </div>
+                  <strong className="text-premium-main block mb-1">Incident Handling & Breach Notification</strong>
+                  In the event of a verified data breach, affected users will be notified without undue delay after the breach has been assessed and confirmed, subject to applicable law or where the incident presents a significant risk to their information. The notification may include information about the nature of the incident, the information potentially affected, actions taken by WithUs, and recommended steps users can take to protect themselves.
                 </div>
               </li>
             </ul>

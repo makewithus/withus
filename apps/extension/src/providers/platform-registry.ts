@@ -540,6 +540,17 @@ platformRegistry.register({
     // Architecture Preservation Directive: do not overload passwordSelector semantics.
   },
   manualStepMessage: 'Udyam Registration Number filled. Please enter your mobile number and click "Validate & Generate OTP" to receive your OTP.',
+  capabilityRestrictions: {
+    'udyam.cancellation': {
+      hideElementsCSS: ['a[href="Udyam_Cancellation.aspx"]'],
+    },
+    'udyam.print_certificate': {
+      hideElementsCSS: ['#ctl00_ContentPlaceHolder1_btnPrintC'],
+    },
+    'udyam.edit_details': {
+      hideElementsCSS: ['#ctl00_ContentPlaceHolder1_btnEdit'],
+    },
+  },
 });
 
 /**

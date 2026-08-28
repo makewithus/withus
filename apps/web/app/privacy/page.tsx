@@ -172,17 +172,10 @@ export default function PrivacyPolicyPage() {
               </p>
               <div className="flex flex-col gap-4 items-start">
                 <div className="p-4 bg-slate-50/50 dark:bg-zinc-900/30 border border-premium/50 rounded-lg inline-block">
-                  <a href="mailto:makewithus.in@gmail.com" className="text-premium-main font-bold hover:underline flex items-center gap-2">
+                  <a href="mailto:contact@makewithus.in" className="text-premium-main font-bold hover:underline flex items-center gap-2">
                     <Mail className="w-4 h-4" />
-                    Email: makewithus.in@gmail.com
+                    Email: contact@makewithus.in
                   </a>
-                </div>
-                <div className="p-4 bg-amber-50/60 dark:bg-amber-950/15 border border-amber-200/50 dark:border-amber-900/30 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
-                  <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                  <span>
-                    <strong className="block text-[10px] uppercase tracking-wider mb-1">Pending Client Confirmation</strong>
-                    Verify the official email address to be published for legal and privacy contact in production.
-                  </span>
                 </div>
               </div>
             </div>
