@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { AuthSession } from '../../lib/auth/session';
 import { useAuth } from '../../lib/auth/AuthContext';
 import { usePendingApprovals, useMyRequests } from '../../hooks/useApprovals';
-import { Shield, LayoutDashboard, Key, LogOut, Users, CheckSquare, FileText, Settings, Plug2, Puzzle, Activity } from 'lucide-react';
+import { Shield, LayoutDashboard, Key, LogOut, Users, CheckSquare, FileText, Settings, Plug2, Puzzle, Activity, Asterisk } from 'lucide-react';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import { Menu } from 'lucide-react';
@@ -80,13 +80,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <div className={clsx(
-          "h-14 flex items-center border-b border-premium gap-2.5",
-          isCollapsed ? "justify-center px-0" : "px-4"
+          "h-14 flex items-center border-b border-premium",
+          isCollapsed ? "justify-center px-0" : "pl-6 pr-4"
         )}>
           {isCollapsed ? (
-            <img src="/logo.png" alt="WithUs" className="w-7 h-7 object-contain" />
+            <Asterisk className="w-6 h-6 text-premium-main flex-shrink-0 select-none" strokeWidth={2.8} />
           ) : (
-            <img src="/logo.png" alt="WithUs" className="h-8 w-auto object-contain" />
+            <div className="flex items-center gap-1.5 select-none pl-0.5">
+              <span className="font-extrabold text-[20px] tracking-tight text-premium-main">WithUs</span>
+              <Asterisk className="w-5 h-5 text-premium-main flex-shrink-0" strokeWidth={3} />
+            </div>
           )}
         </div>
         

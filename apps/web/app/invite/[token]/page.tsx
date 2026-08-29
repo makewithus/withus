@@ -122,8 +122,8 @@ export default function AcceptInvitePage({ params }: { params: Promise<{ token: 
     return (
       <Wrapper>
         <Card>
-          <div className="mx-auto w-12 h-12 mb-6">
-            <img src="/logo.png" alt="WithUs Logo" className="w-full h-full object-contain" />
+          <div className="flex justify-center mb-5">
+            <img src="/logo.png" alt="WithUs Logo" className="h-16 object-contain" />
           </div>
           <h2 className="text-base font-bold text-premium-main mb-2">
             You've been invited to join {inviteDetails.organizationName}

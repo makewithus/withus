@@ -59,10 +59,10 @@ function LoginForm() {
     <div className="theme-light min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-premium-bg">
       {/* Brand Side (Left) */}
       <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none">
-        
+
         {/* Brand Header */}
-        <div className="flex items-center relative z-10">
-          <img src="/logo.png" alt="WithUs" className="h-10 w-auto object-contain invert" />
+        <div className="flex items-center relative z-10 pl-2">
+          <img src="/logo.png" alt="WithUs" className="h-14 w-auto object-contain invert" />
         </div>
 
         {/* Hero Text */}
@@ -86,92 +86,94 @@ function LoginForm() {
       {/* Form Side (Right) */}
       <div className="lg:col-span-7 flex flex-col justify-between min-h-screen p-8 relative">
         <div className="h-8 hidden lg:block"></div>
-        
+
         <div className="flex-1 flex items-center justify-center py-6 w-full">
           <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
 
-        {/* Header */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <img src="/logo.png" alt="WithUs Logo" className="h-14 w-auto object-contain mb-2" />
-          <p className="text-[10px] text-premium-muted font-bold tracking-wider uppercase mt-1.5">Delegated Credential Access</p>
-        </div>
-
-        {redirectParam?.includes('/invite') && (
-          <div className="mb-6 p-4 bg-zinc-100/50 dark:bg-zinc-900/40 border border-premium rounded-xl text-center text-xs font-semibold leading-relaxed">
-            <p className="text-premium-main font-bold mb-1">First time joining WithUs?</p>
-            <p className="text-premium-muted text-[11px]">
-              If you don't have an account, click{' '}
-              <Link href={`/register?redirect=${encodeURIComponent(redirectParam)}`} className="text-premium-main font-bold underline hover:text-zinc-800 transition-colors">
-                Create Account
-              </Link>{' '}
-              using your invited email.
-            </p>
-            <p className="text-premium-muted text-[11px] mt-0.5">
-              Already have an account? Simply sign in below.
-            </p>
-          </div>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div className="space-y-2">
-            <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
-              <input
-                type="email"
-                required
-                autoComplete="email"
-                className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-4">
+                <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain" />
+              </div>
+              <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">Delegated Credential Access</p>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
-              <Link href="/forgot-password" className="text-[11px] text-premium-muted hover:text-premium-main transition-colors font-medium">
-                Forgot password?
-              </Link>
-            </div>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
-              <input
-                type="password"
-                required
-                autoComplete="current-password"
-                className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full premium-button-primary py-2.5 text-xs shadow-md font-bold mt-2"
-          >
-            {loading ? (
-              <><Loader2 className="w-4 h-4 animate-spin mr-1.5" /> Authenticating...</>
-            ) : (
-              'Sign In'
+            {redirectParam?.includes('/invite') && (
+              <div className="mb-6 p-4 bg-zinc-100/50 dark:bg-zinc-900/40 border border-premium rounded-xl text-center text-xs font-semibold leading-relaxed">
+                <p className="text-premium-main font-bold mb-1">First time joining WithUs?</p>
+                <p className="text-premium-muted text-[11px]">
+                  If you don't have an account, click{' '}
+                  <Link href={`/register?redirect=${encodeURIComponent(redirectParam)}`} className="text-premium-main font-bold underline hover:text-zinc-800 transition-colors">
+                    Create Account
+                  </Link>{' '}
+                  using your invited email.
+                </p>
+                <p className="text-premium-muted text-[11px] mt-0.5">
+                  Already have an account? Simply sign in below.
+                </p>
+              </div>
             )}
-          </button>
 
-          <div className="text-center text-xs text-premium-muted pt-4 border-t border-premium mt-4">
-            Don't have an account?{' '}
-            <Link href={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'} className="text-premium-main font-bold hover:underline hover:text-zinc-800 transition-colors">
-              {redirectParam?.includes('/invite') ? 'Create Account' : 'Create Workspace'}
-            </Link>
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
+                    placeholder="you@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
+                  <Link href="/forgot-password" className="text-[11px] text-premium-muted hover:text-premium-main transition-colors font-medium">
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
+                  <input
+                    type="password"
+                    required
+                    autoComplete="current-password"
+                    className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full premium-button-primary py-2.5 text-xs shadow-md font-bold mt-2"
+              >
+                {loading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin mr-1.5" /> Authenticating...</>
+                ) : (
+                  'Sign In'
+                )}
+              </button>
+
+              <div className="text-center text-xs text-premium-muted pt-4 border-t border-premium mt-4">
+                Don't have an account?{' '}
+                <Link href={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'} className="text-premium-main font-bold hover:underline hover:text-zinc-800 transition-colors">
+                  {redirectParam?.includes('/invite') ? 'Create Account' : 'Create Workspace'}
+                </Link>
+              </div>
+            </form>
           </div>
-        </form>
-        </div>
         </div>
 
         <div className="text-center text-[11px] text-premium-muted font-medium max-w-md mx-auto w-full pt-4 pb-2">

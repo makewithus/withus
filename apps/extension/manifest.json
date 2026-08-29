@@ -68,6 +68,7 @@
     },
     {
       "matches": [
+        "https://*.godaddy.com/*",
         "https://*.mca.gov.in/*",
         "https://github.com/*",
         "https://vercel.com/*",

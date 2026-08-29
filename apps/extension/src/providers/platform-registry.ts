@@ -143,6 +143,53 @@ platformRegistry.register({
   ],
   principalType: 'EMAIL',
   supportsDelegation: true,
+  capabilityRestrictions: {
+    'godaddy.domain': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/domain.menu_item.click"]'],
+    },
+    'godaddy.website': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/website.menu_item.click"]'],
+    },
+    'godaddy.email': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/email.menu_item.click"]'],
+    },
+    'godaddy.store': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/store.menu_item.click"]'],
+    },
+    'godaddy.appointments': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/appointments.menu_item.click"]'],
+    },
+    'godaddy.marketing': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/marketing.menu_item.click"]'],
+    },
+    'godaddy.conversations': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/conversations.menu_item.click"]'],
+    },
+    'godaddy.customers': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/customers.menu_item.click"]'],
+    },
+    'godaddy.deals': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/deals.menu_item.click"]'],
+    },
+    'godaddy.users': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/users.menu_item.click"]'],
+    },
+    'godaddy.app_switcher': {
+      hideElementsCSS: ['[data-testid="app-switcher-btn"]'],
+    },
+    'godaddy.my_products': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/my_products.menu_item.click"]'],
+    },
+    'godaddy.account_settings': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/account_settings.menu_item.click"]'],
+    },
+    'godaddy.billing': {
+      hideElementsCSS: ['[data-eid*="billing.menu_item"], a[href*="billing"]'],
+    },
+    'godaddy.shop': {
+      hideElementsCSS: ['[data-eid="pandc.vnext_dashboard.header/shop_godaddycom.menu_item.click"]'],
+    },
+  },
 });
 
 /**

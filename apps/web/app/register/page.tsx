@@ -86,8 +86,8 @@ function RegisterForm() {
       <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none">
         
         {/* Brand Header */}
-        <div className="flex items-center relative z-10">
-          <img src="/logo.png" alt="WithUs" className="h-10 w-auto object-contain invert" />
+        <div className="flex items-center relative z-10 pl-2">
+          <img src="/logo.png" alt="WithUs" className="h-14 w-auto object-contain invert" />
         </div>
 
         {/* Hero Text */}
@@ -116,13 +116,15 @@ function RegisterForm() {
           <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
 
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <img src="/logo.png" alt="WithUs Logo" className="h-14 w-auto object-contain mb-2" />
-          <p className="text-[10px] text-premium-muted font-bold tracking-wider uppercase mt-1.5">
-            {isInviteFlow
-              ? (inviteDetails?.organizationName ? `Join ${inviteDetails.organizationName}` : 'Join the team')
-              : 'Create your enterprise workspace'}
-          </p>
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain" />
+          </div>
+          {!isInviteFlow && (
+            <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">
+              Create your enterprise workspace
+            </p>
+          )}
         </div>
 
         {isInviteFlow && (
