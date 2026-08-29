@@ -41,10 +41,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4">
       <div className="w-full max-w-sm">
-        {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo.png" alt="WithUs Logo" className="w-12 h-12 mb-4 object-contain" />
-          <span className="text-lg font-bold text-premium-main tracking-tight">WithUs</span>
+          <img src="/logo.png" alt="WithUs Logo" className="h-14 w-auto object-contain invert" />
         </div>
 
         <div className="bg-slate-900/90 backdrop-blur border border-slate-800/60 rounded-2xl p-8 shadow-2xl">

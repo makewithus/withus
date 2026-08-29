@@ -28,11 +28,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     approvalBadgeCount = myRequests?.filter((r: any) => r.status === 'PENDING')?.length || 0;
   }
   
-  const LogoSVG = () => (
-    <div className="w-7 h-7 flex items-center justify-center rounded-xl bg-zinc-950 border border-zinc-800 shadow-sm flex-shrink-0 select-none p-1.5">
-      <img src="/logo.png" alt="WithUs" className="w-full h-full object-contain" />
-    </div>
-  );
+
   
   // Persist sidebar state in localStorage if possible, or just default to false
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -87,9 +83,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           "h-14 flex items-center border-b border-premium gap-2.5",
           isCollapsed ? "justify-center px-0" : "px-4"
         )}>
-          <LogoSVG />
-          {!isCollapsed && (
-            <span className="font-bold text-sm tracking-tight text-premium-main">WithUs</span>
+          {isCollapsed ? (
+            <img src="/logo.png" alt="WithUs" className="w-7 h-7 object-contain" />
+          ) : (
+            <img src="/logo.png" alt="WithUs" className="h-8 w-auto object-contain" />
           )}
         </div>
         

@@ -61,11 +61,8 @@ function LoginForm() {
       <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none">
         
         {/* Brand Header */}
-        <div className="flex items-center gap-3 relative z-10">
-          <div className="w-8 h-8 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 p-1.5">
-            <img src="/logo.png" alt="WithUs" className="w-full h-full object-contain" />
-          </div>
-          <span className="font-bold text-sm text-zinc-200">WithUs</span>
+        <div className="flex items-center relative z-10">
+          <img src="/logo.png" alt="WithUs" className="h-10 w-auto object-contain invert" />
         </div>
 
         {/* Hero Text */}
@@ -94,11 +91,8 @@ function LoginForm() {
           <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="mx-auto w-12 h-12 mb-4 flex items-center justify-center rounded-xl bg-zinc-950 border border-zinc-800 shadow-sm p-2">
-            <img src="/logo.png" alt="WithUs Logo" className="w-full h-full object-contain" />
-          </div>
-          <h1 className="text-xl font-bold tracking-tight text-premium-main">WithUs</h1>
+        <div className="flex flex-col items-center text-center mb-8">
+          <img src="/logo.png" alt="WithUs Logo" className="h-14 w-auto object-contain mb-2" />
           <p className="text-[10px] text-premium-muted font-bold tracking-wider uppercase mt-1.5">Delegated Credential Access</p>
         </div>
 
