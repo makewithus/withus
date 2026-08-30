@@ -87,7 +87,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <Asterisk className="w-6 h-6 text-premium-main flex-shrink-0 select-none" strokeWidth={2.8} />
           ) : (
             <div className="flex items-center gap-1.5 select-none pl-0.5">
-              <span className="font-extrabold text-[20px] tracking-tight text-premium-main">WithUs</span>
+              <span className="font-bold text-[17px] tracking-tight text-premium-main">WithUs</span>
               <Asterisk className="w-5 h-5 text-premium-main flex-shrink-0" strokeWidth={3} />
             </div>
           )}
