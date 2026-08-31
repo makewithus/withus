@@ -88,14 +88,17 @@ export const WithusApi = {
   },
 
   // ─── Launch Session (Extension) ───────────────────────────────────────────
-
+  // Uses the dedicated /launch endpoint which:
+  //   - Accepts both EXTENSION and REVEAL sessions (autofill is allowed for both)
+  //   - Does NOT require permission === REVEAL (that check is for web portal /reveal only)
+  //   - Still enforces: granteeId, status=ACTIVE, expiry, maxReveals
   async launchSession(
     orgId: string,
     sessionId: string,
     reason: string,
     token: string,
   ): Promise<{ plaintext: string }> {
-    return request('POST', `/organizations/${orgId}/sessions/${sessionId}/reveal`, { reason }, token);
+    return request('POST', `/organizations/${orgId}/sessions/${sessionId}/launch`, { reason }, token);
   },
 
   // ─── OTP Fetch ────────────────────────────────────────────────────────────

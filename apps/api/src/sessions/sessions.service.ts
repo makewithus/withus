@@ -28,7 +28,7 @@ const MCA_TOP_LEVEL_MODULES = [
   'mca.complaints',
   'mca.document_related_services',
   'mca.payment_services',
-  'mca.id_databank'
+  'mca.id_databank',
 ];
 
 @Injectable()
@@ -42,7 +42,9 @@ export class SessionsService {
     private readonly secretLifecycleService: SecretLifecycleService,
     // Injected optionally to avoid circular dependency at startup.
     // The IntegrationsModule exports IntegrationsService; SessionsModule imports it via forwardRef.
-    @Optional() @Inject(INTEGRATIONS_SERVICE_TOKEN) private readonly integrationsService: any,
+    @Optional()
+    @Inject(INTEGRATIONS_SERVICE_TOKEN)
+    private readonly integrationsService: any,
   ) {}
 
   async createSession(
@@ -81,9 +83,12 @@ export class SessionsService {
     }
 
     // ── Integration binding from DTO ────────────────────────────────────────
-    const integrationProvider: string | undefined = (dto as any).integrationProvider;
-    const integrationResourceType: string | undefined = (dto as any).integrationResourceType;
-    const integrationResourceExternalId: string | undefined = (dto as any).integrationResourceExternalId;
+    const integrationProvider: string | undefined = (dto as any)
+      .integrationProvider;
+    const integrationResourceType: string | undefined = (dto as any)
+      .integrationResourceType;
+    const integrationResourceExternalId: string | undefined = (dto as any)
+      .integrationResourceExternalId;
     const isIntegrationBound = !!(
       integrationProvider &&
       integrationResourceExternalId &&
@@ -117,8 +122,12 @@ export class SessionsService {
         // PENDING_GRANT for integration-backed, ACTIVE for plain vault/secret sessions
         status: isIntegrationBound ? 'PENDING_GRANT' : 'ACTIVE',
         integrationProvider: integrationProvider || null,
-        integrationResourceType: isIntegrationBound ? integrationResourceType : null,
-        integrationResourceExternalId: isIntegrationBound ? integrationResourceExternalId : null,
+        integrationResourceType: isIntegrationBound
+          ? integrationResourceType
+          : null,
+        integrationResourceExternalId: isIntegrationBound
+          ? integrationResourceExternalId
+          : null,
         integrationReferenceId: null,
       },
     });
@@ -137,13 +146,19 @@ export class SessionsService {
 
         let principalId = grantee.email;
         if (typeof this.integrationsService.resolvePrincipalId === 'function') {
-          principalId = this.integrationsService.resolvePrincipalId(integrationProvider, grantee);
+          principalId = this.integrationsService.resolvePrincipalId(
+            integrationProvider,
+            grantee,
+          );
         }
 
         let result;
         if (integrationProvider === 'GODADDY') {
           // GoDaddy uses extension-based delegation, so there is no programmatic grant.
-          result = { referenceId: `ext_${Date.now()}`, status: 'ACTIVE' as const };
+          result = {
+            referenceId: `ext_${Date.now()}`,
+            status: 'ACTIVE' as const,
+          };
         } else {
           result = await this.integrationsService.grantAccess(
             organizationId,
@@ -202,13 +217,14 @@ export class SessionsService {
         );
 
         return activeSession;
-
       } catch (err: unknown) {
         // Provider call failed — delete the PENDING_GRANT row so no orphan exists
         await this.prisma.delegatedSession
           .delete({ where: { id: session.id } })
           .catch((deleteErr) =>
-            this.logger.error(`[SESSION] Failed to clean up PENDING_GRANT row ${session.id}: ${(deleteErr as Error).message}`),
+            this.logger.error(
+              `[SESSION] Failed to clean up PENDING_GRANT row ${session.id}: ${(deleteErr as Error).message}`,
+            ),
           );
 
         this.eventEmitter.emit('audit.log', {
@@ -253,8 +269,6 @@ export class SessionsService {
     return session;
   }
 
-
-
   async getIncomingSessions(organizationId: string, userId: string) {
     const where: any = { granteeId: userId };
     if (organizationId) {
@@ -267,15 +281,17 @@ export class SessionsService {
         grantor: { select: { email: true, fullName: true } },
       },
     });
-    
+
     const enriched = await this.enrichSessionsWithResourceNames(sessions);
-    
-    return enriched.map(session => {
+
+    return enriched.map((session) => {
       if (session.integrationProvider === 'MCA') {
         let mcaRestrictedModules: string[] = [];
         if (session.capabilities !== null) {
           const allowed = (session.capabilities as string[]) || [];
-          mcaRestrictedModules = MCA_TOP_LEVEL_MODULES.filter(mod => !allowed.includes(mod));
+          mcaRestrictedModules = MCA_TOP_LEVEL_MODULES.filter(
+            (mod) => !allowed.includes(mod),
+          );
         }
         return { ...session, mcaRestrictedModules };
       }
@@ -298,23 +314,39 @@ export class SessionsService {
    * Batch-enriches a list of sessions with their resource names.
    * Executes exactly 2 queries total regardless of list size.
    */
-  private async enrichSessionsWithResourceNames<T extends { scope: string; resourceId: string }>(sessions: T[]) {
-    const secretIds = sessions.filter(s => s.scope === 'SECRET').map(s => s.resourceId);
-    const vaultIds = sessions.filter(s => s.scope === 'VAULT').map(s => s.resourceId);
+  private async enrichSessionsWithResourceNames<
+    T extends { scope: string; resourceId: string },
+  >(sessions: T[]) {
+    const secretIds = sessions
+      .filter((s) => s.scope === 'SECRET')
+      .map((s) => s.resourceId);
+    const vaultIds = sessions
+      .filter((s) => s.scope === 'VAULT')
+      .map((s) => s.resourceId);
 
     const [secrets, vaults] = await Promise.all([
       secretIds.length > 0
-        ? this.prisma.secret.findMany({ where: { id: { in: secretIds } }, select: { id: true, name: true } })
+        ? this.prisma.secret.findMany({
+            where: { id: { in: secretIds } },
+            select: { id: true, name: true },
+          })
         : [],
       vaultIds.length > 0
-        ? this.prisma.vault.findMany({ where: { id: { in: vaultIds } }, select: { id: true, name: true } })
+        ? this.prisma.vault.findMany({
+            where: { id: { in: vaultIds } },
+            select: { id: true, name: true },
+          })
         : [],
     ]);
 
-    const secretMap = new Map<string, string>(secrets.map(s => [s.id, s.name] as [string, string]));
-    const vaultMap = new Map<string, string>(vaults.map(v => [v.id, v.name] as [string, string]));
+    const secretMap = new Map<string, string>(
+      secrets.map((s) => [s.id, s.name] as [string, string]),
+    );
+    const vaultMap = new Map<string, string>(
+      vaults.map((v) => [v.id, v.name] as [string, string]),
+    );
 
-    return sessions.map(s => ({
+    return sessions.map((s) => ({
       ...s,
       resourceName:
         s.scope === 'SECRET'
@@ -334,7 +366,9 @@ export class SessionsService {
   ) {
     const session = await this.prisma.delegatedSession.findUnique({
       where: { id: sessionId },
-      include: { grantee: { select: { id: true, email: true, providerProfiles: true } } },
+      include: {
+        grantee: { select: { id: true, email: true, providerProfiles: true } },
+      },
     });
 
     if (!session || session.organizationId !== organizationId) {
@@ -342,15 +376,21 @@ export class SessionsService {
     }
 
     const membership = await this.prisma.organizationMember.findUnique({
-      where: { organizationId_userId: { organizationId, userId } }
+      where: { organizationId_userId: { organizationId, userId } },
     });
-    const isAuthorizedAdmin = membership && (membership.role === 'ADMIN' || membership.role === 'OWNER');
+    const isAuthorizedAdmin =
+      membership &&
+      (membership.role === 'ADMIN' || membership.role === 'OWNER');
 
     if (session.grantorId !== userId && !isAuthorizedAdmin) {
       if (session.granteeId === userId) {
-        throw new ForbiddenException('You cannot revoke a session granted to you.');
+        throw new ForbiddenException(
+          'You cannot revoke a session granted to you.',
+        );
       }
-      throw new ForbiddenException('You do not have permission to revoke this session.');
+      throw new ForbiddenException(
+        'You do not have permission to revoke this session.',
+      );
     }
 
     if (session.status !== 'ACTIVE' && session.status !== 'REVOKE_FAILED') {
@@ -373,7 +413,10 @@ export class SessionsService {
     ) {
       let principalId = session.grantee.email;
       if (typeof this.integrationsService.resolvePrincipalId === 'function') {
-        principalId = this.integrationsService.resolvePrincipalId(session.integrationProvider, session.grantee);
+        principalId = this.integrationsService.resolvePrincipalId(
+          session.integrationProvider,
+          session.grantee,
+        );
       }
 
       try {
@@ -405,8 +448,9 @@ export class SessionsService {
           },
         });
 
-        this.logger.log(`[SESSION] ${session.integrationProvider} access revoked for session ${sessionId}`);
-
+        this.logger.log(
+          `[SESSION] ${session.integrationProvider} access revoked for session ${sessionId}`,
+        );
       } catch (err: unknown) {
         // Provider call failed — record REVOKE_FAILED so scheduler retries
         this.logger.error(
@@ -456,7 +500,7 @@ export class SessionsService {
         userId,
         durationSeconds,
         session.integrationProvider ?? undefined,
-        'Access revoked by admin'
+        'Access revoked by admin',
       ),
     );
 
@@ -477,7 +521,9 @@ export class SessionsService {
       throw new NotFoundException('Session not found.');
     }
 
-    this.validationService.validateSessionForUse(session, granteeId);
+    // validateSessionForReveal checks: granteeId, status, expiry, maxReveals,
+    // AND permission === REVEAL. EXTENSION sessions are rejected here with 403.
+    this.validationService.validateSessionForReveal(session, granteeId);
 
     if (session.scope !== 'SECRET') {
       throw new BadRequestException(
@@ -534,6 +580,92 @@ export class SessionsService {
   }
 
   /**
+   * Retrieves plaintext credentials for the Browser Extension autofill flow.
+   *
+   * Access model:
+   *   - EXTENSION sessions → allowed here (autofill only) ✅
+   *   - REVEAL sessions    → also allowed here (they can still autofill) ✅
+   *   - Neither session type unlocks the web-portal reveal (/reveal endpoint).
+   *
+   * Key differences from revealSecretViaSession():
+   *   - Does NOT check permission === REVEAL — both EXTENSION and REVEAL sessions
+   *     may be used by the browser extension for autofill.
+   *   - Uses reason "Browser Extension Autofill" for audit distinction.
+   *   - Still enforces: granteeId, status=ACTIVE, expiry, maxReveals (via validateSessionForUse).
+   */
+  async launchSessionForExtension(
+    organizationId: string,
+    sessionId: string,
+    granteeId: string,
+    reason: string,
+  ) {
+    const session = await this.prisma.delegatedSession.findUnique({
+      where: { id: sessionId },
+    });
+
+    if (!session || session.organizationId !== organizationId) {
+      throw new NotFoundException('Session not found.');
+    }
+
+    // validateSessionForUse enforces: granteeId match, ACTIVE status, expiry, maxReveals.
+    // It does NOT check permission — both EXTENSION and REVEAL sessions are valid for autofill.
+    this.validationService.validateSessionForUse(session, granteeId);
+
+    if (session.scope !== 'SECRET') {
+      throw new BadRequestException(
+        'Session must be scoped to a SECRET to launch autofill.',
+      );
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const lockedSession = await tx.delegatedSession.findUniqueOrThrow({
+        where: { id: sessionId },
+      });
+
+      this.validationService.validateSessionForUse(lockedSession, granteeId);
+
+      const updateResult = await tx.delegatedSession.updateMany({
+        where: {
+          id: sessionId,
+          revealCount: lockedSession.revealCount,
+        },
+        data: {
+          revealCount: { increment: 1 },
+        },
+      });
+
+      if (updateResult.count === 0) {
+        throw new BadRequestException(
+          'Concurrent autofill detected or session modified. Please try again.',
+        );
+      }
+
+      const plaintext = await this.secretLifecycleService.revealSecret(
+        {
+          organizationId,
+          secretId: lockedSession.resourceId,
+          userId: granteeId,
+          reason: `Browser Extension Autofill: ${reason}`,
+        },
+        undefined,
+        tx,
+      );
+
+      if (
+        lockedSession.maxReveals !== null &&
+        lockedSession.revealCount + 1 >= lockedSession.maxReveals
+      ) {
+        await tx.delegatedSession.update({
+          where: { id: sessionId },
+          data: { status: 'EXPIRED' },
+        });
+      }
+
+      return plaintext;
+    });
+  }
+
+  /**
    * Returns all delegated sessions where the given userId is the grantee.
    * Used by admins to see what access has been granted to a specific member.
    */
@@ -566,7 +698,9 @@ export class SessionsService {
         granteeId,
         status: { in: ['ACTIVE', 'REVOKE_FAILED'] },
       },
-      include: { grantee: { select: { id: true, email: true, providerProfiles: true } } },
+      include: {
+        grantee: { select: { id: true, email: true, providerProfiles: true } },
+      },
     });
 
     if (sessions.length === 0) {

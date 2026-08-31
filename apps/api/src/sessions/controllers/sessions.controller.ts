@@ -12,11 +12,7 @@ import { SessionsService } from '../sessions.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../../authorization/guards/permissions.guard';
 import { RequirePermissions } from '../../authorization/decorators/require-permissions.decorator';
-import {
-  Permission,
-  CreateSessionSchema,
-  ApprovalType,
-} from '@repo/types';
+import { Permission, CreateSessionSchema, ApprovalType } from '@repo/types';
 import { CreateSessionDto, RevealSessionDto } from '../dto/sessions.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
@@ -53,7 +49,7 @@ export class SessionsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a delegated session' })
-  @RequirePermissions(Permission.SECRET_READ)
+  @RequirePermissions(Permission.SESSION_START)
   async createSession(
     @Param('orgId') orgId: string,
     @Request() req: RequestWithUser,
@@ -122,7 +118,9 @@ export class SessionsController {
   }
 
   @Post(':sessionId/reveal')
-  @ApiOperation({ summary: 'Reveal a secret using a delegated session' })
+  @ApiOperation({
+    summary: 'Reveal a secret using a delegated session (web portal only)',
+  })
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   async revealSession(
     @Param('orgId') orgId: string,
@@ -131,6 +129,41 @@ export class SessionsController {
     @Body(new ZodValidationPipe(RevealSessionSchema)) dto: RevealSessionDto,
   ) {
     const plaintext = await this.sessionsService.revealSecretViaSession(
+      orgId,
+      sessionId,
+      req.user.id,
+      dto.reason,
+    );
+    return { plaintext };
+  }
+
+  /**
+   * POST /organizations/:orgId/sessions/:sessionId/launch
+   *
+   * Browser Extension autofill endpoint.
+   * Retrieves plaintext credentials for the WITHUS browser extension Secure Fill flow.
+   *
+   * Access model:
+   *   - EXTENSION sessions → ✅ allowed (autofill only, password never shown in web portal)
+   *   - REVEAL sessions    → ✅ allowed (can also autofill)
+   *   - Does NOT check permission === REVEAL — that check is for /reveal only.
+   *   - Still enforces: granteeId, status=ACTIVE, expiry, maxReveals.
+   *
+   * Security: only the grantee can call this. JWT-guarded.
+   * Audit: emits "Browser Extension Autofill" reason for distinct audit trail.
+   */
+  @Post(':sessionId/launch')
+  @ApiOperation({
+    summary: 'Launch browser extension autofill for a delegated session',
+  })
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
+  async launchSession(
+    @Param('orgId') orgId: string,
+    @Param('sessionId') sessionId: string,
+    @Request() req: RequestWithUser,
+    @Body(new ZodValidationPipe(RevealSessionSchema)) dto: RevealSessionDto,
+  ) {
+    const plaintext = await this.sessionsService.launchSessionForExtension(
       orgId,
       sessionId,
       req.user.id,
@@ -155,7 +188,9 @@ export class SessionsController {
    *  - Never returns email body, subject, sender, or Gmail metadata.
    */
   @Post(':sessionId/otp')
-  @ApiOperation({ summary: 'Fetch OTP from grantor Gmail for an active delegated session' })
+  @ApiOperation({
+    summary: 'Fetch OTP from grantor Gmail for an active delegated session',
+  })
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   async fetchOtp(
     @Param('orgId') orgId: string,
@@ -191,12 +226,15 @@ export class SessionsController {
     // ── Get a valid access token for the GRANTOR's Gmail ──────────────────
     let accessToken: string;
     try {
-      accessToken = await this.gmailAdapter.getValidAccessToken(session.organizationId);
+      accessToken = await this.gmailAdapter.getValidAccessToken(
+        session.organizationId,
+      );
     } catch (err: any) {
       // Convert known Gmail errors (missing/expired token, decryption failure) into
       // a clean 503 so the extension shows a helpful message instead of a generic 500.
       throw new ServiceUnavailableException(
-        err?.message ?? 'Gmail connection unavailable. Please reconnect Gmail in the dashboard.',
+        err?.message ??
+          'Gmail connection unavailable. Please reconnect Gmail in the dashboard.',
       );
     }
 
@@ -238,7 +276,9 @@ export class SessionsController {
    * Used to power the "Granted Access" panel on the Team Members page.
    */
   @Get('/members/:memberId/sessions')
-  @ApiOperation({ summary: 'Get all sessions granted to a specific member (admin)' })
+  @ApiOperation({
+    summary: 'Get all sessions granted to a specific member (admin)',
+  })
   @RequirePermissions(Permission.SECRET_READ)
   async getGranteeSessions(
     @Param('orgId') orgId: string,
@@ -247,9 +287,14 @@ export class SessionsController {
   ) {
     // Only admins/owners may inspect another member's sessions
     const membership = await this.prisma.organizationMember.findUnique({
-      where: { organizationId_userId: { organizationId: orgId, userId: req.user.id } },
+      where: {
+        organizationId_userId: { organizationId: orgId, userId: req.user.id },
+      },
     });
-    if (!membership || (membership.role !== 'ADMIN' && membership.role !== 'OWNER')) {
+    if (
+      !membership ||
+      (membership.role !== 'ADMIN' && membership.role !== 'OWNER')
+    ) {
       return [];
     }
     return this.sessionsService.getSessionsByGrantee(orgId, memberId);
@@ -262,7 +307,9 @@ export class SessionsController {
    * Individual sessions may still be revoked with the existing /:sessionId/revoke endpoint.
    */
   @Post('/members/:memberId/revoke-all')
-  @ApiOperation({ summary: 'Revoke all active sessions for a specific member (admin)' })
+  @ApiOperation({
+    summary: 'Revoke all active sessions for a specific member (admin)',
+  })
   @RequirePermissions(Permission.SECRET_READ)
   async revokeAllGranteeSessions(
     @Param('orgId') orgId: string,
@@ -271,11 +318,22 @@ export class SessionsController {
   ) {
     // Only admins/owners may bulk-revoke
     const membership = await this.prisma.organizationMember.findUnique({
-      where: { organizationId_userId: { organizationId: orgId, userId: req.user.id } },
+      where: {
+        organizationId_userId: { organizationId: orgId, userId: req.user.id },
+      },
     });
-    if (!membership || (membership.role !== 'ADMIN' && membership.role !== 'OWNER')) {
-      throw new Error('Only admins and owners can revoke all sessions for a member.');
+    if (
+      !membership ||
+      (membership.role !== 'ADMIN' && membership.role !== 'OWNER')
+    ) {
+      throw new Error(
+        'Only admins and owners can revoke all sessions for a member.',
+      );
     }
-    return this.sessionsService.revokeAllForGrantee(orgId, memberId, req.user.id);
+    return this.sessionsService.revokeAllForGrantee(
+      orgId,
+      memberId,
+      req.user.id,
+    );
   }
 }
