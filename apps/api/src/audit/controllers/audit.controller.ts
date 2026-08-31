@@ -5,7 +5,12 @@ import { PermissionsGuard } from '../../authorization/guards/permissions.guard';
 import { RequirePermissions } from '../../authorization/decorators/require-permissions.decorator';
 import { Permission } from '@repo/types';
 import { OrganizationContext } from '../../authorization/decorators/organization-context.decorator';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @ApiTags('Audit')
 @ApiBearerAuth()
@@ -23,8 +28,7 @@ export class AuditController {
   @ApiQuery({ name: 'endDate', required: false, type: String })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-
-  @RequirePermissions(Permission.SECRET_READ) // Usually AUDIT_READ or ADMIN role
+  @RequirePermissions(Permission.AUDIT_READ)
   async getAuditEvents(
     @Param('orgId') orgId: string,
     @Query('action') action?: string,

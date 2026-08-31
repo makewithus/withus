@@ -54,35 +54,53 @@ export class NotificationListenerService {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>You've been invited to WITHUS</title>
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; margin: 0; padding: 40px 0;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; margin: 0 auto;">
+<body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 40px 16px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px; margin: 0 auto;">
     <tr>
-      <td style="background: #ffffff; border-radius: 12px; padding: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+      <td style="background-color: #ffffff; padding: 40px 32px; border: 1px solid #e4e4e7; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+        
+        <!-- Header Brand Logo -->
         <div style="text-align: center; margin-bottom: 32px;">
-          <div style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: white; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;">
-            🔐 WITHUS
+          <div style="display: inline-flex; align-items: center; justify-content: center; background: #09090b; color: #ffffff; padding: 10px 20px; font-size: 16px; font-weight: 700; letter-spacing: -0.02em;">
+            WITHUS &nbsp;✴
           </div>
         </div>
-        <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; text-align: center;">
-          You've been invited
+
+        <!-- Heading -->
+        <h1 style="font-size: 22px; font-weight: 800; color: #09090b; margin: 0 0 12px 0; text-align: center; letter-spacing: -0.02em;">
+          You've been invited to join the team
         </h1>
-        <p style="font-size: 14px; color: #64748b; margin: 0 0 32px 0; text-align: center; line-height: 1.6;">
-          You've been invited to join a secure vault workspace on WITHUS.
-          Accept your invitation below to get started.
+
+        <!-- Subheading / Message -->
+        <p style="font-size: 14px; color: #71717a; margin: 0 0 32px 0; text-align: center; line-height: 1.6; font-weight: 500;">
+          You have been invited to join an organization on <strong style="color: #09090b;">WITHUS</strong>. Manage delegated credentials with zero raw password exposure.
         </p>
+
+        <!-- CTA Button -->
         <div style="text-align: center; margin-bottom: 32px;">
-          <a href="${inviteUrl}"
-             style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 8px;">
-            Accept Invitation
+          <a href="${inviteUrl}" target="_blank" style="display: inline-block; background-color: #09090b; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; padding: 14px 32px; border: 1px solid #09090b;">
+            Accept Invitation →
           </a>
         </div>
-        <p style="font-size: 12px; color: #94a3b8; text-align: center; margin: 0; line-height: 1.6;">
-          This invitation expires in <strong>7 days</strong>.<br />
-          If you did not expect this email, you can safely ignore it.
+
+        <!-- Expiry Notice -->
+        <div style="background-color: #f4f4f5; padding: 12px 16px; margin-bottom: 24px; text-align: center; border: 1px solid #e4e4e7;">
+          <p style="font-size: 12px; color: #71717a; margin: 0; line-height: 1.5; font-weight: 500;">
+            ⏳ This link expires in <strong>7 days</strong>.
+          </p>
+        </div>
+
+        <!-- Link Fallback -->
+        <p style="font-size: 11px; color: #a1a1aa; text-align: center; margin: 0 0 24px 0; word-break: break-all; line-height: 1.5;">
+          If the button doesn't work, copy and paste this URL into your browser:<br />
+          <a href="${inviteUrl}" style="color: #18181b; text-decoration: underline;">${inviteUrl}</a>
         </p>
-        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
-        <p style="font-size: 11px; color: #cbd5e1; text-align: center; margin: 0;">
-          WITHUS — Secure Delegated Access Platform
+
+        <hr style="border: none; border-top: 1px solid #f4f4f5; margin: 24px 0;" />
+
+        <!-- Footer -->
+        <p style="font-size: 11px; color: #a1a1aa; text-align: center; margin: 0; font-weight: 500;">
+          © WITHUS — Enterprise Delegated Access Platform
         </p>
       </td>
     </tr>

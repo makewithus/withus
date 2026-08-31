@@ -106,7 +106,17 @@ export class OrganizationsService {
   async getMembers(orgId: string) {
     const members = await this.prisma.organizationMember.findMany({
       where: { organizationId: orgId, removedAt: null },
-      include: { user: { select: { id: true, email: true, fullName: true, isActive: true, providerProfiles: true } } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            isActive: true,
+            providerProfiles: true,
+          },
+        },
+      },
       orderBy: { joinedAt: 'asc' },
     });
     return members;
@@ -123,7 +133,7 @@ export class OrganizationsService {
   }
 
   async invite(userId: string, orgId: string, email: string) {
-    const rawToken = crypto.randomBytes(32).toString('hex');
+    const rawToken = crypto.randomBytes(16).toString('base64url');
     const tokenHash = crypto
       .createHash('sha256')
       .update(rawToken)
@@ -312,7 +322,9 @@ export class OrganizationsService {
     });
     if (!member) throw new ConflictException('Member not found');
     if (member.role === 'OWNER') {
-      throw new ConflictException('Cannot offboard the OWNER of an organization');
+      throw new ConflictException(
+        'Cannot offboard the OWNER of an organization',
+      );
     }
     if (member.userId === requestorId) {
       throw new ConflictException('You cannot offboard yourself');
@@ -350,8 +362,17 @@ export class OrganizationsService {
     let approvalCancelledCount = 0;
     try {
       const result = await this.prisma.approvalRequest.updateMany({
-        where: { organizationId: orgId, requesterId: userId, status: 'PENDING' },
-        data: { status: 'REJECTED', reason: 'Cancelled: requestor was offboarded', resolvedAt: new Date(), resolvedBy: requestorId },
+        where: {
+          organizationId: orgId,
+          requesterId: userId,
+          status: 'PENDING',
+        },
+        data: {
+          status: 'REJECTED',
+          reason: 'Cancelled: requestor was offboarded',
+          resolvedAt: new Date(),
+          resolvedBy: requestorId,
+        },
       });
       approvalCancelledCount = result.count;
     } catch {

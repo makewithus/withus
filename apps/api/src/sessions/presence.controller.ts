@@ -7,12 +7,14 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  ForbiddenException,
   Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../authorization/guards/permissions.guard';
+import { RequirePermissions } from '../authorization/decorators/require-permissions.decorator';
+import { OrganizationContext } from '../authorization/decorators/organization-context.decorator';
+import { Permission } from '@repo/types';
 import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
-import { PrismaService } from '../prisma/prisma.service';
 import { PresenceService } from './presence.service';
 
 class HeartbeatDto {
@@ -23,26 +25,26 @@ class HeartbeatDto {
  * Presence Controller
  *
  * Routes:
- *   POST /organizations/:orgId/presence/heartbeat  — Extension sends heartbeat
- *   GET  /organizations/:orgId/presence            — Admin dashboard polls presence
+ *   POST /organizations/:orgId/presence/heartbeat  — Extension sends heartbeat (all roles)
+ *   GET  /organizations/:orgId/presence            — Admin dashboard polls presence (OWNER + ADMIN)
  *
  * Security:
  *   - Both routes require JWT authentication.
- *   - GET restricted to ADMIN/OWNER roles (checked via DB query).
- *   - POST always returns 204 — extension never learns if auth gate rejected it.
+ *   - GET requires PRESENCE_READ permission (OWNER + ADMIN only).
+ *   - POST has no @RequirePermissions → PermissionsGuard passes through → all authenticated members
+ *     can send heartbeats (required for presence to work for any role).
  */
 @Controller('organizations/:orgId/presence')
-@UseGuards(JwtAuthGuard)
+@OrganizationContext('orgId')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 export class PresenceController {
-  constructor(
-    private readonly presenceService: PresenceService,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly presenceService: PresenceService) {}
 
   /**
    * POST /organizations/:orgId/presence/heartbeat
    *
    * Fire-and-forget from the extension service worker (every 30s).
+   * No @RequirePermissions → PermissionsGuard passes through for all authenticated members.
    * Always 204 — presence failures must never surface to the extension.
    */
   @Post('heartbeat')
@@ -54,31 +56,21 @@ export class PresenceController {
   ): Promise<void> {
     this.presenceService
       .recordHeartbeat(orgId, req.user.id, dto.platform)
-      .catch(() => {/* non-blocking */});
+      .catch(() => {
+        /* non-blocking */
+      });
   }
 
   /**
    * GET /organizations/:orgId/presence
    *
-   * Returns presence status for all org members (ADMIN/OWNER only).
-   * isActive = lastSeenAt within the last 90 seconds.
+   * Returns presence status for all org members.
+   * Requires PRESENCE_READ → OWNER + ADMIN only.
+   * MEMBER receives 403 Forbidden from PermissionsGuard.
    */
   @Get()
-  async getPresence(
-    @Param('orgId') orgId: string,
-    @Request() req: RequestWithUser,
-  ) {
-    const membership = await this.prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: { organizationId: orgId, userId: req.user.id },
-      },
-      select: { role: true },
-    });
-
-    if (!membership || !['ADMIN', 'OWNER'].includes(membership.role)) {
-      throw new ForbiddenException('Only administrators can view member presence.');
-    }
-
+  @RequirePermissions(Permission.PRESENCE_READ)
+  async getPresence(@Param('orgId') orgId: string) {
     return this.presenceService.getOrgPresence(orgId);
   }
 }

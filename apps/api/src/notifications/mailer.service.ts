@@ -43,11 +43,15 @@ export class MailerService {
   private async getTransporter(): Promise<Transporter> {
     if (this.transporter) return this.transporter;
 
-    if (this.isProduction) {
+    const smtpHost = this.config.get<string>('SMTP_HOST');
+    const rawPort = this.config.get<string | number>('SMTP_PORT');
+    const port = rawPort ? Number(rawPort) : 587;
+
+    if (this.isProduction || smtpHost) {
       this.transporter = nodemailer.createTransport({
-        host: this.config.getOrThrow<string>('SMTP_HOST'),
-        port: this.config.get<number>('SMTP_PORT') ?? 587,
-        secure: false,
+        host: smtpHost || this.config.getOrThrow<string>('SMTP_HOST'),
+        port: port,
+        secure: port === 465,
         auth: {
           user: this.config.getOrThrow<string>('SMTP_USER'),
           pass: this.config.getOrThrow<string>('SMTP_PASS'),
@@ -87,7 +91,9 @@ export class MailerService {
       if (!this.isProduction) {
         // Log the Ethereal preview URL so devs can inspect the email
         const previewUrl = nodemailer.getTestMessageUrl(info);
-        this.logger.log(`[DEV] Email preview URL: ${previewUrl}`);
+        if (previewUrl) {
+          this.logger.log(`[DEV] Email preview URL: ${previewUrl}`);
+        }
       }
 
       this.logger.log(`Email delivered to ${options.to}: ${options.subject}`);
