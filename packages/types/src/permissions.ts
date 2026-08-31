@@ -34,6 +34,12 @@ export enum Permission {
   APPROVAL_APPROVE = "approval.approve",
   APPROVAL_REJECT = "approval.reject",
 
+  // Audit
+  AUDIT_READ = "audit.read",
+
+  // Presence / Activity Monitor
+  PRESENCE_READ = "presence.read",
+
   // Sessions (Phase 6)
   SESSION_START = "session.start",
   SESSION_REVOKE = "session.revoke",

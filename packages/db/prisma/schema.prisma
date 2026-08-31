@@ -66,8 +66,8 @@ model User {
 
   refreshTokens           RefreshToken[]
   organizationMemberships OrganizationMember[]
-  grantedSessions         DelegatedSession[]    @relation("SessionGrantor")
-  receivedSessions        DelegatedSession[]    @relation("SessionGrantee")
+  grantedSessions         DelegatedSession[]   @relation("SessionGrantor")
+  receivedSessions        DelegatedSession[]   @relation("SessionGrantee")
   approvalRequests        ApprovalRequest[]
   auditEvents             AuditEvent[]
   passwordResetTokens     PasswordResetToken[]
@@ -118,16 +118,16 @@ model Organization {
   updatedBy String?
   deletedBy String?
 
-  members              OrganizationMember[]
-  invitations          OrganizationInvitation[]
-  vaults               Vault[]
-  delegatedSessions    DelegatedSession[]
-  approvalRequests     ApprovalRequest[]
-  auditEvents          AuditEvent[]
+  members                OrganizationMember[]
+  invitations            OrganizationInvitation[]
+  vaults                 Vault[]
+  delegatedSessions      DelegatedSession[]
+  approvalRequests       ApprovalRequest[]
+  auditEvents            AuditEvent[]
   integrationConnections IntegrationConnection[]
-  apiKeys              ApiKey[]
-  webhookSubscriptions WebhookSubscription[]
-  userPresences        UserPresence[]
+  apiKeys                ApiKey[]
+  webhookSubscriptions   WebhookSubscription[]
+  userPresences          UserPresence[]
 }
 
 model OrganizationMember {
@@ -182,8 +182,8 @@ model KeyMetadata {
   createdAt DateTime  @default(now())
   rotatedAt DateTime?
 
-  secrets              Secret[]
-  secretVersions       SecretVersion[]
+  secrets                Secret[]
+  secretVersions         SecretVersion[]
   integrationConnections IntegrationConnection[]
 }
 
@@ -263,13 +263,12 @@ model SecretVersion {
 }
 
 enum SessionStatus {
-  PENDING_GRANT   // Integration-bound: DB row written, grantAccess() not yet confirmed
+  PENDING_GRANT // Integration-bound: DB row written, grantAccess() not yet confirmed
   ACTIVE
-  REVOKE_FAILED   // revokeAccess() failed; scheduler will retry
+  REVOKE_FAILED // revokeAccess() failed; scheduler will retry
   REVOKED
   EXPIRED
 }
-
 
 enum SessionScope {
   VAULT
@@ -278,7 +277,8 @@ enum SessionScope {
 }
 
 enum SessionPermission {
-  REVEAL
+  REVEAL // Grants password reveal access in the WITHUS web portal
+  EXTENSION // Grants browser extension / autofill access only — no portal reveal
 }
 
 model DelegatedSession {
@@ -291,19 +291,19 @@ model DelegatedSession {
   resourceId String // ID of the Vault or Secret based on scope
   permission SessionPermission @default(REVEAL)
 
-  status      SessionStatus @default(ACTIVE)
-  expiresAt   DateTime
-  maxReveals  Int? // Optional limit on reveals
-  revealCount Int           @default(0)
+  status       SessionStatus @default(ACTIVE)
+  expiresAt    DateTime
+  maxReveals   Int? // Optional limit on reveals
+  revealCount  Int           @default(0)
   capabilities Json? // Array of strings representing module-level access (null = unrestricted)
 
   // ─── Integration binding ─────────────────────────────────────────────────
   // Populated when a native provider integration is used (e.g. Vercel, GitHub).
   // Gives the revocation worker all context it needs — no guessing.
-  integrationProvider            String? // e.g. "VERCEL" | "GITHUB"
-  integrationResourceType        String? // e.g. "TEAM" | "ORGANIZATION" | "REPOSITORY"
-  integrationResourceExternalId  String? // e.g. teamId, orgLogin, "owner/repo"
-  integrationReferenceId         String? // Provider-issued ID returned by grantAccess (uid, username, etc.)
+  integrationProvider           String? // e.g. "VERCEL" | "GITHUB"
+  integrationResourceType       String? // e.g. "TEAM" | "ORGANIZATION" | "REPOSITORY"
+  integrationResourceExternalId String? // e.g. teamId, orgLogin, "owner/repo"
+  integrationReferenceId        String? // Provider-issued ID returned by grantAccess (uid, username, etc.)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -383,12 +383,12 @@ model AuditEvent {
 }
 
 model PasswordResetToken {
-  id         String   @id @default(uuid())
-  userId     String
-  tokenHash  String   @unique
-  expiresAt  DateTime
-  usedAt     DateTime?
-  createdAt  DateTime @default(now())
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -419,9 +419,9 @@ model IntegrationConnection {
   status         IntegrationStatus   @default(ACTIVE)
 
   /// Encrypted PAT — AES-256-GCM envelope, same scheme as secrets.
-  encryptedToken  String
-  encryptedDek    String
-  keyMetadataId   String
+  encryptedToken String
+  encryptedDek   String
+  keyMetadataId  String
 
   /// Provider-specific metadata (team ID, org slug, account ID, etc.)
   providerMeta Json?
@@ -458,9 +458,9 @@ enum ApiKeyStatus {
 model ApiKey {
   id             String       @id @default(uuid())
   organizationId String
-  name           String       // Human-readable label
+  name           String // Human-readable label
   keyHash        String       @unique // SHA-256 of the raw key
-  keyPrefix      String       // First 8 chars for display (e.g. "sdap_abc1")
+  keyPrefix      String // First 8 chars for display (e.g. "sdap_abc1")
   status         ApiKeyStatus @default(ACTIVE)
   expiresAt      DateTime?
   lastUsedAt     DateTime?
@@ -480,16 +480,16 @@ model ApiKey {
 }
 
 model WebhookSubscription {
-  id             String    @id @default(cuid())
+  id             String   @id @default(cuid())
   organizationId String
   url            String
   events         String[]
   secret         String
-  active         Boolean   @default(true)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
 }
