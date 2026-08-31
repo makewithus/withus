@@ -39,9 +39,11 @@ import {
   ArrowRight,
   Search,
   UserX,
+  X,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
+import { hasPermission } from '../../../lib/auth/permissions';
 
 const roleIcons: Record<string, React.ReactNode> = {
   OWNER: <Crown className="w-3 h-3 text-amber-500" />,
@@ -102,8 +104,11 @@ export default function MembersPage() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const currentMember = members.find((m) => m.userId === currentUserId);
-  const canManage = currentMember?.role === 'OWNER' || currentMember?.role === 'ADMIN';
+  const currentMember = members.find((m: any) => m.userId === currentUserId);
+  const role = currentMember?.role as string | undefined;
+  const canInvite     = hasPermission(role, 'MEMBER_INVITE');      // OWNER + ADMIN
+  const canRemove     = hasPermission(role, 'MEMBER_REMOVE');      // OWNER + ADMIN
+  const canChangeRole = hasPermission(role, 'MEMBER_UPDATE_ROLE'); // OWNER only
 
   const filteredMembers = members.filter((member: any) => {
     if (!searchTerm) return true;
@@ -218,7 +223,7 @@ export default function MembersPage() {
         </div>
 
         {/* ── Invite Form ──────────────────────────────────────────────── */}
-        {canManage && (
+        {canInvite && (
           <div className="premium-card p-5 shadow-none">
             <h2 className="text-[10px] font-bold text-premium-main uppercase tracking-wider mb-4 flex items-center gap-2">
               <UserPlus className="w-4 h-4 text-premium-muted" />
@@ -246,31 +251,46 @@ export default function MembersPage() {
             </form>
 
             {inviteToken && (
-              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-lg">
-                <p className="text-xs font-semibold text-amber-800 dark:text-amber-300 mb-1">
-                  ⚠️ Share this invite link with your colleague:
-                </p>
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-mono text-amber-700 dark:text-amber-400 break-all flex-1">
+              <div className="mt-4 p-4 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 relative transition-all animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                    Share Invite Link
+                  </p>
+                  <button
+                    onClick={() => setInviteToken(null)}
+                    className="p-1 text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-100 transition-colors"
+                    title="Dismiss notification"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-zinc-950/80 p-2 border border-amber-500/20">
+                  <p className="text-xs font-mono text-amber-900 dark:text-amber-200 break-all flex-1 select-all">
                     {typeof window !== 'undefined' ? window.location.origin : ''}/invite/{inviteToken}
                   </p>
                   <button
                     onClick={() => handleCopyInvite('new', inviteToken)}
-                    className="flex-shrink-0 p-1.5 rounded hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
+                    className="flex-shrink-0 px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-amber-500 hover:bg-amber-600 text-zinc-950 transition-colors flex items-center gap-1.5 shadow-sm"
                   >
-                    <Copy className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
+                    {copiedInviteId === 'new' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> Copy Link
+                      </>
+                    )}
                   </button>
                 </div>
-                <p className="text-[10px] text-amber-600 dark:text-amber-500 mt-2 font-semibold">
-                  In production, this link would be sent via email automatically.
-                </p>
               </div>
             )}
           </div>
         )}
 
         {/* ── Pending Invitations ──────────────────────────────────────── */}
-        {canManage && pendingInvitations.length > 0 && (
+        {canInvite && pendingInvitations.length > 0 && (
           <div className="premium-card overflow-hidden shadow-none">
             <div className="px-5 py-3 border-b border-premium bg-slate-50/20 dark:bg-zinc-900/10 flex items-center justify-between">
               <h2 className="text-[10px] font-bold text-premium-main uppercase tracking-wider flex items-center gap-2">
@@ -344,7 +364,7 @@ export default function MembersPage() {
         )}
 
         {/* ── Current Members ──────────────────────────────────────────── */}
-        <div className="premium-card overflow-hidden shadow-none">
+        <div className="premium-card shadow-none">
           <div className="px-5 py-3 border-b border-premium bg-slate-50/20 dark:bg-zinc-900/10 flex items-center justify-between">
             <h2 className="text-[10px] font-bold text-premium-main uppercase tracking-wider flex items-center gap-2">
               <Users className="w-4 h-4 text-premium-muted" />
@@ -381,9 +401,9 @@ export default function MembersPage() {
               {filteredMembers.map((member: any) => {
                 const isOwner = member.role === 'OWNER';
                 const isSelf = member.userId === currentUserId;
-                const canEdit = canManage && !isOwner && !isSelf;
+                const canEdit = canRemove && !isOwner && !isSelf;
                 return (
-                  <li key={member.id} className="border-b border-premium/65 last:border-b-0 bg-premium-surface">
+                  <li key={member.id} className={`border-b border-premium/65 last:border-b-0 bg-premium-surface ${openMenuId === member.id ? 'relative z-20' : ''}`}>
                     {/* ── Member Row ── */}
                     <div
                       className="px-5 py-3.5 flex items-center justify-between transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-900/10"
@@ -416,8 +436,8 @@ export default function MembersPage() {
                           {member.role}
                         </span>
 
-                        {/* Expand toggle (admin view) */}
-                        {canManage && (
+                        {/* Expand toggle (admin/owner view) */}
+                        {canInvite && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -444,32 +464,67 @@ export default function MembersPage() {
                               {openMenuId === member.id && (
                                  <>
                                    <div
-                                     className="fixed inset-0 z-10"
+                                     className="fixed inset-0 z-40"
                                      onClick={() => setOpenMenuId(null)}
                                    />
-                                   <div className="absolute right-0 mt-1 w-44 bg-premium-surface border border-premium rounded-lg shadow-none overflow-hidden z-20 py-1">
-                                     <button
-                                       onClick={() => {
-                                         handleOffboardMember(member.id, member.user?.email, member.user?.fullName);
-                                         setOpenMenuId(null);
-                                       }}
-                                       disabled={isOffboarding}
-                                       className="w-full text-left px-4 py-2 text-xs font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/20 disabled:opacity-50 flex items-center gap-2"
-                                     >
-                                       <UserX className="w-3.5 h-3.5" />
-                                       Offboard Employee
-                                     </button>
-                                     <div className="border-t border-premium my-0.5" />
-                                     <button
-                                       onClick={() => {
-                                         handleRemoveMember(member.id, member.user?.email);
-                                         setOpenMenuId(null);
-                                       }}
-                                       disabled={isRemoving}
-                                       className="w-full text-left px-4 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 disabled:opacity-50"
-                                     >
-                                       Remove Member
-                                     </button>
+                                   <div className="absolute right-0 mt-1 w-52 bg-premium-surface border border-premium rounded-lg shadow-xl overflow-hidden z-50 py-1.5">
+                                     {/* Promote / Demote — OWNER only */}
+                                     {canChangeRole && member.role === 'MEMBER' && (
+                                       <button
+                                         onClick={() => {
+                                           handleChangeRole(member.id, 'ADMIN');
+                                           setOpenMenuId(null);
+                                         }}
+                                         className="w-full text-left px-3.5 py-2 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 flex items-center gap-2.5 whitespace-nowrap transition-colors"
+                                       >
+                                         <Shield className="w-4 h-4 flex-shrink-0" />
+                                         <span>Promote to Admin</span>
+                                       </button>
+                                     )}
+                                     {canChangeRole && member.role === 'ADMIN' && (
+                                       <button
+                                         onClick={() => {
+                                           handleChangeRole(member.id, 'MEMBER');
+                                           setOpenMenuId(null);
+                                         }}
+                                         className="w-full text-left px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2.5 whitespace-nowrap transition-colors"
+                                       >
+                                         <ShieldOff className="w-4 h-4 flex-shrink-0" />
+                                         <span>Demote to Member</span>
+                                       </button>
+                                     )}
+                                     {canChangeRole && (
+                                       <div className="border-t border-premium my-1" />
+                                     )}
+                                     {canRemove && (
+                                       <button
+                                         onClick={() => {
+                                           handleOffboardMember(member.id, member.user?.email, member.user?.fullName);
+                                           setOpenMenuId(null);
+                                         }}
+                                         disabled={isOffboarding}
+                                         className="w-full text-left px-3.5 py-2 text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 disabled:opacity-50 flex items-center gap-2.5 whitespace-nowrap transition-colors"
+                                       >
+                                         <UserX className="w-4 h-4 flex-shrink-0" />
+                                         <span>Offboard Employee</span>
+                                       </button>
+                                     )}
+                                     {canRemove && (
+                                       <>
+                                         <div className="border-t border-premium my-1" />
+                                         <button
+                                           onClick={() => {
+                                             handleRemoveMember(member.id, member.user?.email);
+                                             setOpenMenuId(null);
+                                           }}
+                                           disabled={isRemoving}
+                                           className="w-full text-left px-3.5 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 disabled:opacity-50 flex items-center gap-2.5 whitespace-nowrap transition-colors"
+                                         >
+                                           <Trash2 className="w-4 h-4 flex-shrink-0" />
+                                           <span>Remove Member</span>
+                                         </button>
+                                       </>
+                                     )}
                                    </div>
                                  </>
                                )}

@@ -12,6 +12,7 @@ import { Plus, Trash2, Clock, CheckCircle, XCircle, Eye, Loader2 } from 'lucide-
 import { SessionStatus } from '@repo/types';
 import { useAuth } from '../../lib/auth/AuthContext';
 import { useToast } from '../../components/common/Toast';
+import { hasPermission } from '../../lib/auth/permissions';
 
 export default function SessionsPage() {
   const { organization } = useAuth();
@@ -22,7 +23,7 @@ export default function SessionsPage() {
   const { data: outgoingSessions, isLoading: isLoadingOutgoing } = useOutgoingSessions(orgId);
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession(orgId);
 
-  const canGrantAccess = organization?.role === 'OWNER' || organization?.role === 'ADMIN';
+  const canGrantAccess = hasPermission(organization?.role, 'SESSION_REVOKE');
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);

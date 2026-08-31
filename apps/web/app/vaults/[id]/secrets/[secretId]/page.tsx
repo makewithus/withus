@@ -11,6 +11,7 @@ import { ErrorState } from '../../../../../components/common/ErrorState';
 import { RevealFlow } from '../../../../../components/secrets/RevealFlow';
 import { FileKey2, Clock, CheckCircle, Shield, Play } from 'lucide-react';
 import { useAuth } from '../../../../../lib/auth/AuthContext';
+import { hasPermission } from '../../../../../lib/auth/permissions';
 
 export default function SecretDetailsPage({ params }: { params: Promise<{ id: string; secretId: string }> }) {
   const { id, secretId } = use(params);
@@ -20,8 +21,13 @@ export default function SecretDetailsPage({ params }: { params: Promise<{ id: st
   const { data: secret, isLoading: secretLoading, isError, refetch } = useSecret(orgId, id, secretId);
   
   const { data: incomingSessions = [] } = useIncomingSessions(orgId);
+  // Only a session with permission='REVEAL' authorizes password reveal in the web portal.
+  // An EXTENSION session (browser autofill only) must NOT unlock the Reveal UI.
   const activeSessionForSecret = incomingSessions.find(
-    (s: any) => s.scope === 'SECRET' && s.resourceId === secretId && s.status === 'ACTIVE'
+    (s: any) => s.scope === 'SECRET'
+      && s.resourceId === secretId
+      && s.status === 'ACTIVE'
+      && s.permission === 'REVEAL'   // ← explicit: EXTENSION sessions are excluded
   );
 
   // TODO(v1.1): Do not derive deliveryMethod from secret.type. The secret type and delivery method are different concepts.
@@ -99,7 +105,10 @@ export default function SecretDetailsPage({ params }: { params: Promise<{ id: st
 
               <div className="border-t border-premium pt-5 mt-3">
                 <h4 className="text-xs font-bold text-premium-main uppercase tracking-wider mb-3">Secret Value</h4>
-                {organization?.role === 'MEMBER' && !activeSessionForSecret ? (
+                {/* Gate: show Reveal UI only if user has SECRET_REVEAL permission (OWNER/ADMIN)
+                    OR has an active session with permission='REVEAL'.
+                    An EXTENSION session does NOT satisfy the second condition. */}
+                {!hasPermission(organization?.role, 'SECRET_REVEAL') && !activeSessionForSecret ? (
                   <div className="premium-card rounded-lg p-6 text-center">
                     <p className="text-xs font-semibold text-premium-muted mb-4">
                       You don't have permission to reveal this secret.

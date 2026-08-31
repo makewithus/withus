@@ -14,12 +14,22 @@ import { EditVaultModal } from './EditVaultModal';
 import { KeyRound, FileQuestion, Plus, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth/AuthContext';
 import { useToast } from '../common/Toast';
+import { hasPermission } from '../../lib/auth/permissions';
 import { EditSecretModal } from '../secrets/EditSecretModal';
 import { SecretResponse } from '@repo/types';
 
 export function VaultDetailsPage({ vaultId }: { vaultId: string }) {
   const { organization } = useAuth();
   const orgId = organization?.id || '';
+  const role = (organization as any)?.role as string | undefined;
+
+  // Granular permission gates — mirrors backend PermissionEvaluator exactly
+  const canUpdateVault  = hasPermission(role, 'VAULT_UPDATE');
+  const canDeleteVault  = hasPermission(role, 'VAULT_DELETE');  // OWNER only
+  const canCreateSecret = hasPermission(role, 'SECRET_CREATE');
+  const canUpdateSecret = hasPermission(role, 'SECRET_UPDATE');
+  const canDeleteSecret = hasPermission(role, 'SECRET_DELETE');
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -92,27 +102,33 @@ export function VaultDetailsPage({ vaultId }: { vaultId: string }) {
             <p className="text-xs text-premium-muted mt-1">{vault.description || 'No description provided.'}</p>
           </div>
           <div className="flex items-center gap-2.5">
-            <button
-              onClick={() => setIsEditVaultOpen(true)}
-              className="premium-button-secondary"
-            >
-              <Pencil className="w-3.5 h-3.5 mr-1.5" />
-              Edit
-            </button>
-            <button
-              onClick={() => setIsDeleteVaultOpen(true)}
-              className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 hover:border-red-500/30 transition-all duration-150 inline-flex items-center justify-center"
-            >
-              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-              Delete
-            </button>
-            <button
-              onClick={() => setIsCreateSecretOpen(true)}
-              className="premium-button-primary"
-            >
-              <Plus className="w-3.5 h-3.5 mr-1.5" />
-              Add Secret
-            </button>
+            {canUpdateVault && (
+              <button
+                onClick={() => setIsEditVaultOpen(true)}
+                className="premium-button-secondary"
+              >
+                <Pencil className="w-3.5 h-3.5 mr-1.5" />
+                Edit
+              </button>
+            )}
+            {canDeleteVault && (
+              <button
+                onClick={() => setIsDeleteVaultOpen(true)}
+                className="premium-button-danger"
+              >
+                <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                Delete
+              </button>
+            )}
+            {canCreateSecret && (
+              <button
+                onClick={() => setIsCreateSecretOpen(true)}
+                className="premium-button-primary"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1.5" />
+                Add Secret
+              </button>
+            )}
           </div>
         </div>
 
@@ -133,8 +149,8 @@ export function VaultDetailsPage({ vaultId }: { vaultId: string }) {
                 title="No Secrets Found"
                 description="This vault doesn't contain any secrets yet."
                 icon={<FileQuestion className="w-5 h-5 text-slate-400" />}
-                actionLabel="Add Secret"
-                onAction={() => setIsCreateSecretOpen(true)}
+                actionLabel={canCreateSecret ? 'Add Secret' : undefined}
+                onAction={canCreateSecret ? () => setIsCreateSecretOpen(true) : undefined}
               />
             ) : (
               <div className="divide-y divide-slate-100 dark:divide-zinc-800/60">
@@ -151,20 +167,24 @@ export function VaultDetailsPage({ vaultId }: { vaultId: string }) {
                       >
                         View
                       </Link>
-                      <button
-                        onClick={() => setEditSecret(secret)}
-                        className="p-1.5 text-premium-muted hover:text-premium-main hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
-                        title="Edit secret"
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setDeleteSecretId(secret.id)}
-                        className="p-1.5 text-premium-muted hover:text-red-500 hover:bg-red-500/10 rounded-md border border-transparent hover:border-red-500/20 transition-all"
-                        title="Delete secret"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      {canUpdateSecret && (
+                        <button
+                          onClick={() => setEditSecret(secret)}
+                          className="p-1.5 text-premium-muted hover:text-premium-main hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
+                          title="Edit secret"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      {canDeleteSecret && (
+                        <button
+                          onClick={() => setDeleteSecretId(secret.id)}
+                          className="p-1.5 text-premium-muted hover:text-red-500 hover:bg-red-500/10 rounded-md border border-transparent hover:border-red-500/20 transition-all"
+                          title="Delete secret"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

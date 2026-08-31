@@ -7,13 +7,13 @@ import { PublicFooter } from '../../components/layout/PublicFooter';
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-premium-bg py-16 px-6 flex flex-col items-center">
+    <div className="h-screen overflow-y-auto bg-premium-bg py-16 px-6 flex flex-col items-center">
       <div className="w-full max-w-4xl space-y-10">
         
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="mx-auto w-14 h-14 mb-4">
-            <img src="/logo.png" alt="WithUs Logo" className="w-full h-full object-contain" />
+            <img src="/favicon.svg" alt="WithUs Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-premium-main sm:text-4xl">Privacy Policy</h1>
           <div className="flex justify-center mt-2">

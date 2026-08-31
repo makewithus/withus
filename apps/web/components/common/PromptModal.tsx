@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { MessageSquare, Loader2 } from 'lucide-react';
 
 interface PromptModalProps {
@@ -60,7 +61,7 @@ export function PromptModal({
     onConfirm(value.trim());
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-sm"
@@ -112,6 +113,7 @@ export function PromptModal({
           </form>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

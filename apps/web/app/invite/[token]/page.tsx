@@ -6,6 +6,7 @@ import { useAcceptInvite, useInvitationDetails } from '../../../hooks/useOrganiz
 import { useToast } from '../../../components/common/Toast';
 import { Shield, Loader2, CheckCircle, XCircle, AlertCircle, CalendarX } from 'lucide-react';
 import { AuthSession } from '../../../lib/auth/session';
+import { apiClient } from '../../../lib/api/client';
 
 export default function AcceptInvitePage({ params }: { params: Promise<{ token: string }> }) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function AcceptInvitePage({ params }: { params: Promise<{ token: 
   // Loading state for fetching invite details
   // Reusable wrappers for consistency
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen flex items-center justify-center bg-premium-background p-4">
+    <div className="h-screen overflow-y-auto flex items-center justify-center bg-premium-background p-4">
       {children}
     </div>
   );
@@ -196,8 +197,19 @@ export default function AcceptInvitePage({ params }: { params: Promise<{ token: 
             <XCircle className="w-10 h-10 text-red-500 mx-auto mb-4" />
             <p className="text-base font-bold text-premium-main">Invitation Failed</p>
             <p className="text-xs text-premium-muted font-semibold mt-1">{(error as Error)?.message || 'There was a problem joining the organization.'}</p>
-            <button onClick={() => router.push('/dashboard')} className="mt-6 text-xs font-bold text-premium-main hover:underline">
-              Go to Dashboard
+            <button 
+              onClick={async () => {
+                try {
+                  await apiClient.post('/auth/logout', {});
+                } catch (e) {
+                  // ignore
+                }
+                AuthSession.clear();
+                router.push('/login');
+              }} 
+              className="mt-6 w-full premium-button-primary py-2.5 text-xs shadow-sm"
+            >
+              Sign Out & Try Again
             </button>
           </>
         )}

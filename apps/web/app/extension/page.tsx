@@ -80,9 +80,9 @@ export default function ExtensionPage() {
               href="https://chromewebstore.google.com/detail/withus-vault/ccelghkaoejlmljlhcefnkbcbfmoge"
               target="_blank"
               rel="noopener noreferrer"
-              className="premium-button-secondary inline-flex items-center gap-2 px-5 py-2.5 shadow-sm text-xs font-bold rounded-lg transition-colors border border-zinc-200"
+              className="premium-button-secondary inline-flex items-center gap-2 px-5 py-2.5 shadow-sm text-xs font-bold rounded-lg transition-colors border border-zinc-200 dark:border-zinc-800"
             >
-              <svg className="w-4 h-4 text-[var(--accent-lime-text)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <circle cx="12" cy="12" r="4" />
                 <line x1="21.17" y1="8" x2="12" y2="8" />
@@ -121,18 +121,18 @@ export default function ExtensionPage() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-bold text-premium-muted uppercase tracking-wider bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-bold text-premium-muted uppercase tracking-wider bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/60 px-2.5 py-0.5 rounded-md">
                       Step {step.number}
                     </span>
                     {step.badge && (
-                      <span className="text-[9px] font-bold bg-premium-main/10 text-premium-main border border-premium-main/20 px-2 py-0.5 rounded-full">
+                      <span className="text-[9px] font-bold bg-premium-main/10 text-premium-main border border-premium-main/20 px-2 py-0.5 rounded-md">
                         {step.badge}
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-3.5">
-                    <div className="w-8 h-8 rounded-lg border border-premium flex items-center justify-center bg-slate-50/30 dark:bg-zinc-900/10 flex-shrink-0">
-                      <Icon className="w-4.5 h-4.5 text-premium-main" />
+                  <div className="flex gap-3.5 items-start">
+                    <div className="w-9 h-9 rounded-lg border border-premium flex items-center justify-center bg-slate-100 dark:bg-zinc-800/80 text-premium-main flex-shrink-0 shadow-sm">
+                      <Icon className="w-4 h-4 text-premium-main" />
                     </div>
                     <div>
                       <h3 className="text-xs font-bold text-premium-main">{step.title}</h3>

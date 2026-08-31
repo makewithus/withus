@@ -10,12 +10,15 @@ import { CreateVaultModal } from './CreateVaultModal';
 import { Shield, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../lib/auth/AuthContext';
 import { useToast } from '../common/Toast';
+import { hasPermission } from '../../lib/auth/permissions';
 
 const PAGE_SIZE = 20;
 
 export function VaultListPage() {
   const { organization } = useAuth();
   const orgId = organization?.id || '';
+  const role = (organization as any)?.role as string | undefined;
+  const canCreateVault = hasPermission(role, 'VAULT_CREATE');
   const [page, setPage] = useState(1);
   const { data, isLoading, isError, refetch } = useVaults(orgId, page, PAGE_SIZE);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -46,11 +49,13 @@ export function VaultListPage() {
             title="No Vaults Found"
             description="Create your first secure vault to start storing encrypted secrets."
             icon={<Shield className="w-5 h-5 text-premium-muted" />}
-            actionLabel="Create Vault"
-            onAction={() => setIsCreateOpen(true)}
+            actionLabel={canCreateVault ? 'Create Vault' : undefined}
+            onAction={canCreateVault ? () => setIsCreateOpen(true) : undefined}
           />
         </div>
-        <CreateVaultModal orgId={orgId} isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+        {canCreateVault && (
+          <CreateVaultModal orgId={orgId} isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+        )}
       </>
     );
   }
@@ -65,13 +70,15 @@ export function VaultListPage() {
               {total} vault{total !== 1 ? 's' : ''} · Page {page} of {totalPages}
             </p>
           </div>
-          <button
-            onClick={() => setIsCreateOpen(true)}
-            className="premium-button-primary"
-          >
-            <Plus className="w-3.5 h-3.5 mr-1.5" />
-            Create Vault
-          </button>
+          {canCreateVault && (
+            <button
+              onClick={() => setIsCreateOpen(true)}
+              className="premium-button-primary"
+            >
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
+              Create Vault
+            </button>
+          )}
         </div>
 
         <VaultList vaults={vaults} />
@@ -99,7 +106,9 @@ export function VaultListPage() {
         )}
       </div>
 
-      <CreateVaultModal orgId={orgId} isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+      {canCreateVault && (
+        <CreateVaultModal orgId={orgId} isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+      )}
     </>
   );
 }

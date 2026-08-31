@@ -7,10 +7,14 @@ import { useUpdateOrganization } from '../../hooks/useOrganization';
 import { useUpdateProfile, useChangePassword, useProfile } from '../../hooks/useProfile';
 import { useToast } from '../../components/common/Toast';
 import { Loader2, Building2, User, Lock, Eye, EyeOff, GitBranch } from 'lucide-react';
+import { hasPermission } from '../../lib/auth/permissions';
 
 export default function SettingsPage() {
   const { organization, refreshContext } = useAuth();
   const { toast } = useToast();
+  const role = (organization as any)?.role as string | undefined;
+  // ORGANIZATION_UPDATE is OWNER-only per the backend permission matrix
+  const canUpdateOrg = hasPermission(role, 'ORGANIZATION_UPDATE');
 
   // ── Workspace ──────────────────────────────────────────────
   const [orgName, setOrgName] = useState(organization?.name || '');
@@ -156,6 +160,7 @@ export default function SettingsPage() {
             </div>
 
             {/* ── Workspace Section ── */}
+            {canUpdateOrg && (
             <div className={sectionClass}>
               <div className={headerClass}>
                 <h2 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
@@ -189,6 +194,7 @@ export default function SettingsPage() {
                 </div>
               </form>
             </div>
+            )}
           </div>
 
           <div>

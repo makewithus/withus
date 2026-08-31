@@ -2,7 +2,7 @@
 
 import { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Shield, Loader2, Mail, Lock, User, Building2 } from 'lucide-react';
+import { Shield, Loader2, Mail, Lock, User, Building2, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { apiClient } from '../../lib/api/client';
 import { AuthSession } from '../../lib/auth/session';
@@ -15,6 +15,7 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { refreshContext } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Detect if this is an invite-based registration
   const redirectParam = searchParams.get('redirect') || '';
@@ -26,6 +27,8 @@ function RegisterForm() {
   const [companyName, setCompanyName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { data: inviteDetails } = useInvitationDetails(inviteToken || '');
@@ -44,6 +47,7 @@ function RegisterForm() {
     if (!isInviteFlow && !companyName.trim()) { toast('warning', 'Please enter your company name.'); return; }
     if (!email.trim()) { toast('warning', 'Please enter your email address.'); return; }
     if (password.length < 8) { toast('warning', 'Password must be at least 8 characters.'); return; }
+    if (password !== confirmPassword) { toast('warning', 'Passwords do not match.'); return; }
 
     setLoading(true);
     try {
@@ -81,10 +85,10 @@ function RegisterForm() {
   };
 
   return (
-    <div className="theme-light min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-premium-bg">
+    <div className="h-screen overflow-y-auto lg:overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-premium-bg text-premium-main">
       {/* Brand Side (Left) */}
-      <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none">
-        
+      <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none h-full">
+
         {/* Brand Header */}
         <div className="flex items-center relative z-10 pl-2">
           <img src="/logo.png" alt="WithUs" className="h-14 w-auto object-contain invert" />
@@ -109,145 +113,176 @@ function RegisterForm() {
       </div>
 
       {/* Form Side (Right) */}
-      <div className="lg:col-span-7 flex flex-col justify-between min-h-screen p-8 relative">
+      <div className="lg:col-span-7 flex flex-col justify-between h-full p-8 relative overflow-y-auto">
         <div className="h-8 hidden lg:block"></div>
-        
+
         <div className="flex-1 flex items-center justify-center py-6 w-full">
           <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain" />
-          </div>
-          {!isInviteFlow && (
-            <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">
-              Create your enterprise workspace
-            </p>
-          )}
-        </div>
-
-        {isInviteFlow && (
-          <div className="mb-6 p-4 bg-zinc-100/50 dark:bg-zinc-900/40 border border-premium rounded-xl text-center text-xs font-semibold leading-relaxed">
-            <p className="text-premium-main font-bold mb-1">First time joining WithUs?</p>
-            <p className="text-premium-muted text-[11px]">
-              You are creating a new account using the invited email.
-            </p>
-            <p className="text-premium-muted text-[11px] mt-0.5">
-              Already have an account? Click{' '}
-              <Link href={`/login?redirect=${encodeURIComponent(redirectParam)}`} className="text-premium-main font-bold underline hover:text-zinc-800 transition-colors">
-                Sign In
-              </Link>{' '}
-              instead to join the team.
-            </p>
-          </div>
-        )}
- 
-        {/* Form */}
-        <form onSubmit={handleRegister} className="space-y-4">
-          {/* Full Name */}
-          <div className="space-y-2">
-            <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Full Name</label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-              <input
-                type="text"
-                required
-                autoComplete="name"
-                className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                placeholder="Jane Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-            </div>
-          </div>
- 
-          {/* Company Name — only shown for normal signups */}
-          {!isInviteFlow && (
-            <div className="space-y-2">
-              <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Company Name</label>
-              <div className="relative">
-                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-                <input
-                  type="text"
-                  required
-                  className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                  placeholder="Acme Corp"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                />
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-4">
+                <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain dark:invert" />
               </div>
+              {!isInviteFlow && (
+                <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">
+                  Create your enterprise workspace
+                </p>
+              )}
             </div>
-          )}
- 
-          {/* Email */}
-          <div className="space-y-2">
-            <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-              <input
-                type="email"
-                required
-                autoComplete="email"
-                disabled={isInviteFlow}
-                className={`w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium ${isInviteFlow ? 'text-zinc-500 cursor-not-allowed bg-zinc-100 dark:bg-zinc-900/50' : ''}`}
-                placeholder="admin@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            {isInviteFlow && (
-              <p className="text-[10px] text-premium-muted mt-1 font-semibold">This is the email address that was invited.</p>
-            )}
-          </div>
- 
-          {/* Password */}
-          <div className="space-y-2">
-            <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-              <input
-                type="password"
-                required
-                autoComplete="new-password"
-                className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                placeholder="Min. 8 characters"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
- 
-          <div className="text-[11px] text-premium-muted font-medium text-center leading-relaxed pt-1 pb-2 px-2">
-            By creating an account, you agree to our{' '}
-            <Link href="/terms" className="text-premium-main font-semibold hover:underline hover:text-zinc-800 transition-colors">Terms & Conditions</Link>
-            {' '}and acknowledge our{' '}
-            <Link href="/privacy" className="text-premium-main font-semibold hover:underline hover:text-zinc-800 transition-colors">Privacy Policy</Link>.
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full premium-button-primary py-2.5 text-xs shadow-md font-bold mt-3"
-          >
-            {loading ? (
-              <><Loader2 className="w-4 h-4 animate-spin mr-1.5" /> Creating Account...</>
-            ) : (
-              isInviteFlow ? 'Create Account & Join Team' : 'Create Workspace'
+            {isInviteFlow && (
+              <div className="mb-6 p-4 bg-zinc-100/50 dark:bg-zinc-900/40 border border-premium rounded-xl text-center text-xs font-semibold leading-relaxed">
+                <p className="text-premium-main font-bold mb-1">First time joining WithUs?</p>
+                <p className="text-premium-muted text-[11px]">
+                  You are creating a new account using the invited email.
+                </p>
+                <p className="text-premium-muted text-[11px] mt-0.5">
+                  Already have an account? Click{' '}
+                  <Link href={`/login?redirect=${encodeURIComponent(redirectParam)}`} className="text-premium-main font-bold underline hover:text-zinc-800 transition-colors">
+                    Sign In
+                  </Link>{' '}
+                  instead to join the team.
+                </p>
+              </div>
             )}
-          </button>
- 
-          <div className="text-center text-xs text-premium-muted pt-4 border-t border-premium mt-4">
-            Already have an account?{' '}
-            <Link
-              href={isInviteFlow ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'}
-              className="text-premium-main font-bold hover:underline hover:text-zinc-800 transition-colors"
-            >
-              Sign In
-            </Link>
+
+            {/* Form */}
+            <form onSubmit={handleRegister} className="space-y-4">
+              {/* Full Name */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                  <input
+                    type="text"
+                    required
+                    autoComplete="name"
+                    className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
+                    placeholder="Jane Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Company Name — only shown for normal signups */}
+              {!isInviteFlow && (
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Company Name</label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                    <input
+                      type="text"
+                      required
+                      className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
+                      placeholder="Acme Corp"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    disabled={isInviteFlow}
+                    className={`w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium ${isInviteFlow ? 'text-zinc-500 cursor-not-allowed bg-zinc-100 dark:bg-zinc-900/50' : ''}`}
+                    placeholder="admin@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                {isInviteFlow && (
+                  <p className="text-[10px] text-premium-muted mt-1 font-semibold">This is the email address that was invited.</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    autoComplete="new-password"
+                    className="w-full pl-10 pr-10 py-2.5 premium-input text-xs font-medium"
+                    placeholder="Min. 8 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-premium-muted hover:text-premium-main focus:outline-none transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Confirm Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    required
+                    autoComplete="new-password"
+                    className="w-full pl-10 pr-10 py-2.5 premium-input text-xs font-medium"
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-premium-muted hover:text-premium-main focus:outline-none transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-premium-muted font-medium text-center leading-relaxed pt-1 pb-2 px-2">
+                By creating an account, you agree to our{' '}
+                <Link href="/terms" className="text-premium-main font-semibold hover:underline hover:text-zinc-800 transition-colors">Terms & Conditions</Link>
+                {' '}and acknowledge our{' '}
+                <Link href="/privacy" className="text-premium-main font-semibold hover:underline hover:text-zinc-800 transition-colors">Privacy Policy</Link>.
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full premium-button-primary py-2.5 text-xs shadow-md font-bold mt-3"
+              >
+                {loading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin mr-1.5" /> Creating Account...</>
+                ) : (
+                  isInviteFlow ? 'Create Account & Join Team' : 'Create Workspace'
+                )}
+              </button>
+
+              <div className="text-center text-xs text-premium-muted pt-4 border-t border-premium mt-4">
+                Already have an account?{' '}
+                <Link
+                  href={isInviteFlow ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'}
+                  className="text-premium-main font-bold hover:underline hover:text-zinc-800 transition-colors"
+                >
+                  Sign In
+                </Link>
+              </div>
+            </form>
           </div>
-        </form>
-        </div>
         </div>
 
         <div className="text-center text-[11px] text-premium-muted font-medium max-w-md mx-auto w-full pt-4 pb-2">

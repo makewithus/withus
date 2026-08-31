@@ -61,6 +61,8 @@ export function RequestAccessModal({
   // Vault State
   const [selectedVaultId, setSelectedVaultId] = useState('');
   const [selectedSecretId, setSelectedSecretId] = useState('');
+  // Request permission type: EXTENSION = autofill only, REVEAL = web portal password reveal
+  const [vaultPermission, setVaultPermission] = useState<'REVEAL' | 'EXTENSION'>('EXTENSION');
   
   // Integration State
   const [selectedIntegrationResource, setSelectedIntegrationResource] = useState('');
@@ -88,6 +90,7 @@ export function RequestAccessModal({
     setSelectedIntegrationResource('');
     setSelectedVaultId('');
     setSelectedSecretId('');
+    setVaultPermission('EXTENSION');
     setExpiresInHours(1);
     setMaxReveals(20);
     onClose();
@@ -135,7 +138,7 @@ export function RequestAccessModal({
     if (accessMode === 'VAULT') {
       payload.scope = SessionScope.SECRET;
       payload.resourceId = selectedSecretId;
-      payload.permission = SessionPermission.REVEAL;
+      payload.permission = vaultPermission === 'REVEAL' ? SessionPermission.REVEAL : SessionPermission.EXTENSION;
     } else {
       payload.scope = 'INTEGRATION'; // Bypass Vault Check
       payload.resourceId = selectedIntegrationResource; 
@@ -178,31 +181,34 @@ export function RequestAccessModal({
           <label className={labelClass}>What do you want to access? <span className="text-red-500">*</span></label>
           <div className="grid grid-cols-2 gap-3 mt-1.5">
             {connections.some(c => c.provider === 'GITHUB') && (
-              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${selectedAccessType === 'GITHUB' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-slate-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600'}`}>
+              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${selectedAccessType === 'GITHUB' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-zinc-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-white dark:bg-zinc-950'}`}>
                 <input type="radio" name="accessType" className="hidden" checked={selectedAccessType === 'GITHUB'} onChange={() => { setSelectedAccessType('GITHUB'); setSelectedIntegrationResource(''); }} />
                 <GitBranch className={`w-4 h-4 ${selectedAccessType === 'GITHUB' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`} />
                 <span className={`text-sm font-medium ${selectedAccessType === 'GITHUB' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>GitHub Repository</span>
               </label>
             )}
             {connections.some(c => c.provider === 'VERCEL') && (
-              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${selectedAccessType === 'VERCEL' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-slate-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600'}`}>
+              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${selectedAccessType === 'VERCEL' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-zinc-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-white dark:bg-zinc-950'}`}>
                 <input type="radio" name="accessType" className="hidden" checked={selectedAccessType === 'VERCEL'} onChange={() => { setSelectedAccessType('VERCEL'); setSelectedIntegrationResource(''); }} />
                 <Triangle className={`w-4 h-4 ${selectedAccessType === 'VERCEL' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`} />
                 <span className={`text-sm font-medium ${selectedAccessType === 'VERCEL' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>Vercel Project</span>
               </label>
             )}
+            {/* HIDDEN: GoDaddy is temporarily disabled per request */}
+            {/* 
             {connections.some(c => c.provider === 'GODADDY') && (
-              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${selectedAccessType === 'GODADDY' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-slate-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600'}`}>
+              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${selectedAccessType === 'GODADDY' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-zinc-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-white dark:bg-zinc-950'}`}>
                 <input type="radio" name="accessType" className="hidden" checked={selectedAccessType === 'GODADDY'} onChange={() => { setSelectedAccessType('GODADDY'); setSelectedIntegrationResource(''); }} />
                 <Globe className={`w-4 h-4 ${selectedAccessType === 'GODADDY' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`} />
                 <span className={`text-sm font-medium ${selectedAccessType === 'GODADDY' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>GoDaddy Account</span>
               </label>
             )}
+            */}
             {/* Vault is always available */}
-              <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${selectedAccessType === 'VAULT' ? 'bg-slate-900 border-slate-900 dark:bg-slate-100 dark:border-slate-100' : 'bg-white border-slate-200 hover:border-slate-300 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700'}`}>
+              <label className={`col-span-2 flex justify-center items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${selectedAccessType === 'VAULT' ? 'border-slate-900 bg-slate-50 dark:border-slate-300 dark:bg-zinc-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-white dark:bg-zinc-950'}`}>
                 <input type="radio" name="accessType" className="hidden" value="VAULT" checked={selectedAccessType === 'VAULT'} onChange={() => setSelectedAccessType('VAULT')} />
-                <Lock className={`w-4 h-4 ${selectedAccessType === 'VAULT' ? 'text-white dark:text-slate-900' : 'text-slate-500 dark:text-slate-400'}`} />
-                <span className={`text-sm font-medium ${selectedAccessType === 'VAULT' ? 'text-white dark:text-slate-900' : 'text-slate-700 dark:text-slate-300'}`}>
+                <Lock className={`w-4 h-4 ${selectedAccessType === 'VAULT' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`} />
+                <span className={`text-sm font-medium ${selectedAccessType === 'VAULT' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
                   Vault Secret
                 </span>
               </label>
@@ -292,6 +298,39 @@ export function RequestAccessModal({
                         : 'Select a secret…'
                 }
               />
+            </div>
+
+            {/* Access Type: clarifies what the member is requesting */}
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">What access are you requesting?</span>
+              </div>
+              <div className="p-3.5 grid grid-cols-2 gap-2">
+                <label className={clsx(
+                  'flex flex-col gap-1 p-3 rounded-lg border cursor-pointer transition-all',
+                  vaultPermission === 'EXTENSION'
+                    ? 'border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/20'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                )}>
+                  <input type="radio" name="reqVaultPermission" className="hidden" checked={vaultPermission === 'EXTENSION'} onChange={() => setVaultPermission('EXTENSION')} />
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">⬡ Browser Extension</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Use credential via autofill extension only. Password stays hidden.
+                  </span>
+                </label>
+                <label className={clsx(
+                  'flex flex-col gap-1 p-3 rounded-lg border cursor-pointer transition-all',
+                  vaultPermission === 'REVEAL'
+                    ? 'border-amber-500 bg-amber-50 dark:border-amber-400 dark:bg-amber-950/20'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                )}>
+                  <input type="radio" name="reqVaultPermission" className="hidden" checked={vaultPermission === 'REVEAL'} onChange={() => setVaultPermission('REVEAL')} />
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">⚠ Password Reveal</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Request ability to view the password in the WITHUS portal.
+                  </span>
+                </label>
+              </div>
             </div>
           </>
         )}

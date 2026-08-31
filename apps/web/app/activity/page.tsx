@@ -6,6 +6,7 @@ import { DashboardShell } from '../../components/layout/DashboardShell';
 import { usePresence } from '../../hooks/usePresence';
 import { useOrgMembers } from '../../hooks/useOrganization';
 import { useAuth } from '../../lib/auth/AuthContext';
+import { hasPermission } from '../../lib/auth/permissions';
 import { 
   Activity, 
   Users, 
@@ -50,7 +51,7 @@ export default function ActivityPage() {
   const router = useRouter();
   const orgId = organization?.id ?? null;
   const isAdmin =
-    organization?.role === 'OWNER' || organization?.role === 'ADMIN';
+    hasPermission(organization?.role, 'PRESENCE_READ');
 
   // ─── Real-time tick ─────────────────────────────────────────────────────────
   const [now, setNow] = useState(Date.now());
@@ -285,7 +286,7 @@ export default function ActivityPage() {
                 </div>
               </div>
               <div>
-                <p className="text-xl font-bold text-premium-main">{stats.totalMembers}</p>
+                <p className="font-number text-2xl font-bold text-premium-main pt-1 pb-0.5 leading-normal overflow-visible">{stats.totalMembers}</p>
                 <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mt-1">Total Members</p>
               </div>
             </div>
@@ -297,7 +298,7 @@ export default function ActivityPage() {
                 </div>
               </div>
               <div>
-                <p className="text-xl font-bold text-premium-main">{stats.currentlyActive}</p>
+                <p className="font-number text-2xl font-bold text-premium-main pt-1 pb-0.5 leading-normal overflow-visible">{stats.currentlyActive}</p>
                 <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mt-1">Currently Active</p>
               </div>
             </div>
@@ -309,7 +310,7 @@ export default function ActivityPage() {
                 </div>
               </div>
               <div>
-                <p className="text-xl font-bold text-premium-main">{stats.activePlatforms}</p>
+                <p className="font-number text-2xl font-bold text-premium-main pt-1 pb-0.5 leading-normal overflow-visible">{stats.activePlatforms}</p>
                 <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mt-1">Active Platforms</p>
               </div>
             </div>
@@ -321,7 +322,7 @@ export default function ActivityPage() {
                 </div>
               </div>
               <div>
-                <p className="text-xl font-bold text-premium-main">{stats.fullyOffline}</p>
+                <p className="font-number text-2xl font-bold text-premium-main pt-1 pb-0.5 leading-normal overflow-visible">{stats.fullyOffline}</p>
                 <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mt-1">Fully Offline</p>
               </div>
             </div>
@@ -459,13 +460,13 @@ export default function ActivityPage() {
 
                       {/* Overall Status Pill */}
                       {member.isActive ? (
-                        <span className="inline-flex w-28 justify-center items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200/20 dark:border-emerald-900/20 flex-shrink-0">
+                        <span className="inline-flex w-28 justify-center items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200/40 dark:border-emerald-900/40 flex-shrink-0">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
                           Currently Active
                         </span>
                       ) : (
-                        <span className="inline-flex w-28 justify-center items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/30 flex-shrink-0">
-                          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0" />
+                        <span className="inline-flex w-28 justify-center items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200/50 dark:border-zinc-700/50 flex-shrink-0">
+                          <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
                           Offline
                         </span>
                       )}
@@ -505,13 +506,13 @@ export default function ActivityPage() {
                               {record.platform}
                             </span>
                             
-                            {/* Individual status badge */}
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                            {/* Individual status badge - rectangular */}
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
                               record.status === 'ACTIVE'
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/20'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200/40 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/40'
                                 : record.status === 'RECENTLY_ACTIVE'
-                                ? 'bg-amber-50 text-amber-700 border-amber-200/20 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/20'
-                                : 'bg-slate-100 text-slate-500 border-slate-200/30 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800/40'
+                                ? 'bg-amber-50 text-amber-700 border-amber-200/40 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/40'
+                                : 'bg-zinc-100 text-zinc-500 border-zinc-200/50 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700/50'
                             }`}>
                               {record.status === 'ACTIVE' ? 'Active' : record.status === 'RECENTLY_ACTIVE' ? 'Recently active' : 'Offline'}
                             </span>

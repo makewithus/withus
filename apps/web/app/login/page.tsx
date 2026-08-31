@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Shield, Loader2, Mail, Lock } from 'lucide-react';
+import { Shield, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { apiClient } from '../../lib/api/client';
 import { AuthSession } from '../../lib/auth/session';
@@ -17,6 +17,7 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const redirectParam = searchParams.get('redirect') || '';
 
@@ -56,9 +57,9 @@ function LoginForm() {
   };
 
   return (
-    <div className="theme-light min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-premium-bg">
+    <div className="h-screen overflow-y-auto lg:overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-premium-bg text-premium-main">
       {/* Brand Side (Left) */}
-      <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none">
+      <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none h-full">
 
         {/* Brand Header */}
         <div className="flex items-center relative z-10 pl-2">
@@ -84,7 +85,7 @@ function LoginForm() {
       </div>
 
       {/* Form Side (Right) */}
-      <div className="lg:col-span-7 flex flex-col justify-between min-h-screen p-8 relative">
+      <div className="lg:col-span-7 flex flex-col justify-between h-full p-8 relative overflow-y-auto">
         <div className="h-8 hidden lg:block"></div>
 
         <div className="flex-1 flex items-center justify-center py-6 w-full">
@@ -93,7 +94,7 @@ function LoginForm() {
             {/* Header */}
             <div className="text-center mb-8">
               <div className="flex justify-center mb-4">
-                <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain" />
+                <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain dark:invert" />
               </div>
               <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">Delegated Credential Access</p>
             </div>
@@ -135,21 +136,28 @@ function LoginForm() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
-                  <Link href="/forgot-password" className="text-[11px] text-premium-muted hover:text-premium-main transition-colors font-medium">
+                  {/* <Link href="/forgot-password" className="text-[11px] text-premium-muted hover:text-premium-main transition-colors font-medium">
                     Forgot password?
-                  </Link>
+                  </Link> */}
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     autoComplete="current-password"
-                    className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
+                    className="w-full pl-10 pr-10 py-2.5 premium-input text-xs font-medium"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-premium-muted hover:text-premium-main focus:outline-none transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 

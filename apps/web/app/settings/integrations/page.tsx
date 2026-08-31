@@ -14,6 +14,7 @@ import {
 import { useToast } from '../../../components/common/Toast';
 import { ConfirmModal } from '../../../components/common/ConfirmModal';
 import { PromptModal } from '../../../components/common/PromptModal';
+import { hasPermission } from '../../../lib/auth/permissions';
 import {
   CheckCircle,
   XCircle,
@@ -230,8 +231,7 @@ export default function IntegrationsPage() {
   const { mutate: getOAuthUrl } = useOAuthUrl(orgId);
   const { toast } = useToast();
 
-  const currentMember = (organization as any)?.role;
-  const canManage = currentMember === 'OWNER' || currentMember === 'ADMIN';
+  const canManage = hasPermission((organization as any)?.role, 'INTEGRATION_CONNECT');
 
   const [connectingProvider, setConnectingProvider] = useState<typeof PROVIDERS[0] | null>(null);
   const [disconnectingProvider, setDisconnectingProvider] = useState<IntegrationProvider | null>(null);
