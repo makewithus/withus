@@ -10,8 +10,17 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-plus-jakarta)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
+        sans: ["var(--font-space-mono)", "monospace"],
+        mono: ["var(--font-space-mono)", "monospace"],
+      },
+      borderRadius: {
+        none: "0px",
+        sm: "0px",
+        md: "0px",
+        lg: "0px",
+        xl: "0px",
+        "2xl": "0px",
+        "3xl": "0px",
       },
     },
   },

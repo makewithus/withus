@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import localFont from "next/font/local";
+import { Space_Mono, Inter } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const spaceMono = Space_Mono({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
 });
 
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 import { QueryProvider } from "../providers/QueryProvider";
@@ -21,6 +21,9 @@ import { ToastProvider } from "../components/common/Toast";
 export const metadata: Metadata = {
   title: "WithUs",
   description: "WithUs Enterprise Vault",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -29,15 +32,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${plusJakartaSans.variable} ${geistMono.variable} font-sans`}>
-        <AuthProvider>
-          <ToastProvider>
-            <QueryProvider>
-              {children}
-            </QueryProvider>
-          </ToastProvider>
-        </AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${spaceMono.variable} ${inter.variable} font-sans`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <ToastProvider>
+              <QueryProvider>
+                {children}
+              </QueryProvider>
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
