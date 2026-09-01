@@ -71,6 +71,17 @@ export default function ApprovalsPage() {
     }
   };
 
+  // Pagination state
+  const [reviewPage, setReviewPage] = useState(1);
+  const [myReqPage, setMyReqPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
+
+  const paginatedReview = pendingApprovalsToReview?.slice((reviewPage - 1) * ITEMS_PER_PAGE, reviewPage * ITEMS_PER_PAGE);
+  const totalReviewPages = pendingApprovalsToReview ? Math.ceil(pendingApprovalsToReview.length / ITEMS_PER_PAGE) : 0;
+
+  const paginatedMyRequests = myRequests?.slice((myReqPage - 1) * ITEMS_PER_PAGE, myReqPage * ITEMS_PER_PAGE);
+  const totalMyReqPages = myRequests ? Math.ceil(myRequests.length / ITEMS_PER_PAGE) : 0;
+
   return (
     <>
     <DashboardShell>
@@ -98,7 +109,9 @@ export default function ApprovalsPage() {
         {/* Pending Approvals (Admin view) */}
         {organization?.role !== 'MEMBER' && (
           <section className="space-y-3">
-            <h2 className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">Access Requests</h2>
+            <div className="flex justify-between items-end">
+              <h2 className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">Access Requests To Review</h2>
+            </div>
             <div className="premium-card overflow-hidden shadow-none">
               {isLoadingPending ? (
                 <div className="p-4 text-center text-xs text-slate-500">Loading...</div>
@@ -114,80 +127,88 @@ export default function ApprovalsPage() {
                   </p>
                 </div>
               ) : (
-                <ul className="divide-y divide-premium">
-                  {pendingApprovalsToReview?.map((request: any) => (
-                    <li key={request.id} className="p-4 hover:bg-slate-50/30 dark:hover:bg-zinc-900/10 transition-colors border-b border-premium/65 last:border-b-0 bg-premium-surface">
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-premium-main">
-                          Session Access Request
-                        </p>
-                        <p className="mt-0.5 text-[10px] text-premium-muted font-semibold">
-                          Requested by{' '}
-                          <span className="font-bold text-premium-main">
-                            {request.requester?.fullName || request.requester?.email || 'Unknown'}
-                          </span>
-                        </p>
-                        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-                          {request.requestPayload?.scope && (
-                            <span className="text-[10px] text-premium-muted font-semibold">
-                              <span className="font-bold text-premium-main">Scope:</span>{' '}
-                              {String(request.requestPayload.scope).replace('_', ' ')}
-                            </span>
-                          )}
-                          {request.requestPayload?.expiresAt && (
-                            <span className="text-[10px] text-premium-muted font-semibold">
-                              <span className="font-bold text-premium-main">Expires:</span>{' '}
-                              {new Date(request.requestPayload.expiresAt).toLocaleString()}
-                            </span>
-                          )}
-                          {request.requestPayload?.maxReveals && (
-                            <span className="text-[10px] text-premium-muted font-semibold">
-                              <span className="font-bold text-premium-main">Max reveals:</span>{' '}
-                              {request.requestPayload.maxReveals}
-                            </span>
-                          )}
-                          {!request.requestPayload?.maxReveals && (
-                            <span className="text-[10px] text-premium-muted font-semibold">
-                              <span className="font-bold text-premium-main">Max reveals:</span> Unlimited
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <span className="text-[10px] text-premium-muted font-bold">
-                          {new Date(request.createdAt).toLocaleDateString()}
-                        </span>
-                        
-                        <div className="flex space-x-2 border-l border-premium pl-4">
-                          <button
-                            onClick={() => handleResolve(request.id, 'APPROVED')}
-                            disabled={isResolving}
-                            className="premium-button-primary py-1 px-2.5 text-[10px]"
-                          >
-                            <Check className="mr-1 h-3.5 w-3.5" /> Approve
-                          </button>
-                          <button
-                            onClick={() => handleResolve(request.id, 'REJECTED')}
-                            disabled={isResolving}
-                            className="py-1 px-2.5 text-[10px] font-semibold rounded bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 hover:border-red-500/30 transition-all duration-150 inline-flex items-center justify-center"
-                          >
-                            <X className="mr-1 h-3.5 w-3.5" /> Reject
-                          </button>
-                        </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-premium">
+                    <thead className="bg-slate-50/20 dark:bg-zinc-900/10">
+                      <tr>
+                        <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Requester & Scope</th>
+                        <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Request Details</th>
+                        <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Requested On</th>
+                        <th scope="col" className="px-5 py-2.5 text-right text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-premium bg-premium-surface">
+                      {paginatedReview?.map((request: any) => (
+                        <tr key={request.id} className="hover:bg-slate-50/30 dark:hover:bg-zinc-900/10 transition-colors">
+                          <td className="px-5 py-3.5 whitespace-nowrap">
+                            <p className="text-xs font-bold text-premium-main">
+                              {request.requester?.fullName || request.requester?.email || 'Unknown'}
+                            </p>
+                            <p className="text-[10px] text-premium-muted font-semibold mt-0.5">
+                              Scope: <span className="font-bold text-premium-main">{String(request.requestPayload?.scope || 'SECRET').replace('_', ' ')}</span>
+                            </p>
+                          </td>
+                          <td className="px-5 py-3.5">
+                            <div className="text-[10px] text-premium-muted font-semibold space-y-0.5">
+                              {request.requestPayload?.expiresAt && (
+                                <div>
+                                  <span className="font-bold text-premium-main">Expires:</span>{' '}
+                                  {new Date(request.requestPayload.expiresAt).toLocaleString()}
+                                </div>
+                              )}
+                              <div>
+                                <span className="font-bold text-premium-main">Max reveals:</span>{' '}
+                                {request.requestPayload?.maxReveals ? request.requestPayload.maxReveals : 'Unlimited'}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-5 py-3.5 whitespace-nowrap text-xs text-premium-muted font-semibold">
+                            {new Date(request.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-5 py-3.5 whitespace-nowrap text-right">
+                            <div className="flex justify-end space-x-2">
+                              <button
+                                onClick={() => handleResolve(request.id, 'APPROVED')}
+                                disabled={isResolving}
+                                className="premium-button-primary py-1 px-2.5 text-[10px]"
+                              >
+                                <Check className="mr-1 h-3.5 w-3.5" /> Approve
+                              </button>
+                              <button
+                                onClick={() => handleResolve(request.id, 'REJECTED')}
+                                disabled={isResolving}
+                                className="py-1 px-2.5 text-[10px] font-semibold rounded bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 hover:border-red-500/30 transition-all duration-150 inline-flex items-center justify-center"
+                              >
+                                <X className="mr-1 h-3.5 w-3.5" /> Reject
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {totalReviewPages > 1 && (
+                    <div className="px-5 py-3 border-t border-premium flex items-center justify-between bg-premium-surface/50">
+                      <p className="text-xs text-premium-muted font-bold">
+                        Page <span className="text-premium-main">{reviewPage}</span> of <span className="text-premium-main">{totalReviewPages}</span>
+                      </p>
+                      <div className="flex gap-2">
+                        <button onClick={() => setReviewPage(p => Math.max(1, p - 1))} disabled={reviewPage === 1} className="premium-button-secondary py-1 px-2.5 text-[10px]">Prev</button>
+                        <button onClick={() => setReviewPage(p => Math.min(totalReviewPages, p + 1))} disabled={reviewPage === totalReviewPages} className="premium-button-secondary py-1 px-2.5 text-[10px]">Next</button>
                       </div>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </section>
+                  )}
+                </div>
+              )}
+            </div>
+          </section>
         )}
 
         {/* My Requests (Member view) */}
         <section className="space-y-3 pt-4 border-t border-premium">
-          <h2 className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">Pending Requests</h2>
+          <div className="flex justify-between items-end">
+            <h2 className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">My Requests History</h2>
+          </div>
           <div className="premium-card overflow-hidden shadow-none">
             {isLoadingRequests ? (
               <div className="p-4 text-center text-xs text-slate-500">Loading...</div>
@@ -202,36 +223,57 @@ export default function ApprovalsPage() {
                 </p>
               </div>
             ) : (
-              <ul className="divide-y divide-premium bg-premium-surface">
-                {myRequests?.map((request) => (
-                  <li key={request.id} className="p-4 hover:bg-slate-50/30 dark:hover:bg-zinc-900/10 transition-colors flex items-center justify-between border-b border-premium/65 last:border-b-0">
-                    <div>
-                      <p className="text-xs font-bold text-premium-main">
-                        Session Access Request
-                      </p>
-                      <p className="mt-0.5 text-[10px] text-premium-muted font-semibold">
-                        {request.requestPayload?.scope && (
-                          <span>Scope: {String(request.requestPayload.scope).replace('_', ' ')} &bull; </span>
-                        )}
-                        {request.requestPayload?.expiresAt && (
-                          <span>Expires: {new Date(request.requestPayload.expiresAt).toLocaleString()}</span>
-                        )}
-                      </p>
-                      {request.reason && (
-                        <p className="mt-1 text-xs text-red-500 font-medium">
-                          Reason: {request.reason}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-6">
-                       <span className="text-[10px] text-premium-muted font-bold">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-premium">
+                  <thead className="bg-slate-50/20 dark:bg-zinc-900/10">
+                    <tr>
+                      <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Request Type</th>
+                      <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Scope & Expiry</th>
+                      <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Requested On</th>
+                      <th scope="col" className="px-5 py-2.5 text-right text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-premium bg-premium-surface">
+                    {paginatedMyRequests?.map((request) => (
+                      <tr key={request.id} className="hover:bg-slate-50/30 dark:hover:bg-zinc-900/10 transition-colors">
+                        <td className="px-5 py-3.5 whitespace-nowrap">
+                          <p className="text-xs font-bold text-premium-main">Session Access Request</p>
+                          {request.reason && (
+                            <p className="mt-0.5 text-[10px] text-red-500 font-medium">
+                              Reason: {request.reason}
+                            </p>
+                          )}
+                        </td>
+                        <td className="px-5 py-3.5 text-[10px] text-premium-muted font-semibold">
+                          {request.requestPayload?.scope && (
+                            <div>Scope: <span className="font-bold text-premium-main">{String(request.requestPayload.scope).replace('_', ' ')}</span></div>
+                          )}
+                          {request.requestPayload?.expiresAt && (
+                            <div>Expires: <span className="font-bold text-premium-main">{new Date(request.requestPayload.expiresAt).toLocaleString()}</span></div>
+                          )}
+                        </td>
+                        <td className="px-5 py-3.5 whitespace-nowrap text-xs text-premium-muted font-semibold">
                           {new Date(request.createdAt).toLocaleDateString()}
-                       </span>
-                       {getStatusBadge(request.status)}
+                        </td>
+                        <td className="px-5 py-3.5 whitespace-nowrap text-right">
+                          {getStatusBadge(request.status)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {totalMyReqPages > 1 && (
+                  <div className="px-5 py-3 border-t border-premium flex items-center justify-between bg-premium-surface/50">
+                    <p className="text-xs text-premium-muted font-bold">
+                      Page <span className="text-premium-main">{myReqPage}</span> of <span className="text-premium-main">{totalMyReqPages}</span>
+                    </p>
+                    <div className="flex gap-2">
+                      <button onClick={() => setMyReqPage(p => Math.max(1, p - 1))} disabled={myReqPage === 1} className="premium-button-secondary py-1 px-2.5 text-[10px]">Prev</button>
+                      <button onClick={() => setMyReqPage(p => Math.min(totalMyReqPages, p + 1))} disabled={myReqPage === totalMyReqPages} className="premium-button-secondary py-1 px-2.5 text-[10px]">Next</button>
                     </div>
-                  </li>
-                ))}
-              </ul>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </section>

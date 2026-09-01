@@ -258,24 +258,24 @@ export default function PermissionMatrixPage() {
         </div>
 
         {/* Permission Table */}
-        <div className="premium-card overflow-hidden shadow-sm border border-premium">
+        <div className="premium-card overflow-hidden shadow-none border border-premium">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-premium bg-slate-50/50 dark:bg-zinc-900/40 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
-                  <th className="py-3.5 px-5 min-w-[280px]">Feature & Capability</th>
+                <tr className="border-b border-premium bg-slate-100/80 dark:bg-zinc-900/80 text-[11px] font-extrabold uppercase tracking-wider text-premium-main">
+                  <th className="py-4 px-6 min-w-[300px]">Feature & Capability</th>
                   {roles.map((r) => {
                     const isCurrent = currentRole === r.id;
                     return (
                       <th
                         key={r.id}
                         className={clsx(
-                          'py-3.5 px-6 text-center w-36 transition-colors',
-                          isCurrent && 'bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-extrabold'
+                          'py-4 px-6 text-center w-40 transition-colors border-l border-premium/50',
+                          isCurrent && 'bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-black'
                         )}
                       >
                         <div className="flex items-center justify-center gap-1.5">
-                          <r.icon className="w-3.5 h-3.5" />
+                          <r.icon className="w-4 h-4" />
                           <span>{r.title}</span>
                         </div>
                       </th>
@@ -289,10 +289,10 @@ export default function PermissionMatrixPage() {
                   return (
                     <React.Fragment key={group.id}>
                       {/* Group Section Header */}
-                      <tr className="bg-slate-100/60 dark:bg-zinc-900/70 border-y border-premium font-semibold">
-                        <td colSpan={4} className="py-2.5 px-5 text-premium-main">
-                          <div className="flex items-center gap-2 text-xs font-bold">
-                            <GroupIcon className="w-4 h-4 text-premium-muted" />
+                      <tr className="bg-slate-100/90 dark:bg-zinc-900/90 border-y border-premium/80 font-bold">
+                        <td colSpan={4} className="py-3 px-6 text-premium-main">
+                          <div className="flex items-center gap-2.5 text-xs font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">
+                            <GroupIcon className="w-4 h-4 text-slate-700 dark:text-slate-300" />
                             <span>{group.title}</span>
                           </div>
                         </td>
@@ -300,10 +300,10 @@ export default function PermissionMatrixPage() {
 
                       {/* Group Permission Rows */}
                       {group.permissions.map((perm) => (
-                        <tr key={perm.key} className="hover:bg-slate-50/40 dark:hover:bg-zinc-900/30 transition-colors">
-                          <td className="py-3 px-5">
-                            <div className="font-semibold text-slate-900 dark:text-slate-100">{perm.label}</div>
-                            <div className="text-[11px] text-slate-500 dark:text-zinc-400">{perm.description}</div>
+                        <tr key={perm.key} className="hover:bg-slate-50/60 dark:hover:bg-zinc-900/40 transition-colors">
+                          <td className="py-3.5 px-6">
+                            <div className="font-bold text-slate-950 dark:text-slate-50 text-xs">{perm.label}</div>
+                            <div className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium mt-0.5">{perm.description}</div>
                           </td>
 
                           {roles.map((r) => {
@@ -313,20 +313,20 @@ export default function PermissionMatrixPage() {
                               <td
                                 key={r.id}
                                 className={clsx(
-                                  'py-3 px-6 text-center align-middle transition-colors',
+                                  'py-3.5 px-6 text-center align-middle transition-colors border-l border-premium/30',
                                   isCurrentRole && 'bg-indigo-500/5 dark:bg-indigo-500/10'
                                 )}
                               >
                                 <div className="flex justify-center items-center">
                                   {isAllowed ? (
-                                    <div className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-900/40 text-[11px]">
-                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                    <div className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300 font-extrabold bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-1 rounded-md border border-emerald-500/20 dark:border-emerald-500/30 text-[10px] tracking-wide uppercase shadow-2xs">
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                                       <span>Allowed</span>
                                     </div>
                                   ) : (
-                                    <div className="inline-flex items-center gap-1 text-slate-400 dark:text-zinc-500 text-[11px]">
-                                      <XCircle className="w-3.5 h-3.5" />
-                                      <span>—</span>
+                                    <div className="inline-flex items-center gap-1.5 text-red-700 dark:text-red-400 font-bold bg-red-50 dark:bg-red-950/20 px-2.5 py-1 rounded-md border border-red-200/30 dark:border-red-900/30 text-[10px] tracking-wide uppercase">
+                                      <XCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                                      <span>Rejected</span>
                                     </div>
                                   )}
                                 </div>

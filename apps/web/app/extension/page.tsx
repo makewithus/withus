@@ -82,7 +82,7 @@ export default function ExtensionPage() {
               rel="noopener noreferrer"
               className="premium-button-secondary inline-flex items-center gap-2 px-5 py-2.5 shadow-sm text-xs font-bold rounded-lg transition-colors border border-zinc-200 dark:border-zinc-800"
             >
-              <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-slate-900 dark:text-slate-100 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <circle cx="12" cy="12" r="4" />
                 <line x1="21.17" y1="8" x2="12" y2="8" />
