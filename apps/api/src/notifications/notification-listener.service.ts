@@ -40,12 +40,16 @@ export class NotificationListenerService {
     await this.mailer.send({
       to: event.email,
       subject: 'You have been invited to join WITHUS',
-      html: this.buildInviteEmailHtml(inviteUrl),
+      html: this.buildInviteEmailHtml(inviteUrl, event.rawToken),
       text: `You have been invited to join a WITHUS organization. Accept your invitation here: ${inviteUrl}\n\nThis link expires in 7 days.`,
     });
   }
 
-  private buildInviteEmailHtml(inviteUrl: string): string {
+  private buildInviteEmailHtml(inviteUrl: string, rawToken?: string): string {
+    const uniqueRef = rawToken
+      ? rawToken.slice(-8)
+      : Math.random().toString(36).slice(-6);
+
     return `
 <!DOCTYPE html>
 <html>
@@ -62,7 +66,7 @@ export class NotificationListenerService {
         <!-- Header Brand Logo -->
         <div style="text-align: center; margin-bottom: 28px;">
           <div style="display: inline-block; background-color: #09090b; color: #ffffff; padding: 8px 18px; border-radius: 6px; font-size: 15px; font-weight: 800; letter-spacing: 0.04em;">
-            WITHUS ✦
+            WITHUS &nbsp;<span style="color: #ffffff !important; font-style: normal; display: inline-block;">✴&#xFE0E;</span>
           </div>
         </div>
 
@@ -102,6 +106,11 @@ export class NotificationListenerService {
         <p style="font-size: 11px; color: #94a3b8; text-align: center; margin: 0; font-weight: 400;">
           © WITHUS &mdash; Enterprise Delegated Access Platform
         </p>
+        
+        <!-- Unique Ref to prevent Gmail thread content trimming (...) -->
+        <div style="display: none !important; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
+          [ref:${uniqueRef}]
+        </div>
       </td>
     </tr>
   </table>
