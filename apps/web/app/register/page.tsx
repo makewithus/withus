@@ -19,7 +19,7 @@ function RegisterForm() {
 
   // Detect if this is an invite-based registration
   const redirectParam = searchParams.get('redirect') || '';
-  const inviteMatch = redirectParam.match(/\/invite\/([a-zA-Z0-9]+)/);
+  const inviteMatch = redirectParam.match(/\/invite\/([a-zA-Z0-9\-_]+)/);
   const inviteToken = inviteMatch ? inviteMatch[1] : null;
   const isInviteFlow = !!inviteToken;
 
