@@ -13,6 +13,7 @@
 import { Storage } from '../lib/storage';
 import { WithusApi } from '../lib/api';
 import type { ExtensionMessage, ExtensionResponse } from '../lib/types';
+import { platformRegistry } from '../providers/platform-registry';
 
 // ─── Token Auto-Refresh ──────────────────────────────────────────────────────
 
@@ -167,12 +168,25 @@ async function handleMessage(
           await Promise.all(
             memberships.map(async (m) => {
               try {
-                const sessions = await WithusApi.getIncomingSessions(m.organizationId, auth.accessToken);
+          const sessions = await WithusApi.getIncomingSessions(m.organizationId, auth.accessToken);
                 const matching = sessions.filter((s) => {
                   if (s.status !== 'ACTIVE') return false;
                   if (s.expiresAt && new Date(s.expiresAt) < new Date()) return false;
 
-                  const name = s.resourceName?.toLowerCase() || '';
+                  // ── Path 1: Provider-based match ──────────────────────────────────────
+                  // For extension-based platforms (GMAIL, GODADDY, etc.), the session has
+                  // integrationProvider set. Check if the current hostname belongs to any
+                  // domain registered under that provider in the platform registry.
+                  // This is the correct match path — resourceName text-matching is unreliable
+                  // for these platforms (e.g. "Company Gmail" won't contain "accounts" or "google").
+                  const provider = (s as any).integrationProvider as string | undefined;
+                  if (provider) {
+                    const config = platformRegistry.getForHost(hostname);
+                    if (config && config.id === provider) return true;
+                  }
+
+                  // ── Path 2: resourceName text-match (existing logic for all other sessions) ──
+                  const name = (s as any).resourceName?.toLowerCase() || '';
                   if (!name) return false;
 
                   // Match sessions to the current domain bidirectionally.

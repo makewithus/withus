@@ -132,6 +132,23 @@ const PLATFORM_CAPABILITY_MAP: Record<string, { key: string; label: string; desc
     { key: 'udyam.print_certificate', label: 'Print Certificate', description: 'Print Certificate' },
     { key: 'udyam.edit_details', label: 'Edit Details', description: 'Edit Details' },
   ],
+  gmail: [
+    { key: 'gmail.inbox', label: 'Inbox', description: 'Restrict access to the main Inbox' },
+    { key: 'gmail.starred', label: 'Starred', description: 'Restrict access to Starred emails' },
+    { key: 'gmail.snoozed', label: 'Snoozed', description: 'Restrict access to Snoozed emails' },
+    { key: 'gmail.sent', label: 'Sent Mail', description: 'Restrict access to the Sent folder' },
+    { key: 'gmail.drafts', label: 'Drafts', description: 'Restrict access to Drafts' },
+    { key: 'gmail.purchases', label: 'Purchases', description: 'Restrict access to Purchases category' },
+    { key: 'gmail.important', label: 'Important', description: 'Restrict access to Important emails' },
+    { key: 'gmail.scheduled', label: 'Scheduled', description: 'Restrict access to Scheduled emails' },
+    { key: 'gmail.all_mail', label: 'All Mail', description: 'Restrict access to All Mail' },
+    { key: 'gmail.spam', label: 'Spam', description: 'Restrict access to Spam folder' },
+    { key: 'gmail.trash', label: 'Trash / Bin', description: 'Restrict access to Trash and delete functions' },
+    { key: 'gmail.labels', label: 'Labels & Subscriptions', description: 'Restrict label and subscription management' },
+    { key: 'gmail.compose', label: 'Compose', description: 'Restrict ability to compose new emails' },
+    { key: 'gmail.settings', label: 'Settings', description: 'Restrict access to Gmail settings' },
+    { key: 'gmail.contacts', label: 'Contacts', description: 'Restrict access to Google Contacts' },
+  ],
 };
 
 function getCapabilitiesForSecret(secretName: string): { key: string; label: string; description: string }[] {

@@ -106,6 +106,14 @@ function getPlatformBranding(resourceName: string): { svg: string; color: string
     };
   }
 
+  if (name.includes('gmail') || name.includes('google')) {
+    return {
+      name: 'Gmail',
+      color: '#EA4335',
+      svg: `<svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.272l8.073-5.779C21.69 2.28 24 3.434 24 5.457z"/></svg>`
+    };
+  }
+
   if (name.includes('udyam')) {
     return {
       name: 'Udyam Portal',
@@ -125,6 +133,7 @@ function getPlatformBranding(resourceName: string): { svg: string; color: string
 
 function detectPlatform(hostname: string): string {
   const host = hostname.toLowerCase();
+  if (host.includes('google.com') || host.includes('gmail.com')) return 'Gmail';
   if (host.includes('github.com')) return 'GitHub';
   if (host.includes('vercel.com')) return 'Vercel';
   if (host.includes('godaddy.com')) return 'GoDaddy';
@@ -303,7 +312,7 @@ function renderSessions(sessions: ExtensionSession[], orgId: string, tabId: numb
       ? `${session.maxReveals - session.revealCount} reveals left`
       : 'Unlimited reveals';
       
-    const platform = (session as any).resourceName || 'Unknown';
+    const platform = (session as any).integrationProvider || (session as any).resourceName || 'Unknown';
     const branding = getPlatformBranding(platform);
 
     card.innerHTML = `

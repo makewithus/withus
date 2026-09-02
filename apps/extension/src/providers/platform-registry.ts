@@ -601,6 +601,124 @@ platformRegistry.register({
 });
 
 /**
+ * Gmail — Extension-Based Credential Delegation
+ *
+ * Delegation model (identical to GoDaddy):
+ *   Admin stores company Gmail credentials in a WITHUS Vault secret.
+ *   Member receives a Delegated Session tied to that vault secret.
+ *   Extension detects mail.google.com / accounts.google.com and autofills
+ *   the stored credentials. The password is never exposed to the member.
+ *
+ * IMPORTANT — Architecture Separation:
+ *   This registration is ONLY for vault-credential-based delegation sessions.
+ *   It has zero overlap with GmailAdapter (gmail.adapter.ts) and GmailOtpService
+ *   (gmail-otp.service.ts), which handle OAuth token management and OTP extraction
+ *   for the grantor's inbox. Those systems are completely untouched.
+ *
+ * Domain note:
+ *   accounts.google.com is registered here (before Google Ads in the registry)
+ *   because Gmail login-phase autofill requires it. Google Ads uses accounts.google.com
+ *   only as a passthrough redirect and already uses manualStepMessage for manual completion.
+ *
+ * Known limitation — Google 2-Step Verification:
+ *   Google's login may present a 2-Step Verification challenge after email+password fill,
+ *   especially on first login from a new browser or device. This is Google's security policy
+ *   and MUST NOT be bypassed. The member completes 2FA manually on first login.
+ *   Subsequent logins on the same device are typically session-remembered by Google.
+ *   This limitation is identical to Google Ads and is accepted by the client.
+ *
+ * Selector notes (confirmed from accounts.google.com DOM):
+ *   Email:    input#identifierId — stable Google-assigned ID, consistent across years.
+ *   Password: input[name="Passwd"] — Google-specific name attribute; type=password fallback.
+ *   Submit:   Google uses div wrappers around buttons for both steps — target inner button.
+ */
+platformRegistry.register({
+  id: 'GMAIL',
+  name: 'Gmail',
+  domains: ['mail.google.com', 'accounts.google.com'],
+  login: {
+    url: 'https://mail.google.com',
+    usernameSelector: 'input#identifierId, input[name="identifier"], input[type="email"]',
+    passwordSelector: 'input[name="Passwd"], input[name="password"], input[type="password"]',
+    submitSelector: 'div#identifierNext button, div#passwordNext button, button[type="submit"]',
+  },
+  // Only hide the "Show password" row — never hide the actual password input.
+  // Hiding input[type="password"] creates a black box (display:none kills the bullets).
+  // Hiding div:has(> input[type="password"]) accidentally matches on page 1 too because
+  // Google pre-renders a hidden password field in the DOM on the email step.
+  //
+  // Show password selectors confirmed from live DOM:
+  //   div[jsname="wQNmvb"] — the entire "Show password" checkbox row (new Google UI)
+  //   button[jsname="M1Kmfa"] — legacy eye-icon button (fallback for older Google UI)
+  hideElementsCSS: [
+    'div[jsname="wQNmvb"]',        // "Show password" checkbox row — new Google UI
+    'button[jsname="M1Kmfa"]',     // "Show password" eye icon — legacy Google UI fallback
+  ],
+  // No manualStepMessage for Gmail.
+  // Email and password are on two separate Google-hosted pages (hard navigations).
+  // The content script auto-fills and auto-submits each step in sequence:
+  //   Page 1 (identifier): fill email → click div#identifierNext button
+  //   Page 2 (challenge):  fill password → click div#passwordNext button
+  // If Google then shows 2-Step Verification, the user completes it manually.
+  // Adding manualStepMessage would block auto-submit on BOTH steps, leaving the
+  // member stuck with a filled-but-unsubmitted form — worse UX than letting it flow.
+  capabilityRestrictions: {
+    'gmail.compose': {
+      // Gmail Compose button — [gh="cm"] is the most stable attribute, but we also include 
+      // class names and wrapper selectors to ensure the button and its container are fully hidden.
+      hideElementsCSS: ['div[gh="cm"]', '.T-I-KE', 'div[jscontroller="eIu7Db"]', 'div:has(> div[gh="cm"])'],
+    },
+    'gmail.inbox': {
+      hideElementsCSS: ['a[href*="#inbox"]', 'div.aim:has(a[href*="#inbox"])'],
+    },
+    'gmail.starred': {
+      hideElementsCSS: ['a[href*="#starred"]', 'div.aim:has(a[href*="#starred"])'],
+    },
+    'gmail.snoozed': {
+      hideElementsCSS: ['a[href*="#snoozed"]', 'div.aim:has(a[href*="#snoozed"])'],
+    },
+    'gmail.sent': {
+      // Gmail sidebar Sent folder link.
+      hideElementsCSS: ['a[href*="#sent"]', 'div.aim[data-tooltip*="Sent" i]', 'div.aim:has(a[href*="#sent"])'],
+    },
+    'gmail.drafts': {
+      hideElementsCSS: ['a[href*="#drafts"]', 'div.aim:has(a[href*="#drafts"])'],
+    },
+    'gmail.purchases': {
+      hideElementsCSS: ['a[href*="#category/purchases"]', 'div.aim:has(a[href*="#category/purchases"])'],
+    },
+    'gmail.important': {
+      hideElementsCSS: ['a[href*="#imp"]', 'div.aim:has(a[href*="#imp"])'],
+    },
+    'gmail.scheduled': {
+      hideElementsCSS: ['a[href*="#scheduled"]', 'div.aim:has(a[href*="#scheduled"])'],
+    },
+    'gmail.all_mail': {
+      hideElementsCSS: ['a[href*="#all"]', 'div.aim:has(a[href*="#all"])'],
+    },
+    'gmail.spam': {
+      hideElementsCSS: ['a[href*="#spam"]', 'div.aim:has(a[href*="#spam"])'],
+    },
+    'gmail.trash': {
+      // Gmail sidebar Trash/Bin folder link.
+      hideElementsCSS: ['a[href*="#trash"]', 'div.aim[data-tooltip*="Trash" i]', 'div.aim[data-tooltip*="Bin" i]', 'div.aim:has(a[href*="#trash"])'],
+    },
+    'gmail.labels': {
+      // Label and subscription management menu in Gmail sidebar.
+      hideElementsCSS: ['a[href*="#settings/labels"]', 'a[href*="#subscriptions"]', 'div.aim:has(a[href*="#settings/labels"])', 'div.aim:has(a[href*="#subscriptions"])'],
+    },
+    'gmail.settings': {
+      // Gmail settings gear icon (top-right of inbox).
+      hideElementsCSS: ['div[data-tooltip*="Settings" i].FH', 'div[aria-label*="Settings" i].FH'],
+    },
+    'gmail.contacts': {
+      // Google Contacts link in Gmail's apps/sidebar.
+      hideElementsCSS: ['a[href*="contacts.google.com"]'],
+    },
+  },
+});
+
+/**
  * Google Ads — Partial Support
  *
  * Authentication flow:

@@ -153,8 +153,13 @@ export class SessionsService {
         }
 
         let result;
-        if (integrationProvider === 'GODADDY') {
-          // GoDaddy uses extension-based delegation, so there is no programmatic grant.
+        if (
+          integrationProvider === 'GODADDY' ||
+          integrationProvider === 'GMAIL'
+        ) {
+          // GoDaddy and Gmail use extension-based delegation — no programmatic provider grant.
+          // The browser extension handles credential autofill on the platform's login page.
+          // Session is created ACTIVE immediately; revocation/expiry control access going forward.
           result = {
             referenceId: `ext_${Date.now()}`,
             status: 'ACTIVE' as const,
