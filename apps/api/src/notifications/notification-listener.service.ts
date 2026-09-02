@@ -41,7 +41,7 @@ export class NotificationListenerService {
       to: event.email,
       subject: 'You have been invited to join WITHUS',
       html: this.buildInviteEmailHtml(inviteUrl, event.rawToken),
-      text: `You have been invited to join a WITHUS organization. Accept your invitation here: ${inviteUrl}\n\nThis link expires in 7 days.`,
+      text: `You have been invited to join a WITHUS organization. Accept your invitation here: ${inviteUrl}\n\nThis link expires in 3 days.`,
     });
   }
 
@@ -90,7 +90,7 @@ export class NotificationListenerService {
         <!-- Expiry Notice -->
         <div style="background-color: #f8fafc; padding: 10px 14px; margin-bottom: 24px; text-align: center; border: 1px solid #e2e8f0; border-radius: 6px;">
           <p style="font-size: 12px; color: #64748b; margin: 0; line-height: 1.5; font-weight: 500;">
-            ⏳ This link expires in <strong>7 days</strong>.
+            ⏳ This link expires in <strong>3 days</strong>.
           </p>
         </div>
 

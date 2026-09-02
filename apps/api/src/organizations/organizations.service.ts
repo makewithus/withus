@@ -138,7 +138,7 @@ export class OrganizationsService {
       .createHash('sha256')
       .update(rawToken)
       .digest('hex');
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
     await this.prisma.organizationInvitation.upsert({
       where: {

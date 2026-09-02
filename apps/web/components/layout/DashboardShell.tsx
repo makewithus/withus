@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { AuthSession } from '../../lib/auth/session';
 import { useAuth } from '../../lib/auth/AuthContext';
 import { usePendingApprovals, useMyRequests } from '../../hooks/useApprovals';
-import { Shield, LayoutDashboard, Key, LogOut, Users, CheckSquare, FileText, Settings, Plug2, Puzzle, Activity, Asterisk, Sun, Moon, Monitor } from 'lucide-react';
+import { Shield, LayoutDashboard, Key, LogOut, Users, CheckSquare, FileText, Settings, Plug2, Puzzle, Activity, Asterisk, Sun, Moon, Monitor, CreditCard } from 'lucide-react';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import { Menu } from 'lucide-react';
@@ -100,6 +100,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     { name: 'Audit Log', href: '/audit', icon: FileText, permission: 'AUDIT_READ' },
     { name: 'Team', href: '/settings/members', icon: Users, permission: null },
     { name: 'Permission Matrix', href: '/permissions', icon: Shield, permission: null },
+    { name: 'Billing', href: '/pricing', icon: CreditCard, permission: null },
     { name: 'Settings', href: '/settings', icon: Settings, permission: null },
   ];
   const navItems = allNavItems.filter(item => !item.permission || hasPermission(role, item.permission));
