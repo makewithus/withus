@@ -8,6 +8,7 @@ import { apiClient } from '../../lib/api/client';
 import { AuthSession } from '../../lib/auth/session';
 import { useToast } from '../../components/common/Toast';
 import { useAuth } from '../../lib/auth/AuthContext';
+import { WithUsLogo } from '../../components/common/WithUsLogo';
 
 function LoginForm() {
   const router = useRouter();
@@ -63,7 +64,7 @@ function LoginForm() {
 
         {/* Brand Header */}
         <div className="flex items-center relative z-10 pl-2">
-          <img src="/logo.png" alt="WithUs" className="h-14 w-auto object-contain invert" />
+          <img src="/logo-dark.png" alt="WithUs" className="h-14 w-auto object-contain" />
         </div>
 
         {/* Hero Text */}
@@ -94,7 +95,7 @@ function LoginForm() {
             {/* Header */}
             <div className="text-center mb-8">
               <div className="flex justify-center mb-4">
-                <img src="/logo.png" alt="WithUs Logo" className="h-20 w-auto object-contain dark:invert" />
+                <WithUsLogo height="h-16" />
               </div>
               <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">Delegated Credential Access</p>
             </div>

@@ -98,10 +98,11 @@ export function CreateSecretModal({ orgId, vaultId, isOpen, onClose }: CreateSec
           <>
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                Username <span className="text-slate-400">(optional)</span>
+                Username <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                required
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 placeholder="email@example.com"

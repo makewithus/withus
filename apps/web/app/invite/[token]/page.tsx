@@ -4,6 +4,7 @@ import React, { useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAcceptInvite, useInvitationDetails } from '../../../hooks/useOrganization';
 import { useToast } from '../../../components/common/Toast';
+import { WithUsLogo } from '../../../components/common/WithUsLogo';
 import { Shield, Loader2, CheckCircle, XCircle, AlertCircle, CalendarX } from 'lucide-react';
 import { AuthSession } from '../../../lib/auth/session';
 import { apiClient } from '../../../lib/api/client';
@@ -124,7 +125,7 @@ export default function AcceptInvitePage({ params }: { params: Promise<{ token: 
       <Wrapper>
         <Card>
           <div className="flex justify-center mb-5">
-            <img src="/logo.png" alt="WithUs Logo" className="h-16 object-contain" />
+            <WithUsLogo height="h-16" />
           </div>
           <h2 className="text-base font-bold text-premium-main mb-2">
             You've been invited to join {inviteDetails.organizationName}

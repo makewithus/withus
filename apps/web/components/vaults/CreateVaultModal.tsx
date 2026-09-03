@@ -215,9 +215,9 @@ export function CreateVaultModal({ orgId, isOpen, onClose }: CreateVaultModalPro
             <>
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  Username <span className="text-slate-400">(optional)</span>
+                  Username <span className="text-red-500">*</span>
                 </label>
-                <input type="text" value={username} onChange={e => setUsername(e.target.value)}
+                <input type="text" required value={username} onChange={e => setUsername(e.target.value)}
                   placeholder="email@example.com"
                   className="w-full px-3.5 py-2 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-slate-900/10 outline-none transition-all text-slate-950 dark:text-slate-50 text-sm font-mono"
                 />
