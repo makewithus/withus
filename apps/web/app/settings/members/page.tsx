@@ -13,6 +13,7 @@ import {
   useOffboardMember,
 } from '../../../hooks/useOrganization';
 import { Loading } from '../../../components/common/Loading';
+import { formatDate } from '../../../lib/formatters';
 import { useToast } from '../../../components/common/Toast';
 import { ConfirmModal } from '../../../components/common/ConfirmModal';
 import { CreateSessionModal } from '../../../components/sessions/CreateSessionModal';
@@ -319,7 +320,7 @@ export default function MembersPage() {
                         {inv.email}
                       </p>
                       <p className="text-[10px] text-premium-muted font-semibold">
-                        Invited {new Date(inv.createdAt).toLocaleDateString()}
+                        Invited {formatDate(inv.createdAt)}
                         <span className="mx-1.5">•</span>
                         {isExpired ? (
                           <span className="text-red-500 font-bold">Expired</span>

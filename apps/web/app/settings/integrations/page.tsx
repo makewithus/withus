@@ -13,6 +13,7 @@ import {
 } from '../../../hooks/useIntegrations';
 import { useToast } from '../../../components/common/Toast';
 import { ConfirmModal } from '../../../components/common/ConfirmModal';
+import { formatDateTime } from '../../../lib/formatters';
 import { PromptModal } from '../../../components/common/PromptModal';
 import { hasPermission } from '../../../lib/auth/permissions';
 import {
@@ -149,7 +150,7 @@ function IntegrationCard({
       {/* Last checked */}
       {connection?.lastCheckedAt && (
         <p className="text-[10px] text-premium-muted mb-3 font-semibold">
-          Last checked: {new Date(connection.lastCheckedAt).toLocaleString()}
+          Last checked: {formatDateTime(connection.lastCheckedAt)}
           {(connection.providerMeta as any)?.identity && ` · ${(connection.providerMeta as any).identity}`}
         </p>
       )}

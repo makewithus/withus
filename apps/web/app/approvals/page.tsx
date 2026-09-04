@@ -8,6 +8,7 @@ import { Check, X, Clock, CheckCircle, XCircle, Shield } from 'lucide-react';
 import { ApprovalRequestStatus } from '@repo/types';
 import { useAuth } from '../../lib/auth/AuthContext';
 import { useToast } from '../../components/common/Toast';
+import { formatDate, formatDateTime } from '../../lib/formatters';
 
 export default function ApprovalsPage() {
   const { organization, user } = useAuth();
@@ -153,7 +154,7 @@ export default function ApprovalsPage() {
                               {request.requestPayload?.expiresAt && (
                                 <div>
                                   <span className="font-bold text-premium-main">Expires:</span>{' '}
-                                  {new Date(request.requestPayload.expiresAt).toLocaleString()}
+                                  {formatDateTime(request.requestPayload.expiresAt)}
                                 </div>
                               )}
                               <div>
@@ -163,7 +164,7 @@ export default function ApprovalsPage() {
                             </div>
                           </td>
                           <td className="px-5 py-3.5 whitespace-nowrap text-xs text-premium-muted font-semibold">
-                            {new Date(request.createdAt).toLocaleDateString()}
+                            {formatDate(request.createdAt)}
                           </td>
                           <td className="px-5 py-3.5 whitespace-nowrap text-right">
                             <div className="flex justify-end space-x-2">
@@ -249,11 +250,11 @@ export default function ApprovalsPage() {
                             <div>Scope: <span className="font-bold text-premium-main">{String(request.requestPayload.scope).replace('_', ' ')}</span></div>
                           )}
                           {request.requestPayload?.expiresAt && (
-                            <div>Expires: <span className="font-bold text-premium-main">{new Date(request.requestPayload.expiresAt).toLocaleString()}</span></div>
+                            <div>Expires: <span className="font-bold text-premium-main">{formatDateTime(request.requestPayload.expiresAt)}</span></div>
                           )}
                         </td>
                         <td className="px-5 py-3.5 whitespace-nowrap text-xs text-premium-muted font-semibold">
-                          {new Date(request.createdAt).toLocaleDateString()}
+                          {formatDate(request.createdAt)}
                         </td>
                         <td className="px-5 py-3.5 whitespace-nowrap text-right">
                           {getStatusBadge(request.status)}

@@ -2,9 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { VaultResponse } from '@repo/types';
 import { KeyRound, Clock } from 'lucide-react';
+import { formatDate } from '../../lib/formatters';
 
 export function VaultCard({ vault }: { vault: VaultResponse }) {
-  const createdDate = new Date(vault.createdAt).toLocaleDateString();
+  const createdDate = formatDate(vault.createdAt);
 
   return (
     <Link 

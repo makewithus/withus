@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useAuditEvents } from '../../hooks/useAudit';
 import { DashboardShell } from '../../components/layout/DashboardShell';
 import { useOrgMembers } from '../../hooks/useOrganization';
+import { formatDate, formatDateTime } from '../../lib/formatters';
 import {
   ChevronDown,
   ChevronUp,
@@ -90,7 +91,7 @@ function relativeTime(date: string | Date): string {
   if (h < 24) return `${h}h ago`;
   const day = Math.floor(h / 24);
   if (day < 7) return `${day}d ago`;
-  return new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  return formatDate(date);
 }
 
 // ─── Action filter options ────────────────────────────────────────────────────
@@ -134,7 +135,7 @@ function AuditMetaDetails({ action, metadata }: { action: string; metadata: Reco
     : null;
 
   const expiresLabel = metadata.expiresAt
-    ? new Date(metadata.expiresAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    ? formatDateTime(metadata.expiresAt)
     : null;
 
   const durationLabel =
@@ -414,7 +415,7 @@ export default function AuditPage() {
                           <td className="px-5 py-3.5 whitespace-nowrap">
                             <span
                               className="text-xs text-premium-muted font-bold"
-                              title={new Date(event.createdAt).toLocaleString()}
+                              title={formatDateTime(event.createdAt)}
                             >
                               {relativeTime(event.createdAt)}
                             </span>
@@ -440,7 +441,7 @@ export default function AuditPage() {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3">
                                   <div>
                                     <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mb-0.5">Event Time</p>
-                                    <p className="font-bold text-premium-main">{new Date(event.createdAt).toLocaleString()}</p>
+                                    <p className="font-bold text-premium-main">{formatDateTime(event.createdAt)}</p>
                                   </div>
                                   <div>
                                     <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mb-0.5">Resource Type</p>

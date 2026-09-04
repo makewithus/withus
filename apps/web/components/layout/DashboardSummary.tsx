@@ -7,6 +7,7 @@ import { useVaults } from '../../hooks/useVaults';
 import { usePendingApprovals } from '../../hooks/useApprovals';
 import { useIncomingSessions, useOutgoingSessions } from '../../hooks/useSessions';
 import { Shield, Key, CheckSquare, Users, ArrowRight, Plus } from 'lucide-react';
+import { formatDate } from '../../lib/formatters';
 
 export function DashboardSummary() {
   const { user, organization } = useAuth();
@@ -147,7 +148,7 @@ export function DashboardSummary() {
                         <span className="line-clamp-1 max-w-[250px]">{vault.description || 'No description'}</span>
                       </td>
                       <td className="px-5 py-3.5 text-[10px] text-zinc-400 dark:text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200 transition-colors font-bold uppercase tracking-wider">
-                        {new Date(vault.createdAt).toLocaleDateString()}
+                        {formatDate(vault.createdAt)}
                       </td>
                       <td className="px-5 py-3.5 text-right">
                         <Link 

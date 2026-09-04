@@ -12,6 +12,7 @@ import { RevealFlow } from '../../../../../components/secrets/RevealFlow';
 import { FileKey2, Clock, CheckCircle, Shield, Play } from 'lucide-react';
 import { useAuth } from '../../../../../lib/auth/AuthContext';
 import { hasPermission } from '../../../../../lib/auth/permissions';
+import { formatDateTime } from '../../../../../lib/formatters';
 
 export default function SecretDetailsPage({ params }: { params: Promise<{ id: string; secretId: string }> }) {
   const { id, secretId } = use(params);
@@ -87,7 +88,7 @@ export default function SecretDetailsPage({ params }: { params: Promise<{ id: st
                   <h4 className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">Created</h4>
                   <p className="text-xs font-bold text-premium-main flex items-center">
                     <Clock className="w-3.5 h-3.5 mr-1 text-premium-muted" />
-                    {new Date(secret.createdAt).toLocaleString()}
+                    {formatDateTime(secret.createdAt)}
                   </p>
                 </div>
                 <div className="space-y-0.5">
@@ -98,7 +99,7 @@ export default function SecretDetailsPage({ params }: { params: Promise<{ id: st
                   <h4 className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">Last Updated</h4>
                   <p className="text-xs font-bold text-premium-main flex items-center">
                     <Clock className="w-3.5 h-3.5 mr-1 text-premium-muted" />
-                    {new Date(secret.updatedAt).toLocaleString()}
+                    {formatDateTime(secret.updatedAt)}
                   </p>
                 </div>
               </div>

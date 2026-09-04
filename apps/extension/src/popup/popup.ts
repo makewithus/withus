@@ -300,6 +300,22 @@ async function showSessions(email: string) {
   renderSessions(sessions, orgId, tab?.id);
 }
 
+function formatDateTime(dateInput: Date | string | number | null | undefined): string {
+  if (!dateInput) return '';
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return '';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const formattedHours = String(hours).padStart(2, '0');
+  return `${day}/${month}/${year}, ${formattedHours}:${minutes} ${ampm}`;
+}
+
 function renderSessions(sessions: ExtensionSession[], orgId: string, tabId: number | undefined) {
   sessionsList.innerHTML = '';
 
@@ -307,7 +323,7 @@ function renderSessions(sessions: ExtensionSession[], orgId: string, tabId: numb
     const card = document.createElement('div');
     card.className = 'session-card';
 
-    const expiresAt = new Date(session.expiresAt).toLocaleString();
+    const expiresAt = formatDateTime(session.expiresAt);
     const revealsLeft = session.maxReveals
       ? `${session.maxReveals - session.revealCount} reveals left`
       : 'Unlimited reveals';

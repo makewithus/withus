@@ -10,6 +10,7 @@ import { ConfirmModal } from '../../../components/common/ConfirmModal';
 import {
   Plus, Key, Trash2, RefreshCw, Copy, Check, Clock, AlertCircle, Eye, EyeOff, Terminal, Code2, PlayCircle
 } from 'lucide-react';
+import { formatDate } from '../../../lib/formatters';
 
 // ─── One-time Key Display ─────────────────────────────────────────────────────
 
@@ -190,13 +191,13 @@ function KeyRow({
         {/* Last used */}
         <div className="hidden sm:flex items-center gap-1 text-[10px] text-slate-400">
           <Clock className="w-3 h-3" />
-          {apiKey.lastUsedAt ? `Used ${new Date(apiKey.lastUsedAt).toLocaleDateString()}` : 'Never used'}
+          {apiKey.lastUsedAt ? `Used ${formatDate(apiKey.lastUsedAt)}` : 'Never used'}
         </div>
 
         {/* Expiry */}
         {apiKey.expiresAt && (
           <span className={`text-[10px] font-medium ${isExpired ? 'text-red-500' : 'text-slate-400'}`}>
-            {isExpired ? 'Expired' : `Expires ${new Date(apiKey.expiresAt).toLocaleDateString()}`}
+            {isExpired ? 'Expired' : `Expires ${formatDate(apiKey.expiresAt)}`}
           </span>
         )}
 
