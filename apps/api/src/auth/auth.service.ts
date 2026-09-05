@@ -82,71 +82,77 @@ export class AuthService {
     // --- New org flow: generate unique slug ---
     let slug: string | null = null;
     if (isNewOrgFlow) {
-      const baseSlug = dto.companyName!
-        .toLowerCase()
+      const baseSlug = dto
+        .companyName!.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)+/g, '');
       slug = baseSlug;
-      const existingOrg = await this.prisma.organization.findUnique({ where: { slug } });
+      const existingOrg = await this.prisma.organization.findUnique({
+        where: { slug },
+      });
       if (existingOrg) {
         slug = `${baseSlug}-${randomUUID().substring(0, 6)}`;
       }
     }
 
     // --- Atomic transaction ---
-    const { user, organization } = await this.prisma.$transaction(async (tx) => {
-      const createdUser = await tx.user.create({
-        data: {
-          email: dto.email,
-          fullName: dto.fullName,
-          passwordHash,
-        },
-      });
-
-      let createdOrg: any = null;
-
-      if (isInviteFlow && invitation) {
-        // Mark invitation ACCEPTED and create member record
-        await tx.organizationInvitation.update({
-          where: { id: invitation.id },
-          data: { status: 'ACCEPTED', updatedBy: createdUser.id },
-        });
-        await tx.organizationMember.create({
+    const { user, organization } = await this.prisma.$transaction(
+      async (tx) => {
+        const createdUser = await tx.user.create({
           data: {
-            organizationId: invitation.organizationId,
-            userId: createdUser.id,
-            role: 'MEMBER', // Default role — admin can promote later
-            invitedBy: invitation.invitedBy,
-            createdBy: createdUser.id,
-            updatedBy: createdUser.id,
+            email: dto.email,
+            fullName: dto.fullName,
+            passwordHash,
           },
         });
-        createdOrg = await tx.organization.findUnique({
-          where: { id: invitation.organizationId },
-        });
-      } else {
-        // Create a brand-new organization with OWNER role
-        createdOrg = await tx.organization.create({
-          data: {
-            name: dto.companyName!,
-            slug: slug!,
-            createdBy: createdUser.id,
-          },
-        });
-        await tx.organizationMember.create({
-          data: {
-            userId: createdUser.id,
-            organizationId: createdOrg.id,
-            role: 'OWNER',
-          },
-        });
-      }
 
-      return { 
-        user: createdUser, 
-        organization: createdOrg ? { ...createdOrg, role: isInviteFlow ? 'MEMBER' : 'OWNER' } : null 
-      };
-    });
+        let createdOrg: any = null;
+
+        if (isInviteFlow && invitation) {
+          // Mark invitation ACCEPTED and create member record
+          await tx.organizationInvitation.update({
+            where: { id: invitation.id },
+            data: { status: 'ACCEPTED', updatedBy: createdUser.id },
+          });
+          await tx.organizationMember.create({
+            data: {
+              organizationId: invitation.organizationId,
+              userId: createdUser.id,
+              role: 'MEMBER', // Default role — admin can promote later
+              invitedBy: invitation.invitedBy,
+              createdBy: createdUser.id,
+              updatedBy: createdUser.id,
+            },
+          });
+          createdOrg = await tx.organization.findUnique({
+            where: { id: invitation.organizationId },
+          });
+        } else {
+          // Create a brand-new organization with OWNER role
+          createdOrg = await tx.organization.create({
+            data: {
+              name: dto.companyName!,
+              slug: slug!,
+              createdBy: createdUser.id,
+            },
+          });
+          await tx.organizationMember.create({
+            data: {
+              userId: createdUser.id,
+              organizationId: createdOrg.id,
+              role: 'OWNER',
+            },
+          });
+        }
+
+        return {
+          user: createdUser,
+          organization: createdOrg
+            ? { ...createdOrg, role: isInviteFlow ? 'MEMBER' : 'OWNER' }
+            : null,
+        };
+      },
+    );
 
     if (isInviteFlow && invitation) {
       this.eventEmitter.emit(
@@ -156,11 +162,18 @@ export class AuthService {
     } else if (organization) {
       this.eventEmitter.emit(
         'organization.created',
-        new OrganizationCreatedEvent(organization.id, organization.name, user.id),
+        new OrganizationCreatedEvent(
+          organization.id,
+          organization.name,
+          user.id,
+        ),
       );
     }
 
-    const accessToken = this.tokenService.generateAccessToken(user.id, user.email);
+    const accessToken = this.tokenService.generateAccessToken(
+      user.id,
+      user.email,
+    );
     const { refreshToken, rawToken } = this.generateRefreshToken();
 
     await this.prisma.refreshToken.create({
@@ -185,7 +198,6 @@ export class AuthService {
       organization,
     };
   }
-
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const user = await this.usersService.findByEmail(dto.email);
@@ -219,21 +231,22 @@ export class AuthService {
     const firstMembership = await this.prisma.organizationMember.findFirst({
       where: { userId: user.id },
       include: { organization: true },
-      orderBy: { joinedAt: 'asc' }
+      orderBy: { joinedAt: 'asc' },
     });
 
     // Future: emit UserLoggedInEvent
-    return { 
-      accessToken, 
+    return {
+      accessToken,
       refreshToken: rawToken,
       user: {
         id: user.id,
         email: user.email,
-        fullName: user.fullName
+        fullName: user.fullName,
+        isSuperAdmin: user.isSuperAdmin ?? false, // Platform-level flag — separate from org RBAC
       },
-      organization: firstMembership 
+      organization: firstMembership
         ? { ...firstMembership.organization, role: firstMembership.role }
-        : null
+        : null,
     };
   }
 
@@ -304,20 +317,20 @@ export class AuthService {
     const firstMembership = await this.prisma.organizationMember.findFirst({
       where: { userId: oldTokenRecord.user.id },
       include: { organization: true },
-      orderBy: { joinedAt: 'asc' }
+      orderBy: { joinedAt: 'asc' },
     });
 
-    return { 
-      accessToken, 
+    return {
+      accessToken,
       refreshToken: rawToken,
       user: {
         id: oldTokenRecord.user.id,
         email: oldTokenRecord.user.email,
-        fullName: oldTokenRecord.user.fullName
+        fullName: oldTokenRecord.user.fullName,
       },
-      organization: firstMembership 
+      organization: firstMembership
         ? { ...firstMembership.organization, role: firstMembership.role }
-        : null
+        : null,
     };
   }
 
@@ -345,7 +358,10 @@ export class AuthService {
 
     if (user) {
       const rawToken = crypto.randomBytes(32).toString('hex');
-      const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+      const tokenHash = crypto
+        .createHash('sha256')
+        .update(rawToken)
+        .digest('hex');
       const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
       // Upsert: one active reset token per user at a time
@@ -369,7 +385,10 @@ export class AuthService {
     }
 
     // Always return success — prevents email enumeration
-    return { success: true, message: 'If that email is registered, a reset link has been sent.' };
+    return {
+      success: true,
+      message: 'If that email is registered, a reset link has been sent.',
+    };
   }
 
   /**
@@ -381,7 +400,10 @@ export class AuthService {
    *   - Invalidates all active refresh tokens on success (forces re-login)
    */
   async resetPassword(rawToken: string, newPassword: string) {
-    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(rawToken)
+      .digest('hex');
 
     const record = await this.prisma.passwordResetToken.findUnique({
       where: { tokenHash },
@@ -389,7 +411,9 @@ export class AuthService {
     });
 
     if (!record || record.usedAt || record.expiresAt < new Date()) {
-      throw new BadRequestException('Password reset link is invalid or has expired.');
+      throw new BadRequestException(
+        'Password reset link is invalid or has expired.',
+      );
     }
 
     const passwordHash = await HashService.hash(newPassword);
@@ -477,7 +501,7 @@ export class AuthService {
 
     const inviter = await this.prisma.user.findUnique({
       where: { id: invitation.invitedBy },
-      select: { fullName: true }
+      select: { fullName: true },
     });
 
     return {

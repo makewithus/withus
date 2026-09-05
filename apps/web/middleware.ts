@@ -23,6 +23,7 @@ const PROTECTED_ROUTES = [
   '/approvals',
   '/audit',
   '/settings',
+  '/superadmin', // Platform Admin — also protected by SuperAdminGuard on backend
 ];
 
 /** Routes that logged-in users should not see (redirect to dashboard). */

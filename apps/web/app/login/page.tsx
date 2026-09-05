@@ -39,13 +39,21 @@ function LoginForm() {
       const response = await apiClient.post('/auth/login', { email, password });
       if (response.data?.user) {
         AuthSession.setSession(
-          response.data.user,
+          {
+            ...response.data.user,
+            isSuperAdmin: response.data.user.isSuperAdmin ?? false,
+          },
           response.data.organization
         );
         refreshContext();
         toast('success', `Welcome back, ${response.data.user?.fullName?.split(' ')[0] || 'there'}!`);
-        // Honour the redirect param (e.g. /invite/abc123) or fall back to dashboard
-        router.push(redirectParam || '/dashboard');
+        // Super Admin → redirect to platform admin console
+        // Normal users → respect redirect param or go to dashboard
+        if (response.data.user.isSuperAdmin) {
+          router.push('/superadmin');
+        } else {
+          router.push(redirectParam || '/dashboard');
+        }
       } else {
         toast('error', 'Invalid response from server. Please try again.');
       }

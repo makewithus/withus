@@ -54,6 +54,11 @@ model User {
   emailVerifiedAt        DateTime?
   emailVerificationToken String?
   isActive               Boolean   @default(true)
+  // ─── Platform-level Super Admin flag ─────────────────────────────────────────
+  // This is NOT an organization role. It exists at the platform level, completely
+  // separate from MembershipRole (OWNER/ADMIN/MEMBER).
+  // Default false — zero behavioral change for all existing users.
+  isSuperAdmin           Boolean   @default(false)
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
   deletedAt              DateTime?
@@ -72,6 +77,7 @@ model User {
   auditEvents             AuditEvent[]
   passwordResetTokens     PasswordResetToken[]
   presences               UserPresence[]
+  platformAuditEvents     PlatformAuditEvent[] // Super Admin action log
 }
 
 model RefreshToken {
@@ -520,4 +526,32 @@ model UserPresence {
   // UPSERT on every heartbeat prevents unbounded growth.
   @@unique([organizationId, userId, platform])
   @@index([organizationId, lastSeenAt])
+}
+
+// ─── Platform-Level Super Admin Audit ────────────────────────────────────────
+//
+// Records administrative actions performed by the WITHUS Super Admin.
+// Completely separate from organization-scoped AuditEvent.
+// organizationId is NOT a foreign key here — Super Admin actions are
+// platform-level and do not belong to any single organization.
+
+model PlatformAuditEvent {
+  id      String @id @default(uuid())
+  actorId String // Super Admin user ID
+
+  action     String // e.g., "superadmin.viewed_org", "superadmin.viewed_users"
+  targetType String? // e.g., "ORGANIZATION", "USER", "SESSION"
+  targetId   String? // e.g., orgId, userId
+
+  metadata  Json? // Additional context
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt(sort: Desc)])
 }

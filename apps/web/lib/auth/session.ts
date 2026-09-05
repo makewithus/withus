@@ -12,6 +12,8 @@ export interface UserSession {
   id: string;
   email: string;
   fullName: string;
+  /** Platform-level Super Admin flag. NOT an organization role. Default: false. */
+  isSuperAdmin?: boolean;
 }
 
 export interface OrganizationSession {
