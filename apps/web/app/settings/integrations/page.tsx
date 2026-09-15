@@ -20,7 +20,6 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  RefreshCw,
   Link2,
   Link2Off,
   ExternalLink,
@@ -80,19 +79,21 @@ const PROVIDERS: {
 function StatusBadge({ status }: { status: string }) {
   if (status === 'ACTIVE')
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-        <CheckCircle className="w-3 h-3" /> Connected
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#eeeeee]">
+        <CheckCircle className="h-3.5 w-3.5" /> Connected
       </span>
     );
+
   if (status === 'ERROR')
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-650 dark:text-red-400 border border-red-500/20">
-        <AlertCircle className="w-3 h-3" /> Error
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#b0b0b0]">
+        <AlertCircle className="h-3.5 w-3.5" /> Error
       </span>
     );
+
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-zinc-800 text-premium-muted border border-premium">
-      <XCircle className="w-3 h-3" /> Not connected
+    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#666666]">
+      <XCircle className="h-3.5 w-3.5" /> Not connected
     </span>
   );
 }
@@ -119,14 +120,14 @@ function IntegrationCard({
   const isConnected = connection?.status === 'ACTIVE' || connection?.status === 'ERROR';
 
   return (
-    <div className="premium-card p-5 shadow-none transition-all duration-150">
+    <div className="bg-[#181818] p-5 transition-colors duration-150 hover:bg-[#1d1d1d]">
       {/* Header */}
       <div className="flex items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-premium-main flex-shrink-0">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#242424] text-[#a0a0a0]">
             {provider.icon}
           </div>
-          <p className="text-sm font-bold text-premium-main truncate">{provider.name}</p>
+          <p className="truncate text-[15px] font-semibold text-[#eeeeee]">{provider.name}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <StatusBadge status={connection?.status || 'DISCONNECTED'} />
@@ -134,7 +135,7 @@ function IntegrationCard({
             href={provider.docsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-slate-450 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-1"
+            className="p-1 text-[#666666] transition-colors hover:text-[#dddddd]"
             title="Documentation"
           >
             <ExternalLink className="w-3.5 h-3.5" />
@@ -143,13 +144,13 @@ function IntegrationCard({
       </div>
 
       {/* Description */}
-      <p className="text-xs text-premium-muted mb-3 leading-relaxed">
+      <p className="mb-4 text-sm leading-5 text-[#777777]">
         {provider.description}
       </p>
 
       {/* Last checked */}
       {connection?.lastCheckedAt && (
-        <p className="text-[10px] text-premium-muted mb-3 font-semibold">
+        <p className="mb-3 text-xs text-[#666666]">
           Last checked: {formatDateTime(connection.lastCheckedAt)}
           {(connection.providerMeta as any)?.identity && ` · ${(connection.providerMeta as any).identity}`}
         </p>
@@ -157,19 +158,19 @@ function IntegrationCard({
 
       {/* Error */}
       {connection?.lastError && (
-        <p className="text-[10px] text-red-500 dark:text-red-400 mb-3 bg-red-500/10 border border-red-500/20 rounded-lg px-2 py-1 font-semibold">
+        <p className="mb-3 bg-[#111111] px-3 py-2 text-xs leading-5 text-[#999999]">
           {connection.lastError}
         </p>
       )}
 
       {/* Actions */}
       {canManage && (
-        <div className="flex items-center gap-2 border-t border-premium pt-3">
+        <div className="mt-5 flex items-center gap-2 pt-1">
           {isConnected ? (
             <>
               <button
                 onClick={() => onDisconnect(provider.id)}
-                className="py-1 px-2.5 text-[10px] font-semibold rounded bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 hover:border-red-500/30 transition-all duration-150 inline-flex items-center justify-center"
+                className="inline-flex items-center justify-center bg-[#242424] px-3 py-2 text-xs font-medium text-[#dddddd] transition-colors hover:bg-[#2c2c2c]"
               >
                 <Link2Off className="w-3 h-3 mr-1" />
                 Disconnect
@@ -178,7 +179,7 @@ function IntegrationCard({
           ) : (
             <button
               onClick={() => onConnect(provider.id)}
-              className="premium-button-primary"
+              className="inline-flex items-center justify-center bg-[#eeeeee] px-3 py-2 text-xs font-medium text-[#111111] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:bg-[#2a2a2a] disabled:text-[#666666]"
             >
               <Link2 className="w-3.5 h-3.5 mr-1" />
               Connect
@@ -316,61 +317,74 @@ export default function IntegrationsPage() {
 
   return (
     <DashboardShell>
-      <div className="flex flex-col space-y-6">
-        {/* Header */}
-        <div className="pb-2 border-b border-premium">
-          <h1 className="text-lg font-bold tracking-tight text-premium-main">Integrations</h1>
-          <p className="text-xs text-premium-muted mt-0.5">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Integrations
+          </h1>
+          <p className="mt-1 text-sm text-[#777777]">
             Connect external platforms to delegate access securely through WithUs.
           </p>
         </div>
 
-        {/* Level 1 Custom Portal Analyzer */}
-        <div className="premium-card p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Globe className="w-5 h-5 text-premium-muted" />
-            <h2 className="text-lg font-bold text-premium">Add Custom Portal</h2>
+        <section className="bg-[#181818] p-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#242424] text-[#999999]">
+              <Globe className="h-4 w-4" />
+            </div>
+            <div>
+              <h2 className="text-[15px] font-semibold text-[#eeeeee]">
+                Add Custom Portal
+              </h2>
+              <p className="mt-0.5 text-xs text-[#666666]">
+                Check whether a portal is supported by the verified integration registry.
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-premium-muted mb-4 max-w-3xl">
-            Paste a portal login URL to check if WITHUS supports delegated access for it. Currently, WITHUS matches submitted URLs against verified platforms in our integration registry.
-          </p>
-          <form onSubmit={handleAnalyzePortal} className="flex gap-3 max-w-xl">
+
+          <form onSubmit={handleAnalyzePortal} className="mt-5 flex max-w-2xl gap-2">
             <input
               type="url"
-              className="premium-input flex-1"
+              className="min-w-0 flex-1 bg-[#111111] px-3.5 py-2.5 text-sm text-[#eeeeee] placeholder:text-[#555555] outline-none transition-colors focus:bg-[#151515]"
               placeholder="https://github.com/login"
               value={portalUrl}
               onChange={(e) => {
                 setPortalUrl(e.target.value);
-                setPortalResult(null); // Clear result on edit
+                setPortalResult(null);
               }}
               required
             />
             <button
               type="submit"
               disabled={isAnalyzing || !portalUrl}
-              className="premium-button-primary whitespace-nowrap min-w-[100px]"
+              className="inline-flex min-w-[96px] items-center justify-center bg-[#eeeeee] px-4 py-2.5 text-sm font-medium text-[#111111] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:bg-[#2a2a2a] disabled:text-[#666666]"
             >
-              {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Check URL'}
+              {isAnalyzing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                'Check URL'
+              )}
             </button>
           </form>
 
           {portalResult && (
-            <div className="mt-4 pt-4 border-t border-premium">
+            <div className="mt-4 bg-[#111111] px-4 py-3">
               {portalResult.compatible ? (
-                <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20">
-                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-4 w-4 shrink-0 text-[#eeeeee]" />
                   <div>
-                    <div className="font-bold text-sm">Compatible ✅</div>
-                    <div className="text-xs opacity-90">{portalResult.platform} detected. Known WITHUS platform.</div>
+                    <div className="text-sm font-medium text-[#eeeeee]">Compatible</div>
+                    <div className="mt-0.5 text-xs text-[#777777]">
+                      {portalResult.platform} detected. Known WITHUS platform.
+                    </div>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-[#999999]" />
                   <div>
-                    <div className="font-bold text-sm">Unknown Portal ⚠️</div>
-                    <div className="text-xs opacity-90">
+                    <div className="text-sm font-medium text-[#dddddd]">Unknown Portal</div>
+                    <div className="mt-0.5 text-xs leading-5 text-[#777777]">
                       {portalResult.reason === 'not_https'
                         ? 'Custom portals must use HTTPS for secure connection.'
                         : portalResult.reason === 'invalid_url'
@@ -382,57 +396,59 @@ export default function IntegrationsPage() {
               )}
             </div>
           )}
+        </section>
+
+        <div className="bg-[#181818] px-5 py-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#242424] text-[#888888]">
+              <Zap className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-[#dddddd]">
+                Platform-Agnostic Integrations
+              </p>
+              <p className="mt-1 max-w-3xl text-xs leading-5 text-[#666666]">
+                Connect developer platforms and delegate access securely. WithUs stores credentials
+                encrypted and handles approval workflows so your team never shares passwords or tokens directly.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Info Banner */}
-        <div className="border border-premium bg-slate-50/20 dark:bg-zinc-900/10 rounded-lg p-4 flex gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 dark:bg-zinc-800 flex items-center justify-center">
-            <Zap className="w-4 h-4 text-premium-muted" />
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-sm font-medium text-[#eeeeee]">Connected Platforms</h2>
+            <span className="text-xs text-[#555555]">{PROVIDERS.length} available</span>
           </div>
-          <div>
-            <p className="text-xs font-bold text-premium-main mb-0.5">
-              Platform-Agnostic Integrations
-            </p>
-            <p className="text-xs text-premium-muted leading-relaxed">
-              Connect your developer platforms and delegate access securely. WithUs stores credentials
-              encrypted and handles approval workflows — your team never shares passwords or tokens
-              directly.
-            </p>
-          </div>
-        </div>
 
-        {/* Provider Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
-            {PROVIDERS.map((p) => (
-              <div
-                key={p.id}
-                className="premium-card p-5 h-52 animate-pulse"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
-            {PROVIDERS.map((provider) => {
-              const connection = connections.find((c) => c.provider === provider.id);
-              return (
-                <IntegrationCard
-                  key={provider.id}
-                  provider={provider}
-                  connection={connection}
-                  onConnect={(id) => handleInitiateConnect(PROVIDERS.find((p) => p.id === id)!)}
-                  onDisconnect={(id) => setDisconnectingProvider(id)}
-                  onHealthCheck={(id) => runHealthCheck(id)}
-                  isCheckingHealth={isCheckingHealth}
-                  canManage={canManage}
-                />
-              );
-            })}
-          </div>
-        )}
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+              {PROVIDERS.map((p) => (
+                <div key={p.id} className="h-52 animate-pulse bg-[#181818]" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+              {PROVIDERS.map((provider) => {
+                const connection = connections.find((c) => c.provider === provider.id);
+                return (
+                  <IntegrationCard
+                    key={provider.id}
+                    provider={provider}
+                    connection={connection}
+                    onConnect={(id) => handleInitiateConnect(PROVIDERS.find((p) => p.id === id)!)}
+                    onDisconnect={(id) => setDisconnectingProvider(id)}
+                    onHealthCheck={(id) => runHealthCheck(id)}
+                    isCheckingHealth={isCheckingHealth}
+                    canManage={canManage}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </section>
       </div>
 
-      {/* Connect Modal */}
       <ConnectModal
         provider={connectingProvider}
         onClose={() => setConnectingProvider(null)}
@@ -440,7 +456,6 @@ export default function IntegrationsPage() {
         isPending={isConnecting}
       />
 
-      {/* Disconnect Confirm */}
       <ConfirmModal
         isOpen={!!disconnectingProvider}
         title="Disconnect Integration"
