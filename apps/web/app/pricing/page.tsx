@@ -200,8 +200,7 @@ export default function PricingPage() {
 
   return (
     <DashboardShell>
-      <div className="h-full overflow-y-auto bg-[#111111]">
-        <div className="mx-auto w-full max-w-6xl px-6 py-8 space-y-7">
+      <div className="mx-auto max-w-6xl space-y-6">
 
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -559,7 +558,6 @@ export default function PricingPage() {
           </div>
 
         </div>
-      </div>
     </DashboardShell>
   );
 }
