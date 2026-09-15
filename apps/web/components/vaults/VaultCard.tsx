@@ -8,27 +8,40 @@ export function VaultCard({ vault }: { vault: VaultResponse }) {
   const createdDate = formatDate(vault.createdAt);
 
   return (
-    <Link 
+    <Link
       href={`/vaults/${vault.id}`}
-      className="block group premium-card overflow-hidden transition-all duration-150 shadow-none"
+      className="
+        block
+        group
+        overflow-hidden
+        bg-[#181818]
+        transition-colors
+        duration-150
+        hover:bg-[#1f1f1f]
+      "
     >
-      <div className="p-4 border-b border-premium bg-slate-50/20 dark:bg-zinc-900/10 group-hover:bg-slate-50/50 dark:group-hover:bg-zinc-900/30 transition-colors">
-        <div className="flex items-center space-x-2.5">
-          <div className="p-1.5 bg-slate-100 dark:bg-zinc-800 text-premium-muted rounded-lg">
-            <KeyRound className="w-4 h-4" />
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#242424] text-[#a0a0a0] transition-colors group-hover:bg-[#2b2b2b] group-hover:text-[#d0d0d0]">
+            <KeyRound className="h-4 w-4" />
           </div>
-          <h3 className="text-sm font-semibold text-premium-main truncate">
+
+          <h3 className="min-w-0 truncate text-[15px] font-semibold tracking-[-0.01em] text-[#eeeeee]">
             {vault.name}
           </h3>
         </div>
       </div>
-      <div className="p-4 space-y-3">
-        <p className="text-xs text-premium-muted line-clamp-2 min-h-[32px]">
+
+      {/* Content */}
+      <div className="px-5 pb-5">
+        <p className="min-h-[40px] line-clamp-2 text-[13px] leading-5 text-[#858585]">
           {vault.description || 'No description provided.'}
         </p>
-        <div className="flex items-center text-[10px] font-bold text-premium-muted uppercase tracking-wider">
-          <Clock className="w-3 h-3 mr-1" />
-          Created on {createdDate}
+
+        <div className="mt-5 flex items-center text-[11px] font-medium text-[#666666]">
+          <Clock className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+          <span>Created {createdDate}</span>
         </div>
       </div>
     </Link>
