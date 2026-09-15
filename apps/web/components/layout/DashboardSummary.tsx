@@ -85,19 +85,15 @@ export function DashboardSummary() {
   ];
 
   return (
-    <div className="min-h-full bg-[#111111] text-[#eeeeee] font-sans">
-      <div className="mx-auto w-full max-w-[1500px] px-6 py-7 lg:px-8">
+    <div className="mx-auto max-w-6xl space-y-6">
 
-        {/* Header */}
-        <header className="flex flex-col gap-5 pb-7 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-
-            <h1 className="text-[28px] font-semibold tracking-[-0.025em] text-[#f2f2f2]">
-              Dashboard
-            </h1>
-
-
-          </div>
+      {/* Header */}
+      <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Dashboard
+          </h1>
+        </div>
 
           <div className="flex items-center gap-2">
             <Link
@@ -193,11 +189,10 @@ export function DashboardSummary() {
         </section>
 
         {/* Main Content */}
-        <main
+        <div
           className="
-            mt-7
             grid grid-cols-1
-            gap-7
+            gap-6
             xl:grid-cols-[minmax(0,1fr)_320px]
           "
         >
@@ -472,9 +467,8 @@ export function DashboardSummary() {
               </div>
             </section>
           </div>
-        </main>
+        </div>
 
-      </div>
     </div>
   );
 }

@@ -54,7 +54,7 @@ export function VaultListPage() {
   if (vaults.length === 0 && page === 1) {
     return (
       <>
-        <div className="mx-auto w-full max-w-[1200px] px-6 py-7">
+        <div className="mx-auto max-w-6xl space-y-6">
           <EmptyState
             title="No Vaults Found"
             description="Create your first secure vault to start storing encrypted secrets."
@@ -79,11 +79,11 @@ export function VaultListPage() {
 
   return (
     <>
-      <div className="mx-auto w-full max-w-[1200px] px-6 py-7 text-[#eeeeee]">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[24px] font-semibold tracking-tight text-[#eeeeee]">
+            <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
               Secure Vaults
             </h1>
 

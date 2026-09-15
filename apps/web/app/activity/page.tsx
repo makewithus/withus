@@ -265,17 +265,16 @@ export default function ActivityPage() {
 
   return (
     <DashboardShell>
-      <div className="mx-auto w-full max-w-[1200px] px-6 py-7 text-[#eeeeee]">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-[24px] font-semibold tracking-tight text-[#eeeeee]">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
             Activity
           </h1>
-
         </div>
 
         {/* Controls */}
-        <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666]" />
 

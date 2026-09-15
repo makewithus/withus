@@ -114,7 +114,7 @@ export default function ApprovalsPage() {
   return (
     <>
       <DashboardShell>
-        <div className="mx-auto max-w-5xl space-y-8">
+        <div className="mx-auto max-w-6xl space-y-6">
           <header>
             <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
               Approval Workflows

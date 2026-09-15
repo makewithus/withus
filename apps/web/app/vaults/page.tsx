@@ -4,9 +4,7 @@ import { VaultListPage } from '../../components/vaults/VaultListPage';
 export default function Vaults() {
   return (
     <DashboardShell>
-      <div className="flex flex-col space-y-6">
-        <VaultListPage />
-      </div>
+      <VaultListPage />
     </DashboardShell>
   );
 }
