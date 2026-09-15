@@ -65,7 +65,7 @@ export default function ExtensionPage() {
 
   return (
     <DashboardShell>
-      <div className="mx-auto max-w-5xl space-y-8">
+      <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">

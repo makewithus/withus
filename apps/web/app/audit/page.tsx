@@ -37,38 +37,33 @@ import { useAuth } from '../../lib/auth/AuthContext';
 interface ActionConfig {
   label: string;
   icon: React.ReactNode;
-  color: string;
-  bg: string;
 }
 
 const ACTION_MAP: Record<string, ActionConfig> = {
-  'secret.created':     { label: 'Secret Created',      icon: <Plus className="w-3.5 h-3.5" />,      color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200/50 dark:border-emerald-900/30' },
-  'secret.updated':     { label: 'Secret Updated',      icon: <Pencil className="w-3.5 h-3.5" />,    color: 'text-indigo-700 dark:text-indigo-400',     bg: 'bg-indigo-50 dark:bg-indigo-950/20 border-indigo-200/50 dark:border-indigo-900/30' },
-  'secret.deleted':     { label: 'Secret Deleted',      icon: <Trash2 className="w-3.5 h-3.5" />,    color: 'text-red-700 dark:text-red-400',       bg: 'bg-red-50 dark:bg-red-950/30 border-red-200/50 dark:border-red-900/30' },
-  'secret.revealed':    { label: 'Secret Revealed',     icon: <Eye className="w-3.5 h-3.5" />,       color: 'text-violet-700 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/30 border-violet-200/50 dark:border-violet-900/30' },
-  'session.created':    { label: 'Session Granted',     icon: <Key className="w-3.5 h-3.5" />,       color: 'text-amber-700 dark:text-amber-400',   bg: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200/50 dark:border-amber-900/30' },
-  'session.revoked':    { label: 'Session Revoked',     icon: <X className="w-3.5 h-3.5" />,         color: 'text-red-700 dark:text-red-400',       bg: 'bg-red-50 dark:bg-red-950/30 border-red-200/50 dark:border-red-900/30' },
-  'session.expired':    { label: 'Session Expired',     icon: <Clock className="w-3.5 h-3.5" />,     color: 'text-slate-600 dark:text-slate-400',   bg: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700' },
-  'approval.requested': { label: 'Approval Requested',  icon: <Shield className="w-3.5 h-3.5" />,    color: 'text-amber-700 dark:text-amber-400',   bg: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200/50 dark:border-amber-900/30' },
-  'approval.approved':  { label: 'Approval Granted',    icon: <Check className="w-3.5 h-3.5" />,     color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200/50 dark:border-emerald-900/30' },
-  'approval.rejected':  { label: 'Approval Rejected',   icon: <X className="w-3.5 h-3.5" />,         color: 'text-red-700 dark:text-red-400',       bg: 'bg-red-50 dark:bg-red-950/30 border-red-200/50 dark:border-red-900/30' },
-  'member.invited':     { label: 'Invitation Sent',     icon: <Mail className="w-3.5 h-3.5" />,      color: 'text-indigo-700 dark:text-indigo-400',     bg: 'bg-indigo-50 dark:bg-indigo-950/20 border-indigo-200/50 dark:border-indigo-900/30' },
-  'member.joined':      { label: 'Member Joined',       icon: <UserPlus className="w-3.5 h-3.5" />,  color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200/50 dark:border-emerald-900/30' },
-  'user.login':         { label: 'Login',               icon: <LogIn className="w-3.5 h-3.5" />,     color: 'text-slate-700 dark:text-slate-300',   bg: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700' },
-  'user.logout':        { label: 'Logout',              icon: <LogOut className="w-3.5 h-3.5" />,    color: 'text-slate-700 dark:text-slate-300',   bg: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700' },
-  'mek.rotated':        { label: 'Key Rotated',         icon: <RefreshCw className="w-3.5 h-3.5" />, color: 'text-violet-700 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/30 border-violet-200/50 dark:border-violet-900/30' },
-  // ─── Phase 2 events ─────────────────────────────────────────────────────────
-  'session.revoke_all':         { label: 'Sessions Bulk Revoked',    icon: <ShieldOff className="w-3.5 h-3.5" />, color: 'text-red-700 dark:text-red-400',           bg: 'bg-red-50 dark:bg-red-950/30 border-red-200/50 dark:border-red-900/30' },
-  'member.offboarded':          { label: 'Member Offboarded',        icon: <UserX className="w-3.5 h-3.5" />,     color: 'text-orange-700 dark:text-orange-400',     bg: 'bg-orange-50 dark:bg-orange-950/30 border-orange-200/50 dark:border-orange-900/30' },
-  'integration.connected':      { label: 'Integration Connected',    icon: <Link className="w-3.5 h-3.5" />,      color: 'text-emerald-700 dark:text-emerald-400',  bg: 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200/50 dark:border-emerald-900/30' },
-  'integration.disconnected':   { label: 'Integration Disconnected', icon: <Link2Off className="w-3.5 h-3.5" />,  color: 'text-slate-600 dark:text-slate-400',       bg: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700' },
+  'secret.created': { label: 'Secret Created', icon: <Plus className="h-3.5 w-3.5" /> },
+  'secret.updated': { label: 'Secret Updated', icon: <Pencil className="h-3.5 w-3.5" /> },
+  'secret.deleted': { label: 'Secret Deleted', icon: <Trash2 className="h-3.5 w-3.5" /> },
+  'secret.revealed': { label: 'Secret Revealed', icon: <Eye className="h-3.5 w-3.5" /> },
+  'session.created': { label: 'Session Granted', icon: <Key className="h-3.5 w-3.5" /> },
+  'session.revoked': { label: 'Session Revoked', icon: <X className="h-3.5 w-3.5" /> },
+  'session.expired': { label: 'Session Expired', icon: <Clock className="h-3.5 w-3.5" /> },
+  'approval.requested': { label: 'Approval Requested', icon: <Shield className="h-3.5 w-3.5" /> },
+  'approval.approved': { label: 'Approval Granted', icon: <Check className="h-3.5 w-3.5" /> },
+  'approval.rejected': { label: 'Approval Rejected', icon: <X className="h-3.5 w-3.5" /> },
+  'member.invited': { label: 'Invitation Sent', icon: <Mail className="h-3.5 w-3.5" /> },
+  'member.joined': { label: 'Member Joined', icon: <UserPlus className="h-3.5 w-3.5" /> },
+  'user.login': { label: 'Login', icon: <LogIn className="h-3.5 w-3.5" /> },
+  'user.logout': { label: 'Logout', icon: <LogOut className="h-3.5 w-3.5" /> },
+  'mek.rotated': { label: 'Key Rotated', icon: <RefreshCw className="h-3.5 w-3.5" /> },
+  'session.revoke_all': { label: 'Sessions Bulk Revoked', icon: <ShieldOff className="h-3.5 w-3.5" /> },
+  'member.offboarded': { label: 'Member Offboarded', icon: <UserX className="h-3.5 w-3.5" /> },
+  'integration.connected': { label: 'Integration Connected', icon: <Link className="h-3.5 w-3.5" /> },
+  'integration.disconnected': { label: 'Integration Disconnected', icon: <Link2Off className="h-3.5 w-3.5" /> },
 };
 
 const FALLBACK_ACTION: ActionConfig = {
   label: '',
-  icon: <Activity className="w-3.5 h-3.5" />,
-  color: 'text-slate-700 dark:text-slate-300',
-  bg: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700',
+  icon: <Activity className="h-3.5 w-3.5" />,
 };
 
 function getActionConfig(action: string): ActionConfig {
@@ -177,8 +172,8 @@ function AuditMetaDetails({ action, metadata }: { action: string; metadata: Reco
         <div className="flex flex-wrap gap-x-6 gap-y-1.5">
           {rows.map(({ label, value }) => (
             <div key={label} className="flex items-baseline gap-1.5 min-w-[140px]">
-              <span className="text-[10px] font-bold text-premium-muted uppercase tracking-wider w-20 flex-shrink-0">{label}</span>
-              <span className="text-xs font-semibold text-premium-main">{value}</span>
+              <span className="w-20 shrink-0 text-xs font-medium text-[#666666]">{label}</span>
+              <span className="text-sm text-[#dddddd]">{value}</span>
             </div>
           ))}
         </div>
@@ -189,13 +184,13 @@ function AuditMetaDetails({ action, metadata }: { action: string; metadata: Reco
         <div>
           <button
             onClick={() => setShowRaw(r => !r)}
-            className="flex items-center gap-1 text-[10px] font-bold text-premium-muted hover:text-premium-main uppercase tracking-wider transition-colors mt-1"
+            className="mt-1 flex items-center gap-1 text-xs font-medium text-[#666666] transition-colors hover:text-[#dddddd]"
           >
             {showRaw ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             {showRaw ? 'Hide raw details' : 'View raw details'}
           </button>
           {showRaw && (
-            <pre className="mt-1.5 bg-slate-950 border border-premium/50 text-emerald-450 p-3 rounded-lg overflow-x-auto text-[10px] leading-relaxed font-mono">
+            <pre className="mt-2 overflow-x-auto bg-[#0b0b0b] p-3 text-xs leading-relaxed font-mono text-[#999999]">
               {JSON.stringify(metadata, null, 2)}
             </pre>
           )}
@@ -204,7 +199,7 @@ function AuditMetaDetails({ action, metadata }: { action: string; metadata: Reco
 
       {/* Fallback for events with no metadata at all */}
       {!hasRaw && rows.length === 0 && (
-        <span className="text-xs text-premium-muted italic">No additional details.</span>
+        <span className="text-sm text-[#666666]">No additional details.</span>
       )}
     </div>
   );
@@ -251,23 +246,22 @@ export default function AuditPage() {
 
   return (
     <DashboardShell>
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="pb-2 border-b border-premium">
-          <h1 className="text-lg font-bold tracking-tight text-premium-main">Audit Log</h1>
-          <p className="text-xs text-premium-muted mt-0.5">
-            Security and operational events across <span className="font-semibold">{organization?.name}</span>.
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Audit Log
+          </h1>
+          <p className="mt-1 text-sm text-[#777777]">
+            Security and operational events across {organization?.name}.
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="premium-card p-4 shadow-none space-y-3">
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Event type */}
-            <div className="flex-1 space-y-1.5">
-              <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wide">Event Type</label>
+        <section className="bg-[#181818] p-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#cccccc]">Event type</label>
               <select
-                className="w-full premium-input text-xs"
+                className="w-full bg-[#111111] px-3.5 py-2.5 text-sm text-[#dddddd] outline-none"
                 value={actionFilter}
                 onChange={handleFilterChange(setActionFilter)}
               >
@@ -277,11 +271,10 @@ export default function AuditPage() {
               </select>
             </div>
 
-            {/* Actor / member */}
-            <div className="flex-1 space-y-1.5">
-              <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wide">Actor</label>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#cccccc]">Actor</label>
               <select
-                className="w-full premium-input text-xs"
+                className="w-full bg-[#111111] px-3.5 py-2.5 text-sm text-[#dddddd] outline-none"
                 value={actorFilter}
                 onChange={handleFilterChange(setActorFilter)}
               >
@@ -293,69 +286,80 @@ export default function AuditPage() {
                 ))}
               </select>
             </div>
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 items-end">
-            {/* Start date */}
-            <div className="flex-1 space-y-1.5">
-              <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wide">From</label>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#cccccc]">From</label>
               <input
                 type="date"
-                className="w-full premium-input text-xs"
+                className="w-full bg-[#111111] px-3.5 py-2.5 text-sm text-[#dddddd] outline-none"
                 value={startDate}
                 onChange={handleFilterChange(setStartDate)}
                 max={endDate || undefined}
               />
             </div>
 
-            {/* End date */}
-            <div className="flex-1 space-y-1.5">
-              <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wide">To</label>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#cccccc]">To</label>
               <input
                 type="date"
-                className="w-full premium-input text-xs"
+                className="w-full bg-[#111111] px-3.5 py-2.5 text-sm text-[#dddddd] outline-none"
                 value={endDate}
                 onChange={handleFilterChange(setEndDate)}
                 min={startDate || undefined}
               />
             </div>
+          </div>
 
+          <div className="mt-4 flex justify-end">
             <button
               onClick={handleClearFilters}
-              className="premium-button-secondary py-1.5 px-4 flex-shrink-0"
+              className="bg-[#242424] px-4 py-2.5 text-sm font-medium text-[#cccccc] transition-colors hover:bg-[#2c2c2c] hover:text-white"
             >
-              Clear All
+              Clear filters
             </button>
           </div>
-        </div>
+        </section>
 
-        {/* Table */}
-        <div className="premium-card overflow-hidden shadow-none">
-          <div className="overflow-x-auto w-full">
-            <table className="min-w-full divide-y divide-premium">
-              <thead className="bg-slate-50/20 dark:bg-zinc-900/10">
-                <tr>
-                  <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Event</th>
-                  <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Actor</th>
-                  <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium hidden sm:table-cell">Resource</th>
-                  <th scope="col" className="px-5 py-2.5 text-left text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">When</th>
-                  <th scope="col" className="px-5 py-2.5 text-right text-[10px] font-bold text-premium-muted uppercase tracking-wider border-b border-premium">Details</th>
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-sm font-medium text-[#eeeeee]">Events</h2>
+            {data && (
+              <span className="text-xs text-[#555555]">
+                {data.total} total events
+              </span>
+            )}
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] border-collapse text-left">
+              <thead>
+                <tr className="bg-[#181818]">
+                  <th className="px-5 py-4 text-sm font-medium text-[#777777]">Event</th>
+                  <th className="px-5 py-4 text-sm font-medium text-[#777777]">Actor</th>
+                  <th className="hidden px-5 py-4 text-sm font-medium text-[#777777] sm:table-cell">
+                    Resource
+                  </th>
+                  <th className="px-5 py-4 text-sm font-medium text-[#777777]">When</th>
+                  <th className="px-5 py-4 text-right text-sm font-medium text-[#777777]">
+                    Details
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-premium bg-premium-surface">
+
+              <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-10 text-center text-xs text-slate-400">
-                      <Activity className="w-5 h-5 mx-auto mb-2 animate-pulse text-slate-300" />
-                      Loading events...
+                    <td colSpan={5} className="bg-[#181818] px-5 py-14 text-center">
+                      <Activity className="mx-auto mb-3 h-5 w-5 animate-pulse text-[#777777]" />
+                      <p className="text-sm text-[#777777]">Loading events...</p>
                     </td>
                   </tr>
                 ) : data?.data?.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center">
-                      <Shield className="w-8 h-8 mx-auto mb-3 text-slate-200 dark:text-slate-700" />
-                      <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">No events found</p>
-                      <p className="text-xs text-premium-muted mt-1 font-semibold">
+                    <td colSpan={5} className="bg-[#181818] px-5 py-14 text-center">
+                      <Shield className="mx-auto mb-3 h-7 w-7 text-[#555555]" />
+                      <p className="text-sm font-medium text-[#cccccc]">No events found</p>
+                      <p className="mt-1 text-sm text-[#666666]">
                         Events will appear here as your team uses WithUs.
                       </p>
                     </td>
@@ -363,103 +367,122 @@ export default function AuditPage() {
                 ) : (
                   data?.data?.map((event: AuditEventDto) => {
                     const cfg = getActionConfig(event.action);
-                    const actorName = (event.actor as any)?.fullName || (event.actor as any)?.email || 'System';
-                    const actorEmail = (event.actor as any)?.fullName ? (event.actor as any)?.email : null;
-
-                    // Build a friendly resource label (never show raw UUID)
-                    const typeLabel = event.resourceType
-                      ? event.resourceType.charAt(0) + event.resourceType.slice(1).toLowerCase().replace('_', ' ')
+                    const actorName =
+                      (event.actor as any)?.fullName ||
+                      (event.actor as any)?.email ||
+                      'System';
+                    const actorEmail = (event.actor as any)?.fullName
+                      ? (event.actor as any)?.email
                       : null;
+
+                    const typeLabel = event.resourceType
+                      ? event.resourceType
+                          .charAt(0)
+                          .toUpperCase() +
+                        event.resourceType.slice(1).toLowerCase().replace('_', ' ')
+                      : null;
+
                     const resourceLabel = typeLabel
-                      ? ((event as any).resourceName ? `${typeLabel}: ${(event as any).resourceName.split('_deleted_')[0]}` : typeLabel)
+                      ? (event as any).resourceName
+                        ? `${typeLabel}: ${(event as any).resourceName.split('_deleted_')[0]}`
+                        : typeLabel
                       : null;
 
                     return (
                       <React.Fragment key={event.id}>
-                        <tr className="hover:bg-slate-50/30 dark:hover:bg-zinc-900/10 transition-colors border-b border-premium/65 last:border-b-0">
-                          {/* Event */}
-                          <td className="px-5 py-3.5 whitespace-nowrap">
-                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${cfg.bg} ${cfg.color}`}>
-                              {cfg.icon}
+                        <tr className="bg-[#181818] transition-colors hover:bg-[#1d1d1d]">
+                          <td className="px-5 py-4">
+                            <span className="inline-flex items-center gap-2 text-sm font-medium text-[#dddddd]">
+                              <span className="text-[#777777]">{cfg.icon}</span>
                               {cfg.label}
                             </span>
                           </td>
 
-                          {/* Actor */}
-                          <td className="px-5 py-3.5 whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                                <span className="text-[10px] font-bold text-premium-muted">
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#242424]">
+                                <span className="text-xs font-medium text-[#999999]">
                                   {actorName[0]?.toUpperCase() || '?'}
                                 </span>
                               </div>
-                              <div>
-                                <p className="text-xs font-bold text-premium-main">{actorName}</p>
-                                {actorEmail && <p className="text-[10px] text-premium-muted font-semibold">{actorEmail}</p>}
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-medium text-[#dddddd]">
+                                  {actorName}
+                                </p>
+                                {actorEmail && (
+                                  <p className="mt-0.5 truncate text-xs text-[#666666]">
+                                    {actorEmail}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           </td>
 
-                          {/* Resource */}
-                          <td className="px-5 py-3.5 whitespace-nowrap hidden sm:table-cell">
+                          <td className="hidden px-5 py-4 sm:table-cell">
                             {resourceLabel ? (
-                              <span className="text-xs font-semibold text-premium-muted">
-                                {resourceLabel}
-                              </span>
+                              <span className="text-sm text-[#777777]">{resourceLabel}</span>
                             ) : (
-                              <span className="text-xs text-slate-300 dark:text-zinc-800">—</span>
+                              <span className="text-sm text-[#444444]">—</span>
                             )}
                           </td>
 
-                          {/* When */}
-                          <td className="px-5 py-3.5 whitespace-nowrap">
+                          <td className="px-5 py-4">
                             <span
-                              className="text-xs text-premium-muted font-bold"
+                              className="text-sm text-[#777777]"
                               title={formatDateTime(event.createdAt)}
                             >
                               {relativeTime(event.createdAt)}
                             </span>
                           </td>
 
-                          {/* Details toggle */}
-                          <td className="px-5 py-3.5 whitespace-nowrap text-right">
+                          <td className="px-5 py-4 text-right">
                             <button
                               onClick={() => toggleRow(event.id)}
-                              className="text-premium-muted hover:text-premium-main transition-colors"
+                              className="text-[#666666] transition-colors hover:text-[#dddddd]"
                               title="View details"
                             >
-                              {expandedRow === event.id ? <ChevronUp className="h-4 w-4 ml-auto" /> : <ChevronDown className="h-4 w-4 ml-auto" />}
+                              {expandedRow === event.id ? (
+                                <ChevronUp className="ml-auto h-4 w-4" />
+                              ) : (
+                                <ChevronDown className="ml-auto h-4 w-4" />
+                              )}
                             </button>
                           </td>
                         </tr>
 
-                        {/* Expanded details */}
                         {expandedRow === event.id && (
-                          <tr className="bg-slate-50/10 dark:bg-zinc-900/5">
-                            <td colSpan={5} className="px-5 py-4">
-                              <div className="text-xs text-premium-muted">
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3">
+                          <tr>
+                            <td colSpan={5} className="bg-[#141414] px-5 py-5">
+                              <div className="text-sm text-[#777777]">
+                                <div className="grid grid-cols-2 gap-5 sm:grid-cols-3">
                                   <div>
-                                    <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mb-0.5">Event Time</p>
-                                    <p className="font-bold text-premium-main">{formatDateTime(event.createdAt)}</p>
+                                    <p className="text-xs font-medium text-[#555555]">Event time</p>
+                                    <p className="mt-1 text-sm text-[#dddddd]">
+                                      {formatDateTime(event.createdAt)}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mb-0.5">Resource Type</p>
-                                    <p className="font-bold text-premium-main">{event.resourceType || '—'}</p>
+                                    <p className="text-xs font-medium text-[#555555]">Resource type</p>
+                                    <p className="mt-1 text-sm text-[#dddddd]">
+                                      {event.resourceType || '—'}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mb-0.5">Event Version</p>
-                                    <p className="font-bold text-premium-main">v{event.eventVersion}</p>
+                                    <p className="text-xs font-medium text-[#555555]">Event version</p>
+                                    <p className="mt-1 text-sm text-[#dddddd]">
+                                      v{event.eventVersion}
+                                    </p>
                                   </div>
                                 </div>
+
                                 {Boolean(event.metadata) && (
-                                  <>
-                                    <p className="text-[10px] font-bold text-premium-muted uppercase tracking-wider mb-2">Details</p>
+                                  <div className="mt-5">
+                                    <p className="mb-3 text-xs font-medium text-[#555555]">Details</p>
                                     <AuditMetaDetails
                                       action={event.action}
                                       metadata={(event.metadata as Record<string, any>) ?? {}}
                                     />
-                                  </>
+                                  </div>
                                 )}
                               </div>
                             </td>
@@ -473,33 +496,32 @@ export default function AuditPage() {
             </table>
           </div>
 
-          {/* Pagination */}
           {data && data.totalPages > 1 && (
-            <div className="px-5 py-3 border-t border-premium flex items-center justify-between bg-premium-surface/50">
-              <p className="text-xs text-premium-muted font-bold">
-                Page <span className="text-premium-main">{page}</span> of{' '}
-                <span className="text-premium-main">{data.totalPages}</span>
-                {' '}· <span className="text-premium-main">{data.total}</span> total events
+            <div className="mt-1 flex items-center justify-between bg-[#181818] px-5 py-4">
+              <p className="text-sm text-[#666666]">
+                Page <span className="text-[#dddddd]">{page}</span> of{' '}
+                <span className="text-[#dddddd]">{data.totalPages}</span>
               </p>
-              <div className="flex gap-2">
+
+              <div className="flex gap-1">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="premium-button-secondary py-1 px-2.5 text-[10px]"
+                  className="bg-[#242424] px-3 py-2 text-xs font-medium text-[#cccccc] transition-colors hover:bg-[#2c2c2c] disabled:cursor-not-allowed disabled:bg-[#181818] disabled:text-[#444444]"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
                   disabled={page === data.totalPages}
-                  className="premium-button-secondary py-1 px-2.5 text-[10px]"
+                  className="bg-[#242424] px-3 py-2 text-xs font-medium text-[#cccccc] transition-colors hover:bg-[#2c2c2c] disabled:cursor-not-allowed disabled:bg-[#181818] disabled:text-[#444444]"
                 >
                   Next
                 </button>
               </div>
             </div>
           )}
-        </div>
+        </section>
       </div>
     </DashboardShell>
   );
