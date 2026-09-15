@@ -209,9 +209,6 @@ export function DashboardSummary() {
                   Recent Vaults
                 </h2>
 
-                <p className="mt-1.5 text-xs text-[#686868]">
-                  Recently created secure storage
-                </p>
               </div>
 
               <Link

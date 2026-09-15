@@ -272,9 +272,6 @@ export default function ActivityPage() {
             Activity
           </h1>
 
-          <p className="mt-1 text-sm text-[#777777]">
-            Monitor delegated platform activity in near-real-time.
-          </p>
         </div>
 
         {/* Controls */}
