@@ -65,181 +65,169 @@ export default function ExtensionPage() {
 
   return (
     <DashboardShell>
-      <div className="max-w-4xl mx-auto space-y-8">
-        
-        {/* Header Section */}
-        <div className="pb-4 border-b border-premium flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="mx-auto max-w-5xl space-y-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-premium-main">Browser Extension</h1>
-            <p className="text-xs text-premium-muted mt-1 font-semibold leading-relaxed">
-              Autofill credentials directly into target websites securely and dynamically through WithUs.
+            <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+              Browser Extension
+            </h1>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-[#777777]">
+              Install the WithUs browser extension to autofill credentials securely.
             </p>
           </div>
-          <div className="flex-shrink-0 flex items-center gap-2">
+
+          <div className="flex shrink-0 items-center gap-2">
             <a
               href="https://chromewebstore.google.com/detail/withus-vault/ccelghkaoejlmljlhcefnkbcbfmoge"
               target="_blank"
               rel="noopener noreferrer"
-              className="premium-button-secondary inline-flex items-center gap-2 px-5 py-2.5 shadow-sm text-xs font-bold rounded-lg transition-colors border border-zinc-200 dark:border-zinc-800"
+              className="inline-flex items-center gap-2 bg-[#181818] px-4 py-2.5 text-sm font-medium text-[#cccccc] transition-colors hover:bg-[#202020] hover:text-white"
             >
-              <svg className="w-4 h-4 text-slate-900 dark:text-slate-100 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="4" />
-                <line x1="21.17" y1="8" x2="12" y2="8" />
-                <line x1="3.95" y1="6.06" x2="8.54" y2="14" />
-                <line x1="10.88" y1="21.94" x2="15.46" y2="14" />
-              </svg>
               Chrome Web Store
+              <ExternalLink className="h-4 w-4" />
             </a>
             <a
               href="/downloads/WITHUS-Extension.zip"
-              className="premium-button-primary inline-flex items-center gap-2 px-5 py-2.5 shadow-sm text-xs font-bold rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 bg-[#eeeeee] px-4 py-2.5 text-sm font-medium text-[#111111] transition-colors hover:bg-white"
             >
-              <Download className="w-4 h-4" />
-              Download Extension (ZIP)
+              <Download className="h-4 w-4" />
+              Download ZIP
             </a>
           </div>
         </div>
 
-        {/* Future Ready / Webstore Announcement Alert */}
-        <div className="p-4 bg-slate-50/50 dark:bg-zinc-900/30 border border-premium rounded-lg flex items-start gap-3">
-          <Info className="w-4 h-4 text-premium-main mt-0.5 flex-shrink-0" />
-          <div className="text-xs text-premium-muted leading-relaxed font-semibold">
-            <p className="text-premium-main font-bold mb-0.5">Coming Soon</p>
-            Chrome Web Store & Microsoft Edge Add-ons support. In the meantime, you can install the developer version using the step-by-step instructions below.
-          </div>
+        <div className="bg-[#181818] px-5 py-4">
+          <p className="text-sm font-medium text-[#eeeeee]">Chrome Web Store support is coming soon.</p>
+          <p className="mt-1 text-sm leading-5 text-[#777777]">
+            Until then, install the developer version using the steps below.
+          </p>
         </div>
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {steps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div 
-                key={step.number} 
-                className="premium-card p-5 flex flex-col justify-between hover:border-premium-main/30 transition-all duration-200"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-bold text-premium-muted uppercase tracking-wider bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/60 px-2.5 py-0.5 rounded-md">
-                      Step {step.number}
-                    </span>
-                    {step.badge && (
-                      <span className="text-[9px] font-bold bg-premium-main/10 text-premium-main border border-premium-main/20 px-2 py-0.5 rounded-md">
-                        {step.badge}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex gap-3.5 items-start">
-                    <div className="w-9 h-9 rounded-lg border border-premium flex items-center justify-center bg-slate-100 dark:bg-zinc-800/80 text-premium-main flex-shrink-0 shadow-sm">
-                      <Icon className="w-4 h-4 text-premium-main" />
+        <section>
+          <div className="mb-3">
+            <h2 className="text-base font-medium text-[#eeeeee]">Installation</h2>
+            <p className="mt-1 text-sm text-[#666666]">
+              Follow these steps to load the extension locally.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+            {steps.map((step) => {
+              const Icon = step.icon;
+
+              return (
+                <div
+                  key={step.number}
+                  className="bg-[#181818] px-5 py-5 transition-colors hover:bg-[#1d1d1d]"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-[#242424] text-[#aaaaaa]">
+                      <Icon className="h-4 w-4" />
                     </div>
-                    <div>
-                      <h3 className="text-xs font-bold text-premium-main">{step.title}</h3>
-                      <p className="text-[11px] text-premium-muted font-medium mt-1 leading-relaxed">
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium text-[#555555]">
+                          {String(step.number).padStart(2, '0')}
+                        </span>
+                        <h3 className="text-sm font-medium text-[#eeeeee]">
+                          {step.title}
+                        </h3>
+                      </div>
+
+                      <p className="mt-2 text-sm leading-5 text-[#777777]">
                         {step.description}
                       </p>
+
+                      {step.number === 1 && (
+                        <a
+                          href="/downloads/WITHUS-Extension.zip"
+                          className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[#cccccc] transition-colors hover:text-white"
+                        >
+                          Download Package
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+
+                      {step.number === 3 && step.action && (
+                        <button
+                          type="button"
+                          onClick={step.action}
+                          className="mt-4 text-xs font-medium text-[#cccccc] transition-colors hover:text-white"
+                        >
+                          {copiedLink ? 'Copied!' : 'Copy Link'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
-
-                {/* Optional Step Actions */}
-                {step.number === 1 && (
-                  <div className="mt-4 pt-3 border-t border-premium flex justify-end">
-                    <a
-                      href="/downloads/WITHUS-Extension.zip"
-                      className="text-[10px] font-bold text-premium-main hover:underline flex items-center gap-1.5"
-                    >
-                      Download Package <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                )}
-
-                {step.number === 3 && step.action && (
-                  <div className="mt-4 pt-3 border-t border-premium flex justify-end">
-                    <button
-                      onClick={step.action}
-                      className="text-[10px] font-bold text-premium-main hover:underline"
-                    >
-                      {copiedLink ? 'Copied!' : 'Copy Link'}
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Verification Checklist Card */}
-        <div className="premium-card p-6">
-          <h2 className="text-xs font-bold text-premium-main uppercase tracking-wider mb-4 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-            Verification Checklist
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] text-premium-muted font-semibold">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-              WithUs extension badge appears in your browser bar
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-              Clicking the icon shows "WithUs Vault" pop-up
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-              Status indicator in top right shows a green dot when logged in
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-              Autofill prompts automatically trigger on logins (e.g. Vercel, GoDaddy)
-            </div>
+              );
+            })}
           </div>
-        </div>
+        </section>
 
-        {/* Troubleshooting Section */}
-        <div className="premium-card p-6">
-          <h2 className="text-xs font-bold text-premium-main uppercase tracking-wider mb-4 flex items-center gap-2">
-            <Info className="w-4 h-4 text-amber-500" />
+        <section className="bg-[#181818] px-5 py-5">
+          <h2 className="text-base font-medium text-[#eeeeee]">
+            Verification
+          </h2>
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            {[
+              'WithUs extension badge appears in your browser bar',
+              'Clicking the icon shows the WithUs Vault pop-up',
+              'Status indicator shows a green dot when logged in',
+              'Autofill prompts trigger automatically on supported login pages',
+            ].map((item) => (
+              <div key={item} className="flex items-start gap-3 text-sm text-[#888888]">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#bbbbbb]" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-[#181818] px-5 py-5">
+          <h2 className="text-base font-medium text-[#eeeeee]">
             Troubleshooting
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-1.5">
-              <h3 className="text-xs font-bold text-premium-main flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+
+          <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
+              <h3 className="text-sm font-medium text-[#dddddd]">
                 Extension icon not showing in toolbar?
               </h3>
-              <p className="text-[11px] text-premium-muted leading-relaxed font-semibold pl-3.5">
-                Click the Extensions icon (puzzle piece) in your browser's toolbar and select the pin icon next to <span className="font-bold text-premium-main">WithUs Vault</span> to keep it visible.
+              <p className="mt-2 text-sm leading-5 text-[#777777]">
+                Open the Extensions menu in your browser and pin WithUs Vault to keep it visible.
               </p>
             </div>
-            <div className="space-y-1.5">
-              <h3 className="text-xs font-bold text-premium-main flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+
+            <div>
+              <h3 className="text-sm font-medium text-[#dddddd]">
                 Autofill prompts not triggering?
               </h3>
-              <p className="text-[11px] text-premium-muted leading-relaxed font-semibold pl-3.5">
-                Open the extension pop-up and confirm that the status dot in the top right is green (logged in). If it's grey, click <span className="font-bold text-premium-main">Sign In</span> first.
+              <p className="mt-2 text-sm leading-5 text-[#777777]">
+                Open the extension pop-up and confirm that you are signed in. If the status is grey, sign in first.
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Support & Privacy Footer */}
-        <div className="pt-4 flex items-center justify-between border-t border-premium/50 text-[10px] text-premium-muted font-bold">
-          <div>
-            &copy; {new Date().getFullYear()} WithUs. All rights reserved.
-          </div>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-premium-main transition-colors hover:underline">
+        <div className="flex items-center justify-between pt-2 text-xs text-[#555555]">
+          <span>&copy; {new Date().getFullYear()} WithUs</span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/privacy"
+              className="transition-colors hover:text-[#aaaaaa]"
+            >
               Privacy Policy
             </Link>
-            <span>&bull;</span>
-            <a href="mailto:makewithus.in@gmail.com" className="hover:text-premium-main transition-colors hover:underline">
+            <a
+              href="mailto:makewithus.in@gmail.com"
+              className="transition-colors hover:text-[#aaaaaa]"
+            >
               Support
             </a>
           </div>
         </div>
-
       </div>
     </DashboardShell>
   );
