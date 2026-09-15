@@ -7,21 +7,14 @@ import { useOrgMembers } from '../../hooks/useOrganization';
 import {
   Check,
   X,
-  CreditCard,
   Users,
-  Zap,
-  Shield,
   Clock,
-  Sparkles,
-  Building2,
   ChevronDown,
   ChevronUp,
   AlertCircle,
-  HelpCircle,
-  ArrowRight,
-  Layers,
-  Activity,
-  CheckCircle2,
+  Shield,
+  Zap,
+  Building2,
 } from 'lucide-react';
 import {
   PRICING_CONFIG,
@@ -43,33 +36,17 @@ import type { BillingCycle, PlanTier } from '../../lib/subscription/types';
 type FeatureValue = boolean | string | number | null;
 
 function FeatureCell({ value }: { value: FeatureValue }) {
-  if (value === true)
-    return (
-      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-        <Check className="w-3 h-3 stroke-[3]" />
-      </span>
-    );
-  if (value === false)
-    return (
-      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-600">
-        <X className="w-3 h-3 stroke-[2.5]" />
-      </span>
-    );
+  if (value === true) {
+    return <Check className="mx-auto h-4 w-4 text-[#eeeeee]" />;
+  }
+
+  if (value === false) {
+    return <X className="mx-auto h-4 w-4 text-[#444444]" />;
+  }
+
   return (
-    <span className="text-[11px] font-bold text-premium-main tracking-tight font-number">
+    <span className="text-sm font-medium text-[#aaaaaa]">
       {String(value ?? '—')}
-    </span>
-  );
-}
-
-// ─── Plan Badge ───────────────────────────────────────────────────────────────
-
-function PlanBadge({ plan, currentPlan }: { plan: PlanTier; currentPlan: PlanTier }) {
-  if (plan !== currentPlan) return null;
-  return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 rounded-full">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-      Current Plan
     </span>
   );
 }
@@ -223,266 +200,227 @@ export default function PricingPage() {
 
   return (
     <DashboardShell>
-      <div className="flex flex-col h-full overflow-y-auto bg-[#f5f5f7] dark:bg-[#09090b]">
-        <div className="max-w-6xl mx-auto w-full px-6 py-8 space-y-8">
+      <div className="h-full overflow-y-auto bg-[#111111]">
+        <div className="mx-auto w-full max-w-6xl px-6 py-8 space-y-7">
 
-          {/* ─── Hero Header & Status Banner ─────────────────────────────────── */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-premium pb-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm">
-                  <CreditCard className="w-4 h-4" />
-                </div>
-                <span className="text-[11px] font-extrabold uppercase tracking-widest text-premium-muted">
-                  Billing & Organization Plans
-                </span>
-              </div>
-              <h1 className="text-2xl font-black text-premium-main tracking-tight font-number">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
                 Subscription & Pricing
               </h1>
-              <p className="text-xs text-premium-muted font-medium max-w-xl">
-                Scale your security infrastructure with flexible per-user billing. Seamlessly upgrade or adjust capacity at any time.
+              <p className="mt-1 text-sm text-[#777777]">
+                Plans and billing for your organization.
               </p>
             </div>
 
-            {/* Active Seats Summary Card */}
-            <div className="flex items-center gap-4 px-4 py-3 bg-premium-surface border border-premium shadow-sm rounded-none">
-              <div className="p-2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-premium-muted">Active Org Seats</span>
-                  <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-zinc-100 dark:bg-zinc-800 text-premium-main font-number">
-                    {activeUsers}
-                  </span>
-                </div>
-                <p className="text-[11px] font-bold text-premium-main font-number mt-0.5">
-                  {activeUsers} Member{activeUsers !== 1 ? 's' : ''} <span className="text-[10px] font-semibold text-premium-muted">(incl. Admins)</span>
-                </p>
-              </div>
+            <div className="text-left sm:text-right">
+              <p className="text-xs text-[#555555]">Active members</p>
+              <p className="mt-0.5 text-sm font-medium text-[#eeeeee]">
+                {activeUsers}
+              </p>
             </div>
           </div>
 
-          {/* ─── Billing Cycle Segmented Switcher ─────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-premium-surface border border-premium p-3">
-            <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-premium-muted" />
-              <span className="text-xs font-bold text-premium-main">Billing Cadence</span>
-            </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-sm font-medium text-[#aaaaaa]">Billing cycle</span>
 
-            <div className="flex items-center gap-2">
-              <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 border border-premium rounded-none">
-                <button
-                  type="button"
-                  onClick={() => setBillingCycle('MONTHLY')}
-                  className={`px-4 py-1.5 text-xs font-extrabold transition-all ${
-                    billingCycle === 'MONTHLY'
-                      ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm'
-                      : 'text-premium-muted hover:text-premium-main'
-                  }`}
-                  id="billing-cycle-monthly"
-                >
-                  Monthly Billing
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBillingCycle('ANNUAL')}
-                  className={`px-4 py-1.5 text-xs font-extrabold transition-all flex items-center gap-1.5 ${
-                    billingCycle === 'ANNUAL'
-                      ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm'
-                      : 'text-premium-muted hover:text-premium-main'
-                  }`}
-                  id="billing-cycle-annual"
-                >
-                  <span>Annual Billing</span>
-                  <span className="px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider bg-emerald-500 text-white dark:bg-emerald-600 rounded-none">
-                    Save 17%
-                  </span>
-                </button>
-              </div>
+            <div className="flex bg-[#181818] p-1">
+              <button
+                type="button"
+                onClick={() => setBillingCycle('MONTHLY')}
+                className={`px-4 py-2 text-sm transition-colors ${
+                  billingCycle === 'MONTHLY'
+                    ? 'bg-[#2a2a2a] text-[#eeeeee]'
+                    : 'text-[#666666] hover:text-[#aaaaaa]'
+                }`}
+                id="billing-cycle-monthly"
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingCycle('ANNUAL')}
+                className={`flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
+                  billingCycle === 'ANNUAL'
+                    ? 'bg-[#2a2a2a] text-[#eeeeee]'
+                    : 'text-[#666666] hover:text-[#aaaaaa]'
+                }`}
+                id="billing-cycle-annual"
+              >
+                Annual
+                <span className="text-xs text-[#888888]">
+                  {ANNUAL_SAVINGS_LABEL}
+                </span>
+              </button>
             </div>
           </div>
 
-          {/* ─── Plan Tier Cards Grid ─────────────────────────────────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
             {plans.map((plan) => {
               const calc = billing[plan.id];
               const isCurrent = plan.id === currentPlan;
-              const isHighlighted = plan.highlighted;
 
               return (
                 <div
                   key={plan.id}
-                  className={`relative flex flex-col bg-premium-surface border transition-all duration-200 ${
-                    isHighlighted
-                      ? 'border-zinc-900 dark:border-zinc-100 shadow-xl ring-1 ring-zinc-900 dark:ring-zinc-100'
-                      : 'border-premium hover:border-zinc-400 dark:hover:border-zinc-700 shadow-sm'
-                  }`}
+                  className="flex flex-col bg-[#181818] transition-colors hover:bg-[#1d1d1d]"
                   id={`plan-card-${plan.id.toLowerCase()}`}
                 >
-                  {/* Highlight Banner */}
-                  {plan.badgeText && (
-                    <div className="w-full bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-black uppercase tracking-widest py-1 text-center font-number">
-                      {plan.badgeText}
-                    </div>
-                  )}
-
-                  <div className="p-6 flex flex-col justify-between flex-1 gap-6">
-                    {/* Header & Title */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <div className={`p-2 rounded-sm ${
-                            isHighlighted 
-                              ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' 
-                              : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
-                          }`}>
-                            {plan.icon}
-                          </div>
-                          <h3 className="text-base font-black text-premium-main tracking-tight font-number">
-                            {plan.name}
-                          </h3>
-                        </div>
-                        <PlanBadge plan={plan.id} currentPlan={currentPlan} />
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-base font-semibold text-[#eeeeee]">
+                          {plan.name}
+                        </h3>
+                        <p className="mt-1 text-sm leading-5 text-[#777777]">
+                          {plan.tagline}
+                        </p>
                       </div>
-                      <p className="text-[11px] font-semibold text-premium-muted leading-relaxed">
-                        {plan.tagline}
-                      </p>
+
+                      {isCurrent && (
+                        <span className="shrink-0 text-xs font-medium text-[#aaaaaa]">
+                          Current
+                        </span>
+                      )}
                     </div>
 
-                    {/* Price Section */}
-                    <div className="space-y-2 py-3 border-y border-premium">
+                    <div className="mt-6">
                       {calc.totalAmount === null ? (
                         <div>
                           <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-black text-premium-main font-number tracking-tight">
+                            <span className="text-3xl font-semibold tracking-tight text-[#eeeeee]">
                               {formatINR(calc.basePrice)}
                             </span>
-                            <span className="text-xs font-extrabold text-premium-muted">
+                            <span className="text-sm text-[#666666]">
                               /{billingCycle === 'MONTHLY' ? 'mo' : 'yr'}
                             </span>
                           </div>
-                          <p className="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3 shrink-0" />
+                          <p className="mt-2 text-xs text-[#666666]">
                             Annual extra-user rate pending confirmation
                           </p>
                         </div>
                       ) : (
                         <div>
                           <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-black text-premium-main font-number tracking-tight">
+                            <span className="text-3xl font-semibold tracking-tight text-[#eeeeee]">
                               {formatINR(calc.totalAmount)}
                             </span>
-                            <span className="text-xs font-extrabold text-premium-muted">
+                            <span className="text-sm text-[#666666]">
                               /{billingCycle === 'MONTHLY' ? 'month' : 'year'}
                             </span>
                           </div>
+
                           {plan.id !== 'FREE' && (
-                            <p className="text-[10px] font-bold text-premium-muted mt-1 font-number">
-                              Base: {billingCycle === 'MONTHLY' ? formatMonthly(calc.basePrice) : formatAnnual(calc.basePrice)}
-                              {' · '}Includes {PRICING_CONFIG[plan.id].baseUsers} users
+                            <p className="mt-2 text-xs text-[#666666]">
+                              Base {billingCycle === 'MONTHLY'
+                                ? formatMonthly(calc.basePrice)
+                                : formatAnnual(calc.basePrice)}
+                              {' · '}
+                              {PRICING_CONFIG[plan.id].baseUsers} users included
                             </p>
                           )}
                         </div>
                       )}
 
-                      {/* Extra User Itemized Calculation Pill */}
                       {calc.extraUsers > 0 && (
-                        <div className="p-2.5 bg-zinc-100/70 dark:bg-zinc-900/80 border border-premium space-y-1">
-                          <div className="flex items-center justify-between text-[10px] font-black text-premium-main">
-                            <span>Extra Users ({calc.extraUsers})</span>
-                            <span className="font-number">
-                              +{calc.extraUsersCharge !== null ? formatINR(calc.extraUsersCharge) : 'TBD'}
+                        <div className="mt-4 bg-[#111111] px-3 py-2.5">
+                          <div className="flex items-center justify-between text-xs text-[#aaaaaa]">
+                            <span>Extra users ({calc.extraUsers})</span>
+                            <span>
+                              +{calc.extraUsersCharge !== null
+                                ? formatINR(calc.extraUsersCharge)
+                                : 'TBD'}
                             </span>
                           </div>
-                          <p className="text-[9px] font-semibold text-premium-muted">
-                            {calc.extraUsers} user{calc.extraUsers > 1 ? 's' : ''} above {PRICING_CONFIG[plan.id].baseUsers} base limit @ {calc.extraUserRate !== null ? formatINR(calc.extraUserRate) : 'TBD'}/user
+                          <p className="mt-1 text-xs leading-4 text-[#555555]">
+                            {calc.extraUsers} user{calc.extraUsers > 1 ? 's' : ''} above the{' '}
+                            {PRICING_CONFIG[plan.id].baseUsers}-user base
                           </p>
                         </div>
                       )}
                     </div>
 
-                    {/* Features Checklist */}
-                    <div className="space-y-2.5">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-premium-muted">
-                        Key Entitlements
-                      </span>
-                      <ul className="space-y-2 text-[11px] font-semibold text-premium-main">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                    <div className="mt-7">
+                      <p className="mb-3 text-xs font-medium text-[#666666]">
+                        Included
+                      </p>
+
+                      <ul className="space-y-2.5 text-sm text-[#aaaaaa]">
+                        <li className="flex items-start gap-2.5">
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dddddd]" />
                           <span>
-                            <strong>{PRICING_CONFIG[plan.id].baseUsers} Active Users</strong> Included
+                            {PRICING_CONFIG[plan.id].baseUsers} active users
                           </span>
                         </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+
+                        <li className="flex items-start gap-2.5">
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dddddd]" />
                           <span>
                             {plan.id === 'FREE'
-                              ? `Select any ${PLAN_FEATURES.FREE.platformLimit} of ${TOTAL_PLATFORM_COUNT} platforms`
-                              : `Access all ${TOTAL_PLATFORM_COUNT} supported platforms`}
+                              ? `Select ${PLAN_FEATURES.FREE.platformLimit} of ${TOTAL_PLATFORM_COUNT} platforms`
+                              : `All ${TOTAL_PLATFORM_COUNT} supported platforms`}
                           </span>
                         </li>
+
                         {plan.id !== 'FREE' && (
-                          <li className="flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                          <li className="flex items-start gap-2.5">
+                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dddddd]" />
                             <span>
-                              Extra Seats @ {CURRENCY_SYMBOL}{PRICING_CONFIG[plan.id as 'PRO' | 'BUSINESS'].extraUserMonthly}/user/mo
+                              Extra seats @ {CURRENCY_SYMBOL}
+                              {PRICING_CONFIG[plan.id as 'PRO' | 'BUSINESS'].extraUserMonthly}/user/mo
                             </span>
                           </li>
                         )}
+
                         {PLAN_FEATURES[plan.id].otpFetching && (
-                          <li className="flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                            <span>Automated Gmail OTP Extraction</span>
+                          <li className="flex items-start gap-2.5">
+                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dddddd]" />
+                            <span>Automated Gmail OTP extraction</span>
                           </li>
                         )}
+
                         {PLAN_FEATURES[plan.id].moduleBasedControl && (
-                          <li className="flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                            <span>Module-Level Element Redaction</span>
+                          <li className="flex items-start gap-2.5">
+                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dddddd]" />
+                            <span>Module-level element redaction</span>
                           </li>
                         )}
+
                         {PLAN_FEATURES[plan.id].prioritySupport && (
-                          <li className="flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                            <span>Priority Operations Support</span>
+                          <li className="flex items-start gap-2.5">
+                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dddddd]" />
+                            <span>Priority operations support</span>
                           </li>
                         )}
                       </ul>
                     </div>
 
-                    {/* Action Button */}
-                    <div className="pt-2">
+                    <div className="mt-auto pt-7">
                       {isCurrent ? (
                         <button
                           disabled
-                          className="w-full py-2.5 px-4 text-xs font-black uppercase tracking-wider bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500 border border-premium cursor-not-allowed text-center"
+                          className="w-full bg-[#242424] px-4 py-2.5 text-sm font-medium text-[#777777] cursor-not-allowed"
                           id={`cta-current-${plan.id.toLowerCase()}`}
                         >
-                          Active Subscription
+                          Active subscription
                         </button>
                       ) : plan.id === 'FREE' ? (
                         <button
                           disabled
-                          className="w-full py-2.5 px-4 text-xs font-extrabold text-premium-muted border border-premium cursor-not-allowed text-center"
+                          className="w-full bg-[#242424] px-4 py-2.5 text-sm font-medium text-[#666666] cursor-not-allowed"
                           id={`cta-downgrade-${plan.id.toLowerCase()}`}
                         >
-                          Included Base Tier
+                          Included base tier
                         </button>
                       ) : (
                         <button
                           disabled
-                          className={`w-full py-2.5 px-4 text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-not-allowed ${
-                            isHighlighted
-                              ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-md'
-                              : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-premium'
-                          }`}
+                          className="flex w-full items-center justify-center gap-2 bg-[#eeeeee] px-4 py-2.5 text-sm font-medium text-[#111111] cursor-not-allowed"
                           id={`cta-upgrade-${plan.id.toLowerCase()}`}
                           title="Payment Gateway Integration Pending"
                         >
-                          <Clock className="w-3.5 h-3.5" />
-                          <span>Upgrade to {plan.name}</span>
+                          <Clock className="h-4 w-4" />
+                          Upgrade to {plan.name}
                         </button>
                       )}
                     </div>
@@ -492,86 +430,87 @@ export default function PricingPage() {
             })}
           </div>
 
-          {/* ─── Pending Gateway Status Banner ───────────────────────────────── */}
-          <div className="p-4 bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                <Clock className="w-4 h-4" />
-              </div>
+          <div className="bg-[#181818] px-5 py-4">
+            <div className="flex items-start gap-3">
+              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-[#777777]" />
               <div>
-                <h4 className="text-xs font-bold text-premium-main">Payment Gateway Setup in Progress</h4>
-                <p className="text-[11px] text-premium-muted font-medium mt-0.5">
-                  Subscriptions are currently running in evaluation mode. Once the banking gateway integration is authorized, automated upgrades will be unlocked.
+                <h4 className="text-sm font-medium text-[#dddddd]">
+                  Payment gateway pending
+                </h4>
+                <p className="mt-1 text-sm leading-5 text-[#666666]">
+                  Subscriptions are currently running in evaluation mode. Automated
+                  upgrades will be available once the banking gateway integration is authorized.
                 </p>
               </div>
             </div>
-            <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap">
-              Gateways Pending
-            </span>
           </div>
 
-          {/* ─── Expandable Feature Comparison Table ───────────────────────────── */}
-          <div className="bg-premium-surface border border-premium">
+          <div className="bg-[#181818]">
             <button
               type="button"
-              className="w-full flex items-center justify-between px-6 py-4 border-b border-premium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
+              className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:bg-[#1d1d1d]"
               onClick={() => setShowFeatureMatrix(v => !v)}
               id="feature-matrix-toggle"
             >
-              <div className="flex items-center gap-2.5">
-                <Sparkles className="w-4 h-4 text-premium-muted" />
-                <span className="text-xs font-black uppercase tracking-wider text-premium-main">
-                  Detailed Feature Breakdown
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-premium-muted text-xs font-semibold">
-                <span>{showFeatureMatrix ? 'Collapse Table' : 'Expand Matrix'}</span>
-                {showFeatureMatrix ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
+              <span className="text-sm font-medium text-[#dddddd]">
+                Feature comparison
+              </span>
+              {showFeatureMatrix ? (
+                <ChevronUp className="h-4 w-4 text-[#777777]" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-[#777777]" />
+              )}
             </button>
 
             {showFeatureMatrix && (
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse" id="feature-comparison-table">
+                <table
+                  className="w-full min-w-[700px] border-collapse text-left"
+                  id="feature-comparison-table"
+                >
                   <thead>
-                    <tr className="border-b border-premium bg-zinc-100/50 dark:bg-zinc-900/50">
-                      <th className="px-6 py-3.5 text-[10px] font-black uppercase tracking-wider text-premium-muted w-5/12">
-                        System Capability / Module
+                    <tr className="bg-[#202020]">
+                      <th className="w-5/12 px-5 py-3.5 text-sm font-medium text-[#aaaaaa]">
+                        Capability
                       </th>
-                      <th className="px-4 py-3.5 text-center text-[10px] font-black uppercase tracking-wider text-premium-muted w-2/12">
+                      <th className="w-2/12 px-4 py-3.5 text-center text-sm font-medium text-[#777777]">
                         Free
                       </th>
-                      <th className="px-4 py-3.5 text-center text-[10px] font-black uppercase tracking-wider text-zinc-900 dark:text-zinc-100 bg-zinc-200/50 dark:bg-zinc-800/50 w-2/12">
+                      <th className="w-2/12 bg-[#292929] px-4 py-3.5 text-center text-sm font-medium text-[#eeeeee]">
                         Pro
                       </th>
-                      <th className="px-4 py-3.5 text-center text-[10px] font-black uppercase tracking-wider text-premium-muted w-3/12">
+                      <th className="w-3/12 px-4 py-3.5 text-center text-sm font-medium text-[#777777]">
                         Business
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-premium">
+                  <tbody>
                     {featureSections.map((section) => (
                       <React.Fragment key={section.category}>
-                        <tr className="bg-zinc-100 dark:bg-zinc-900">
+                        <tr>
                           <td
                             colSpan={4}
-                            className="px-6 py-2 text-[10px] font-black uppercase tracking-widest text-premium-muted"
+                            className="bg-[#111111] px-5 pt-6 pb-2 text-xs font-medium text-[#777777]"
                           >
                             {section.category}
                           </td>
                         </tr>
+
                         {section.rows.map((row) => (
-                          <tr key={row.label} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-900/30 transition-colors">
-                            <td className="px-6 py-3 text-[11px] font-bold text-premium-main">
+                          <tr
+                            key={row.label}
+                            className="bg-[#181818] transition-colors hover:bg-[#1d1d1d]"
+                          >
+                            <td className="px-5 py-3.5 text-sm text-[#aaaaaa]">
                               {row.label}
                             </td>
-                            <td className="px-4 py-3 text-center">
+                            <td className="px-4 py-3.5 text-center">
                               <FeatureCell value={row.free} />
                             </td>
-                            <td className="px-4 py-3 text-center bg-zinc-50/50 dark:bg-zinc-900/20">
+                            <td className="bg-[#1d1d1d] px-4 py-3.5 text-center">
                               <FeatureCell value={row.pro} />
                             </td>
-                            <td className="px-4 py-3 text-center">
+                            <td className="px-4 py-3.5 text-center">
                               <FeatureCell value={row.business} />
                             </td>
                           </tr>
@@ -584,31 +523,37 @@ export default function PricingPage() {
             )}
           </div>
 
-          {/* ─── Platform Selection Policy & Billing Calculation Rules ───────── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Free Plan Policy */}
-            <div className="p-5 bg-premium-surface border border-premium space-y-2.5">
-              <div className="flex items-center gap-2 text-premium-main">
-                <AlertCircle className="w-4 h-4 text-premium-muted" />
-                <h4 className="text-xs font-black uppercase tracking-wider">
-                  Free Tier Platform Selection Rule
+          <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+            <div className="bg-[#181818] p-5">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-[#777777]" />
+                <h4 className="text-sm font-medium text-[#dddddd]">
+                  Free tier platform selection
                 </h4>
               </div>
-              <p className="text-[11px] font-medium text-premium-muted leading-relaxed">
-                Free accounts can select any <strong className="text-premium-main">2 of {TOTAL_PLATFORM_COUNT} supported platforms</strong>. To prevent abuse, once selected, a platform can only be replaced after a <strong className="text-premium-main">{PLAN_FEATURES.FREE.platformCooldownDays}-day waiting period</strong>.
+              <p className="mt-2 text-sm leading-5 text-[#666666]">
+                Free accounts can select any{' '}
+                <span className="text-[#aaaaaa]">
+                  2 of {TOTAL_PLATFORM_COUNT} supported platforms
+                </span>
+                . A selected platform can be replaced after the{' '}
+                <span className="text-[#aaaaaa]">
+                  {PLAN_FEATURES.FREE.platformCooldownDays}-day waiting period
+                </span>
+                .
               </p>
             </div>
 
-            {/* Automated Seat Recalculation Rules */}
-            <div className="p-5 bg-premium-surface border border-premium space-y-2.5">
-              <div className="flex items-center gap-2 text-premium-main">
-                <Activity className="w-4 h-4 text-premium-muted" />
-                <h4 className="text-xs font-black uppercase tracking-wider">
-                  Automated Seat Recalculation
+            <div className="bg-[#181818] p-5">
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-[#777777]" />
+                <h4 className="text-sm font-medium text-[#dddddd]">
+                  Seat calculation
                 </h4>
               </div>
-              <p className="text-[11px] font-medium text-premium-muted leading-relaxed">
-                Subscription totals automatically adjust as active organization members are added or removed. All admins and owners count towards the total active seat count.
+              <p className="mt-2 text-sm leading-5 text-[#666666]">
+                Subscription totals adjust as active organization members are added
+                or removed. Admins and owners count towards the active seat total.
               </p>
             </div>
           </div>
