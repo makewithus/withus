@@ -127,28 +127,24 @@ export default function SuperAdminAuditPage() {
   const isFiltered = search || fromDate || toDate;
 
   // ── View metadata ──────────────────────────────────────────────────────────
-  const viewMeta: Record<AuditView, { title: string; desc: string; icon: React.ElementType; emptyMsg: string }> = {
+  const viewMeta: Record<AuditView, { title: string; icon: React.ElementType; emptyMsg: string }> = {
     org: {
       title: 'Audit Logs',
-      desc: 'Platform-wide security audit trail across all organisations.',
       icon: Shield,
       emptyMsg: 'No matching audit events found for the selected filters.',
     },
     platform: {
       title: 'Super Admin Log',
-      desc: 'All actions performed by Super Admin users on this platform.',
       icon: Shield,
       emptyMsg: 'No Super Admin actions recorded.',
     },
     login: {
       title: 'Login Activity',
-      desc: 'User authentication events — logins, logouts, password resets, and failures.',
       icon: LogIn,
       emptyMsg: 'No login activity found for the selected filters.',
     },
     security: {
       title: 'Security Events',
-      desc: 'Failed logins, access-denied events, session revocations, and integration errors.',
       icon: AlertTriangle,
       emptyMsg: 'No security events found for the selected filters.',
     },
@@ -159,148 +155,187 @@ export default function SuperAdminAuditPage() {
   const isPlatformTab = activeView === 'platform';
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="pb-3 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between">
+    <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <MetaIcon className="w-5 h-5" />
-            {meta.title}
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{meta.desc}</p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center bg-[#242424] text-[#999999]">
+              <MetaIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+                {meta.title}
+              </h1>
+            </div>
+          </div>
         </div>
-        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 font-number bg-slate-100 dark:bg-zinc-800 px-3 py-1 rounded border border-slate-200 dark:border-zinc-700">
-          Showing <span className="font-bold text-slate-900 dark:text-slate-100">{filteredEvents.length}</span> events
-        </span>
+
+        <p className="shrink-0 text-sm text-[#666666]">
+          {filteredEvents.length} events
+        </p>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg p-4 shadow-sm space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-          {/* Search input */}
-          <div className="relative md:col-span-10">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <section className="bg-[#181818] p-4">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_auto]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666]" />
             <input
               type="text"
-              placeholder="Search action, actor email, organization, or resource type..."
+              placeholder="Search action, actor, organisation, or resource..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full h-9 pl-9 pr-3 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 placeholder:text-slate-400"
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="h-10 w-full bg-[#111111] pl-10 pr-3 text-sm text-[#eeeeee] outline-none transition-colors placeholder:text-[#555555] focus:bg-[#161616]"
             />
           </div>
-          {/* Reset */}
-          <div className="md:col-span-2 flex items-center justify-end">
-            {isFiltered ? (
-              <button
-                onClick={clearFilters}
-                className="h-9 px-3 w-full text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 rounded hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors flex items-center justify-center gap-1.5"
-              >
-                <RotateCcw className="w-3 h-3" /> Reset
-              </button>
-            ) : (
-              <div className="h-9 px-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1 justify-center">
-                <Filter className="w-3 h-3" /> Filters
-              </div>
-            )}
+
+          {isFiltered ? (
+            <button
+              onClick={clearFilters}
+              className="inline-flex h-10 items-center justify-center gap-2 bg-[#242424] px-4 text-sm font-medium text-[#cccccc] transition-colors hover:bg-[#2b2b2b]"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reset
+            </button>
+          ) : (
+            <div className="flex h-10 items-center gap-2 px-2 text-xs text-[#666666]">
+              <Filter className="h-3.5 w-3.5" />
+              Filters
+            </div>
+          )}
+        </div>
+
+        <div className="mt-2 flex flex-col gap-3 bg-[#141414] p-3 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#bbbbbb]">
+            <Calendar className="h-4 w-4 text-[#666666]" />
+            Timestamp
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="flex items-center gap-2 text-xs text-[#666666]">
+              From
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => {
+                  setFromDate(e.target.value);
+                  setPage(1);
+                }}
+                className="h-9 bg-[#111111] px-2.5 text-sm text-[#cccccc] outline-none focus:bg-[#161616]"
+              />
+            </label>
+
+            <label className="flex items-center gap-2 text-xs text-[#666666]">
+              To
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                  setPage(1);
+                }}
+                className="h-9 bg-[#111111] px-2.5 text-sm text-[#cccccc] outline-none focus:bg-[#161616]"
+              />
+            </label>
           </div>
         </div>
 
-        {/* Date range */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3 border-t border-slate-100 dark:border-zinc-800/80">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 min-w-fit">
-            <Calendar className="w-3.5 h-3.5 text-slate-400" />
-            <span>Filter by Timestamp:</span>
-          </div>
-          <div className="flex items-center gap-2 flex-1 sm:flex-none">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">From:</span>
-              <input type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setPage(1); }}
-                className="h-8 px-2 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400" />
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">To:</span>
-              <input type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setPage(1); }}
-                className="h-8 px-2 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400" />
-            </div>
-          </div>
-        </div>
-
-        {/* Login/Security tab context note */}
         {(activeView === 'login' || activeView === 'security') && (
-          <div className="flex items-start gap-2 p-3 rounded bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/60">
-            <MetaIcon className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
-            <p className="text-[10px] text-blue-700 dark:text-blue-400 leading-relaxed">
+          <div className="mt-2 flex items-start gap-2 bg-[#141414] p-3">
+            <MetaIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#777777]" />
+            <p className="text-xs leading-5 text-[#777777]">
               {activeView === 'login'
-                ? 'Showing only authentication-related events (auth.login, auth.logout, auth.login_failed, etc.) filtered from the full audit log.'
-                : 'Showing events associated with access failures, revocations, and integration errors filtered from the full audit log.'}
+                ? 'Showing authentication-related events filtered from the full audit log.'
+                : 'Showing access failures, revocations, and integration errors filtered from the full audit log.'}
             </p>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Table */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg overflow-hidden shadow-sm">
-        <div className="overflow-x-auto w-full">
-          <table className="min-w-full divide-y divide-slate-200 dark:divide-zinc-800">
-            <thead className="bg-slate-50 dark:bg-zinc-800/50">
-              <tr>
-                {isPlatformTab
-                  ? ['Action', 'Admin Actor', 'Target Type', 'Target ID', 'Timestamp'].map((h, i) => (
-                      <th key={h} scope="col" className={`px-5 py-3 text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider ${i === 4 ? 'text-right' : 'text-left'}`}>{h}</th>
-                    ))
-                  : ['Action', 'Actor Email', 'Organisation', 'Resource Type', 'Timestamp'].map((h, i) => (
-                      <th key={h} scope="col" className={`px-5 py-3 text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider ${i === 4 ? 'text-right' : 'text-left'}`}>{h}</th>
-                    ))
-                }
+      <section className="overflow-hidden bg-[#181818]">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left">
+            <thead>
+              <tr className="bg-[#1f1f1f]">
+                {(isPlatformTab
+                  ? ['Action', 'Admin Actor', 'Target Type', 'Target ID', 'Timestamp']
+                  : ['Action', 'Actor Email', 'Organisation', 'Resource Type', 'Timestamp']
+                ).map((h, i) => (
+                  <th
+                    key={h}
+                    className={`px-5 py-3 text-xs font-medium text-[#777777] ${
+                      i === 4 ? 'text-right' : ''
+                    }`}
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
+
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <Loader2 className="w-5 h-5 mx-auto mb-2 animate-spin text-slate-700 dark:text-slate-300" />
-                    Loading events...
+                  <td colSpan={5} className="px-5 py-14 text-center">
+                    <Loader2 className="mx-auto mb-3 h-5 w-5 animate-spin text-[#777777]" />
+                    <p className="text-sm text-[#777777]">Loading events...</p>
                   </td>
                 </tr>
               ) : paginatedEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center">
-                    <MetaIcon className="w-6 h-6 mx-auto mb-2 text-slate-400" />
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{meta.emptyMsg}</p>
+                  <td colSpan={5} className="px-5 py-14 text-center">
+                    <MetaIcon className="mx-auto mb-3 h-6 w-6 text-[#666666]" />
+                    <p className="text-sm text-[#777777]">{meta.emptyMsg}</p>
                   </td>
                 </tr>
               ) : isPlatformTab ? (
                 paginatedEvents.map((e: any) => (
-                  <tr key={e.id} className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/40 transition-colors">
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-mono font-bold text-slate-900 dark:text-slate-100">{e.action}</td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-mono font-medium text-slate-800 dark:text-slate-200">
-                      {e.actor?.email ?? <span className="text-slate-400">Super Admin</span>}
+                  <tr
+                    key={e.id}
+                    className="bg-[#181818] transition-colors hover:bg-[#1d1d1d]"
+                  >
+                    <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-[#eeeeee]">
+                      {e.action}
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      {e.targetType ?? <span className="text-slate-400">—</span>}
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-[#b0b0b0]">
+                      {e.actor?.email ?? (
+                        <span className="text-[#555555]">Super Admin</span>
+                      )}
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-mono text-slate-700 dark:text-slate-300">
-                      {e.targetId ? e.targetId.slice(0, 16) + '...' : <span className="text-slate-400">—</span>}
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-[#b0b0b0]">
+                      {e.targetType ?? <span className="text-[#555555]">—</span>}
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-semibold text-slate-800 dark:text-slate-200 font-number text-right">{formatDate(e.createdAt)}</td>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-[#888888]">
+                      {e.targetId ? e.targetId.slice(0, 16) + '...' : <span className="text-[#555555]">—</span>}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-right text-sm text-[#b0b0b0]">
+                      {formatDate(e.createdAt)}
+                    </td>
                   </tr>
                 ))
               ) : (
                 paginatedEvents.map((e: any) => (
-                  <tr key={e.id} className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/40 transition-colors">
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-mono font-bold text-slate-900 dark:text-slate-100">{e.action}</td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-mono font-medium text-slate-800 dark:text-slate-200">
-                      {e.actor?.email ?? <span className="inline-block px-2 py-0.5 text-[11px] text-slate-500 bg-slate-100 dark:bg-zinc-800 rounded">System</span>}
+                  <tr
+                    key={e.id}
+                    className="bg-[#181818] transition-colors hover:bg-[#1d1d1d]"
+                  >
+                    <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-[#eeeeee]">
+                      {e.action}
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs">
-                      {e.organization?.name
-                        ? <span className="font-semibold text-slate-900 dark:text-slate-100">{e.organization.name}</span>
-                        : <span className="text-slate-400">—</span>}
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-[#b0b0b0]">
+                      {e.actor?.email ?? <span className="text-[#555555]">System</span>}
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      {e.resourceType ?? <span className="text-slate-400">—</span>}
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-[#b0b0b0]">
+                      {e.organization?.name ?? <span className="text-[#555555]">—</span>}
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-semibold text-slate-800 dark:text-slate-200 font-number text-right">{formatDate(e.createdAt)}</td>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-[#999999]">
+                      {e.resourceType ?? <span className="text-[#555555]">—</span>}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-right text-sm text-[#b0b0b0]">
+                      {formatDate(e.createdAt)}
+                    </td>
                   </tr>
                 ))
               )}
@@ -308,25 +343,32 @@ export default function SuperAdminAuditPage() {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="px-5 py-3 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-800/30">
-          <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-            Page <span className="font-bold text-slate-900 dark:text-slate-100 font-number">{page}</span> of{' '}
-            <span className="font-bold text-slate-900 dark:text-slate-100 font-number">{totalFilteredPages}</span>
-            {' '}· <span className="font-bold text-slate-900 dark:text-slate-100 font-number">{filteredEvents.length}</span> matching events
+        <div className="flex items-center justify-between bg-[#141414] px-5 py-3">
+          <p className="text-sm text-[#666666]">
+            Page <span className="text-[#eeeeee]">{page}</span> of{' '}
+            <span className="text-[#eeeeee]">{totalFilteredPages}</span>
+            <span className="mx-2 text-[#444444]">·</span>
+            {filteredEvents.length} matching events
           </p>
-          <div className="flex gap-2">
-            <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}
-              className="px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 rounded hover:bg-slate-50 dark:hover:bg-zinc-700 disabled:opacity-40 transition-colors">
+
+          <div className="flex gap-1">
+            <button
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="bg-[#242424] px-3 py-2 text-xs font-medium text-[#cccccc] transition-colors hover:bg-[#2b2b2b] disabled:cursor-not-allowed disabled:opacity-30"
+            >
               Previous
             </button>
-            <button disabled={page >= totalFilteredPages} onClick={() => setPage(p => Math.min(totalFilteredPages, p + 1))}
-              className="px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 rounded hover:bg-slate-50 dark:hover:bg-zinc-700 disabled:opacity-40 transition-colors">
+            <button
+              disabled={page >= totalFilteredPages}
+              onClick={() => setPage((p) => Math.min(totalFilteredPages, p + 1))}
+              className="bg-[#242424] px-3 py-2 text-xs font-medium text-[#cccccc] transition-colors hover:bg-[#2b2b2b] disabled:cursor-not-allowed disabled:opacity-30"
+            >
               Next
             </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
