@@ -33,9 +33,6 @@ import {
   Activity,
   Plug2,
   TrendingDown,
-  Zap,
-  Repeat,
-  Target,
   FileText,
   LogIn,
   ShieldAlert,
@@ -139,12 +136,6 @@ const navGroups: NavGroup[] = [
         name: 'Analytics',
         href: '/superadmin/analytics',
         icon: BarChart3,
-        children: [
-          { name: 'Product Usage', href: '/superadmin/analytics', icon: BarChart3 },
-          { name: 'Activation', href: '/superadmin/analytics?tab=activation', icon: Zap },
-          { name: 'Retention', href: '/superadmin/analytics?tab=retention', icon: Repeat },
-          { name: 'Conversion', href: '/superadmin/analytics?tab=conversion', icon: Target },
-        ],
       },
       {
         name: 'Security',

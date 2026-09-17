@@ -2,57 +2,14 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { superAdminApi } from '../../../lib/api/superadmin';
-import { BarChart3, RefreshCw, AlertTriangle, TrendingUp, Users, Zap, Clock, AlertCircle } from 'lucide-react';
-
-function ComingSoonCard({
-  icon: Icon,
-  title,
-  subtitle,
-}: {
-  icon: React.ElementType;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <div className="premium-card p-5 flex flex-col items-center justify-center text-center space-y-2 min-h-[120px] border-dashed border-2 border-zinc-200 dark:border-zinc-700/60">
-      <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-        <Icon className="w-4 h-4 text-zinc-400" />
-      </div>
-      <div>
-        <p className="text-xs font-bold text-premium-main">{title}</p>
-        {subtitle && <p className="text-[10px] text-premium-muted mt-0.5">{subtitle}</p>}
-      </div>
-      <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-        Coming Soon
-      </span>
-    </div>
-  );
-}
-
-function MetricCard({
-  icon: Icon,
-  label,
-  value,
-  note,
-  color = 'text-premium-main',
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: number | string;
-  note?: string;
-  color?: string;
-}) {
-  return (
-    <div className="premium-card p-5 space-y-3">
-      <div className="flex items-center gap-2">
-        <Icon className="w-4 h-4 text-zinc-400" />
-        <p className="text-[10px] font-bold uppercase tracking-wider text-premium-muted">{label}</p>
-      </div>
-      <p className={`text-2xl font-bold ${color}`}>{value}</p>
-      {note && <p className="text-[9px] text-premium-muted italic leading-relaxed">{note}</p>}
-    </div>
-  );
-}
+import {
+  BarChart3,
+  RefreshCw,
+  AlertTriangle,
+  TrendingUp,
+  Users,
+  Clock,
+} from 'lucide-react';
 
 export default function AnalyticsPage() {
   const [data, setData] = useState<any>(null);
@@ -79,217 +36,169 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <h2 className="text-base font-bold text-premium-main flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" /> Product Analytics
+          <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Product Analytics
           </h2>
-          <p className="text-[11px] text-premium-muted mt-0.5">Acquisition, activation, engagement, retention, and conversion</p>
+          <p className="mt-1 text-sm text-[#777777]">
+            Acquisition, activation, engagement, and retention.
+          </p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center gap-1">
           <select
             value={days}
             onChange={(e) => setDays(Number(e.target.value))}
-            className="text-xs border border-premium rounded bg-premium-surface text-premium-main px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+            className="h-10 bg-[#181818] px-3 text-sm text-[#cccccc] outline-none focus:bg-[#202020]"
           >
-            <option value={7}>Last 7 Days</option>
-            <option value={30}>Last 30 Days</option>
-            <option value={90}>Last 90 Days</option>
+            <option value={7}>Last 7 days</option>
+            <option value={30}>Last 30 days</option>
+            <option value={90}>Last 90 days</option>
           </select>
+
           <button
             onClick={fetchData}
             disabled={loading}
-            className="flex items-center gap-1.5 premium-button-secondary py-1.5 px-3 text-xs font-semibold"
+            className="inline-flex h-10 items-center gap-2 bg-[#eeeeee] px-3.5 text-sm font-medium text-[#111111] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:bg-[#2a2a2a] disabled:text-[#666666]"
           >
-            <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="premium-card p-4 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 text-xs font-medium flex items-center gap-2">
-          <AlertTriangle className="w-3.5 h-3.5" /> {error}
+        <div className="flex items-center gap-2 bg-[#181818] px-4 py-3 text-sm text-[#b0b0b0]">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-[#888888]" />
+          {error}
         </div>
       )}
 
-      {/* Acquisition */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Acquisition</p>
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
-          {loading ? (
-            [0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="premium-card p-5 h-28 animate-pulse bg-zinc-100 dark:bg-zinc-800" />)
-          ) : (
-            <>
-              <MetricCard
-                icon={TrendingUp}
-                label="New Organisations"
-                value={data?.acquisition?.newOrgs ?? '—'}
-                note={`Last ${days} days`}
-                color="text-emerald-600 dark:text-emerald-400"
-              />
-              <MetricCard
-                icon={Users}
-                label="New Users"
-                value={data?.acquisition?.newUsers ?? '—'}
-                note={`Last ${days} days`}
-                color="text-blue-600 dark:text-blue-400"
-              />
-              <ComingSoonCard
-                icon={TrendingUp}
-                title="Registration Source"
-                subtitle="Source tracking requires UTM parameters stored at registration"
-              />
-              <ComingSoonCard
-                icon={TrendingUp}
-                title="Referral"
-                subtitle="Referral code tracking requires a referral system integrated at sign-up"
-              />
-              <ComingSoonCard
-                icon={TrendingUp}
-                title="Campaign Attribution"
-                subtitle="Campaign tracking requires UTM parameter capture at registration"
-              />
-            </>
-          )}
-        </div>
-      </div>
+      <section>
+        <h3 className="mb-3 text-sm font-medium text-[#eeeeee]">Acquisition</h3>
 
-      {/* Activation */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Activation</p>
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-          {loading ? (
-            [0, 1, 2, 3].map((i) => <div key={i} className="premium-card p-5 h-28 animate-pulse bg-zinc-100 dark:bg-zinc-800" />)
-          ) : (
-            <>
-              <MetricCard
-                icon={Zap}
-                label="Orgs with First Session"
-                value={data?.activation?.orgsWithSession ?? '—'}
-                note="Organisations that ran at least one delegated session"
-                color="text-purple-600 dark:text-purple-400"
-              />
-              <MetricCard
-                icon={Zap}
-                label="Activation Rate"
-                value={`${data?.activation?.activationRate ?? '—'}%`}
-                note="Orgs with at least one session / total orgs"
-              />
-              <MetricCard
-                icon={Zap}
-                label="Orgs with Vault"
-                value={data?.activation?.orgsWithVault ?? '—'}
-                note="Organisations with at least one vault created"
-              />
-              <ComingSoonCard icon={Clock} title="Time to Activation" subtitle="Registration → first session duration" />
-            </>
-          )}
-        </div>
-      </div>
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+          <div className="bg-[#181818] p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center bg-[#242424] text-[#888888]">
+                <TrendingUp className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[#eeeeee]">New organisations</p>
+                <p className="mt-0.5 text-xs text-[#666666]">Last {days} days</p>
+              </div>
+            </div>
+            <p className="mt-6 text-2xl font-semibold tracking-tight text-[#eeeeee]">
+              {loading ? '—' : data?.acquisition?.newOrgs ?? '—'}
+            </p>
+          </div>
 
-      {/* Engagement */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Engagement</p>
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-          {loading ? (
-            [0, 1, 2, 3].map((i) => <div key={i} className="premium-card p-5 h-28 animate-pulse bg-zinc-100 dark:bg-zinc-800" />)
-          ) : (
-            <>
-              <MetricCard
-                icon={Users}
-                label="Active Users (7d)"
-                value={data?.engagement?.activeUsersLast7d ?? '—'}
-                note="Approx. from audit activity"
-                color="text-emerald-600 dark:text-emerald-400"
-              />
-              <MetricCard
-                icon={Users}
-                label="Active Users (30d)"
-                value={data?.engagement?.activeUsersLast30d ?? '—'}
-                note="Approx. from audit activity"
-              />
-              <MetricCard
-                icon={BarChart3}
-                label="Audit Events"
-                value={data?.engagement?.auditEventsInPeriod ?? '—'}
-                note={`Last ${days} days`}
-              />
-              <MetricCard
-                icon={Zap}
-                label="Credential Events"
-                value={data?.engagement?.credentialEvents ?? '—'}
-                note="Secret created/updated/deleted/revealed"
-              />
-            </>
-          )}
+          <div className="bg-[#181818] p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center bg-[#242424] text-[#888888]">
+                <Users className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[#eeeeee]">New users</p>
+                <p className="mt-0.5 text-xs text-[#666666]">Last {days} days</p>
+              </div>
+            </div>
+            <p className="mt-6 text-2xl font-semibold tracking-tight text-[#eeeeee]">
+              {loading ? '—' : data?.acquisition?.newUsers ?? '—'}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-3 text-sm font-medium text-[#eeeeee]">Activation</h3>
+
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
+          {[
+            ['Organisations with first session', data?.activation?.orgsWithSession ?? '—'],
+            ['Activation rate', `${data?.activation?.activationRate ?? '—'}%`],
+            ['Organisations with vault', data?.activation?.orgsWithVault ?? '—'],
+          ].map(([label, value]) => (
+            <div key={label} className="bg-[#181818] p-5">
+              <p className="text-sm font-medium text-[#cccccc]">{label}</p>
+              <p className="mt-5 text-2xl font-semibold tracking-tight text-[#eeeeee]">
+                {loading ? '—' : value}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-3 text-sm font-medium text-[#eeeeee]">Engagement</h3>
+
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-2 lg:grid-cols-4">
+          {[
+            ['Active users (7d)', data?.engagement?.activeUsersLast7d ?? '—'],
+            ['Active users (30d)', data?.engagement?.activeUsersLast30d ?? '—'],
+            ['Audit events', data?.engagement?.auditEventsInPeriod ?? '—'],
+            ['Credential events', data?.engagement?.credentialEvents ?? '—'],
+          ].map(([label, value]) => (
+            <div key={label} className="bg-[#181818] p-5">
+              <p className="text-sm font-medium text-[#cccccc]">{label}</p>
+              <p className="mt-5 text-2xl font-semibold tracking-tight text-[#eeeeee]">
+                {loading ? '—' : value}
+              </p>
+            </div>
+          ))}
         </div>
 
         {!loading && data?.engagement?.note && (
-          <div className="mt-3 flex items-center gap-2 text-[10px] text-premium-muted italic">
-            <AlertCircle className="w-3 h-3 flex-shrink-0" />
-            {data.engagement.note}
-          </div>
+          <p className="mt-2 text-xs text-[#666666]">{data.engagement.note}</p>
         )}
-      </div>
+      </section>
 
-      {/* Retention */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Retention</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <ComingSoonCard
-            icon={Clock}
-            title="7-Day Retention"
-            subtitle="Users/orgs active in the 7 days after their first activity"
-          />
-          <ComingSoonCard
-            icon={Clock}
-            title="30-Day Retention"
-            subtitle="Users/orgs active in the 30 days after their first activity"
-          />
-          <ComingSoonCard
-            icon={Clock}
-            title="90-Day Retention"
-            subtitle="Requires a dedicated daily-active-user tracking table for precision"
-          />
+      <section>
+        <h3 className="mb-3 text-sm font-medium text-[#eeeeee]">Retention</h3>
+
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
+          {[
+            ['7-day retention', 'Not available'],
+            ['30-day retention', 'Not available'],
+            ['90-day retention', 'Not available'],
+          ].map(([label, value]) => (
+            <div key={label} className="bg-[#181818] p-5">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-[#666666]" />
+                <p className="text-sm font-medium text-[#eeeeee]">{label}</p>
+              </div>
+              <p className="mt-5 text-xs text-[#666666]">{value}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* Conversion & Churn */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Conversion & Churn</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="premium-card p-6 flex flex-col items-center justify-center text-center space-y-3 min-h-[160px] border-dashed border-2 border-zinc-200 dark:border-zinc-700/60">
-            <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-zinc-400" />
+      <section>
+        <h3 className="mb-3 text-sm font-medium text-[#eeeeee]">Conversion & Churn</h3>
+
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+          <div className="bg-[#181818] p-5">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-[#666666]" />
+              <p className="text-sm font-medium text-[#eeeeee]">Free → Pro conversion</p>
             </div>
-            <div>
-              <p className="text-xs font-bold text-premium-main">Free → Pro Conversion</p>
-              <p className="text-[10px] text-premium-muted mt-1 leading-relaxed max-w-xs">
-                Conversion rate from Free to Pro plan. Available after subscription & billing integration.
-              </p>
-            </div>
-            <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-              Billing Integration Required
-            </span>
+            <p className="mt-2 text-xs leading-5 text-[#666666]">
+              Available after subscription and billing integration.
+            </p>
           </div>
-          <div className="premium-card p-6 flex flex-col items-center justify-center text-center space-y-3 min-h-[160px] border-dashed border-2 border-zinc-200 dark:border-zinc-700/60">
-            <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4 text-zinc-400" />
+
+          <div className="bg-[#181818] p-5">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-[#666666]" />
+              <p className="text-sm font-medium text-[#eeeeee]">Churn analytics</p>
             </div>
-            <div>
-              <p className="text-xs font-bold text-premium-main">Churn Analytics</p>
-              <p className="text-[10px] text-premium-muted mt-1 leading-relaxed max-w-xs">
-                Cancelled organisations, inactive churn, and churn reasons. Available after subscription tracking.
-              </p>
-            </div>
-            <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-              Billing Integration Required
-            </span>
+            <p className="mt-2 text-xs leading-5 text-[#666666]">
+              Available after subscription tracking is implemented.
+            </p>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
