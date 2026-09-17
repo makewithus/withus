@@ -40,7 +40,6 @@ import {
   LogIn,
   ShieldAlert,
   Database,
-  Server,
   AlertTriangle,
 } from 'lucide-react';
 import clsx from 'clsx';
@@ -163,8 +162,6 @@ const navGroups: NavGroup[] = [
         icon: HeartPulse,
         children: [
           { name: 'API & Database', href: '/superadmin/health', icon: Database },
-          { name: 'Integration Status', href: '/superadmin/health?tab=integrations', icon: HeartPulse },
-          { name: 'Server', href: '/superadmin/health?tab=server', icon: Server },
           { name: 'Errors', href: '/superadmin/health?tab=errors', icon: AlertTriangle },
         ],
       },
