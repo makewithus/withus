@@ -35,5 +35,8 @@
     "packages/db/prisma/schema.prisma": [
       "prisma format --schema=packages/db/prisma/schema.prisma"
     ]
+  },
+  "dependencies": {
+    "recharts": "^3.10.1"
   }
 }
