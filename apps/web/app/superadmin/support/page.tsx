@@ -9,12 +9,9 @@ export default function SupportPage() {
     <div className="mx-auto max-w-5xl space-y-8">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2">
-          <Ticket className="h-4 w-4 text-[#888888]" />
-          <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
-            Support & Help Center
-          </h1>
-        </div>
+        <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+          Support & Help Center
+        </h1>
         <p className="mt-1 text-sm text-[#777777]">
           Get help with your WithUs account and platform access.
         </p>

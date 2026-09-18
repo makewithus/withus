@@ -14,7 +14,6 @@ import {
   Globe,
   Layers,
   Mail,
-  Puzzle,
   Search,
   Server,
   Shield,
@@ -424,8 +423,7 @@ export default function SuperAdminPlatformsPage() {
     <div className="mx-auto max-w-7xl space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-zinc-100">
-            <Puzzle className="h-5 w-5 text-zinc-500" />
+          <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
             WITHUS Platforms
           </h1>
           <p className="mt-1 text-sm text-zinc-500">

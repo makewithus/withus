@@ -56,13 +56,10 @@ export default function SuperAdminOrgsPage() {
     <div className="max-w-7xl mx-auto space-y-7">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center bg-[#242424] text-[#999999]">
-              <Building2 className="h-4 w-4" />
-            </div>
-            <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">Organizations</h1>
-          </div>
-          </div>
+          <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Organizations
+          </h1>
+        </div>
         <p className="shrink-0 text-sm text-[#666666]">
           <span className="font-medium text-[#dddddd]">{filteredOrgs.length}</span> of{' '}
           <span className="font-medium text-[#dddddd]">{data?.total ?? 0}</span> organizations

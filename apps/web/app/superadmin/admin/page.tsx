@@ -31,12 +31,9 @@ export default function AdminManagementPage() {
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="flex items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2">
-            <Crown className="h-4 w-4 text-[#888888]" />
-            <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
-              Admin Management
-            </h2>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Admin Management
+          </h2>
         </div>
 
         <button

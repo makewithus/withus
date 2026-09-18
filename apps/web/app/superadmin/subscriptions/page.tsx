@@ -92,15 +92,10 @@ export default function SubscriptionsPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center bg-[#242424] text-[#999999]">
-              <CreditCard className="h-4 w-4" />
-            </div>
-            <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
-              Subscriptions & Revenue
-            </h2>
-          </div>
-          <p className="mt-2 text-sm text-[#777777]">
+          <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Subscriptions & Revenue
+          </h2>
+          <p className="mt-1 text-sm text-[#777777]">
             Plans, billing, revenue analytics, and churn monitoring.
           </p>
         </div>

@@ -25,9 +25,9 @@ export default function SuperAdminAuditPage() {
   const tabParam = searchParams?.get('tab');
   const activeView: AuditView =
     tabParam === 'login' ? 'login' :
-    tabParam === 'security' ? 'security' :
-    tabParam === 'platform' ? 'platform' :
-    'org';
+      tabParam === 'security' ? 'security' :
+        tabParam === 'platform' ? 'platform' :
+          'org';
 
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -265,9 +265,8 @@ export default function SuperAdminAuditPage() {
                 ).map((h, i) => (
                   <th
                     key={h}
-                    className={`px-5 py-3 text-xs font-medium text-[#777777] ${
-                      i === 4 ? 'text-right' : ''
-                    }`}
+                    className={`px-5 py-3 text-xs font-medium text-[#777777] ${i === 4 ? 'text-right' : ''
+                      }`}
                   >
                     {h}
                   </th>

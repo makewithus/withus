@@ -11,7 +11,6 @@ import {
   User,
   Calendar,
   RotateCcw,
-  Activity,
   Clock,
 } from 'lucide-react';
 import { superAdminApi } from '../../../lib/api/superadmin';
@@ -115,12 +114,9 @@ export default function SuperAdminUsersPage() {
     return (
       <div className="mx-auto max-w-7xl space-y-5">
         <div>
-          <div className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-zinc-400" />
-            <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
-              User Activity
-            </h1>
-          </div>
+          <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
+            User Activity
+          </h1>
           <p className="mt-1 text-sm text-zinc-500">
             Recent actions performed across the platform.
           </p>

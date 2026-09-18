@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Settings, Shield, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 function SettingRow({
   label,
@@ -38,12 +38,9 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <div>
-        <div className="flex items-center gap-2">
-          <Settings className="h-4 w-4 text-[#888888]" />
-          <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
-            Platform Settings
-          </h2>
-        </div>
+        <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+          Platform Settings
+        </h2>
         <p className="mt-1 text-sm text-[#777777]">
           Read-only platform configuration.
         </p>

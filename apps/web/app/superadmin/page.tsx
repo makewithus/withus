@@ -2,18 +2,15 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { superAdminApi } from '../../lib/api/superadmin';
-import { SupportCard } from '../../components/common/SupportCard';
 import {
-  Users, Building2, Zap, Database, Activity, ShieldAlert, Loader2,
-  KeyRound, Server, Wifi, WifiOff, RefreshCw, CreditCard, TrendingDown, AlertCircle,
-  Calendar,
+  Users, Building2, Database, Activity, ShieldAlert, Loader2,
+  KeyRound, Server, Wifi, WifiOff, RefreshCw, CreditCard,
+  TrendingDown, AlertCircle, Calendar,
 } from 'lucide-react';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, CartesianGrid, Legend,
+  ResponsiveContainer, CartesianGrid,
 } from 'recharts';
-
-// ─── Types ──────────────────────────────────────────────────────────────────
 
 interface Overview {
   users: { total: number; active: number; newInPeriod: number; inactive: number };
@@ -39,59 +36,85 @@ const TIME_RANGES: { label: string; value: TimeRange; days: number | null }[] = 
   { label: 'Custom', value: 'custom', days: null },
 ];
 
-// ─── Components ──────────────────────────────────────────────────────────────
-
 function StatCard({
-  icon: Icon, label, value, sub, accentBorder,
+  icon: Icon,
+  label,
+  value,
+  sub,
 }: {
-  icon: React.ElementType; label: string; value: React.ReactNode; sub?: string; accentBorder?: string;
+  icon: React.ElementType;
+  label: string;
+  value: React.ReactNode;
+  sub?: string;
 }) {
   return (
-    <div className="premium-card p-5 space-y-3 shadow-none relative overflow-hidden">
-      {accentBorder && <div className={`absolute top-0 left-0 right-0 h-[2px] ${accentBorder}`} />}
+    <div className="bg-[#181818] p-5 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">{label}</span>
-        <div className="w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-zinc-800 border border-premium rounded-sm">
-          <Icon className="w-4 h-4 text-premium-main" />
+        <span className="text-xs font-medium text-zinc-400">{label}</span>
+        <div className="w-8 h-8 flex items-center justify-center bg-[#242424]">
+          <Icon className="w-4 h-4 text-zinc-300" />
         </div>
       </div>
       <div>
-        <div className="text-3xl font-bold text-premium-main tracking-tight font-number">
+        <div className="text-2xl font-semibold text-white tracking-tight tabular-nums">
           {typeof value === 'number' ? value.toLocaleString() : value}
         </div>
-        {sub && <div className="text-xs text-premium-muted font-medium mt-1">{sub}</div>}
+        {sub && <div className="text-xs text-zinc-500 mt-1">{sub}</div>}
       </div>
     </div>
   );
 }
 
-function ComingSoonStatCard({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
+function ComingSoonStatCard({
+  icon: Icon,
+  label,
+}: {
+  icon: React.ElementType;
+  label: string;
+}) {
   return (
-    <div className="premium-card p-5 space-y-3 shadow-none relative overflow-hidden border-dashed border-2 border-zinc-200 dark:border-zinc-700/60">
+    <div className="bg-[#181818] p-5 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold text-premium-muted uppercase tracking-wider">{label}</span>
-        <div className="w-8 h-8 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-sm">
-          <Icon className="w-4 h-4 text-zinc-400" />
+        <span className="text-xs font-medium text-zinc-400">{label}</span>
+        <div className="w-8 h-8 flex items-center justify-center bg-[#242424]">
+          <Icon className="w-4 h-4 text-zinc-500" />
         </div>
       </div>
-      <div>
-        <div className="text-xl font-bold text-zinc-400">—</div>
-        <span className="inline-block mt-1.5 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-          Coming Soon
-        </span>
-      </div>
+      <div className="text-2xl font-semibold text-zinc-500">—</div>
+      <span className="inline-flex w-fit px-2 py-1 text-[10px] font-semibold bg-[#3a2f18] text-[#d5a83d]">
+        Coming Soon
+      </span>
     </div>
   );
 }
 
-// Custom tooltip for charts
+function ChartCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-[#181818] p-5 space-y-4">
+      <h2 className="text-sm font-medium text-zinc-200">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+function ChartLoading() {
+  return <div className="h-44 animate-pulse bg-[#202020]" />;
+}
+
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
+
   return (
-    <div className="premium-card p-3 shadow-lg text-xs border border-premium bg-premium-surface space-y-1">
-      <p className="font-bold text-premium-muted text-[10px]">{label}</p>
+    <div className="bg-[#242424] px-3 py-2 text-xs space-y-1">
+      <p className="text-zinc-400">{label}</p>
       {payload.map((p: any) => (
-        <p key={p.name} style={{ color: p.color }} className="font-semibold">
+        <p key={p.name} className="font-medium text-white">
           {p.name}: {p.value}
         </p>
       ))}
@@ -101,19 +124,14 @@ function CustomTooltip({ active, payload, label }: any) {
 
 function ComingSoonChart({ title }: { title: string }) {
   return (
-    <div className="premium-card p-6 flex flex-col items-center justify-center text-center space-y-2 min-h-[180px] border-dashed border-2 border-zinc-200 dark:border-zinc-700/60">
-      <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-        <Activity className="w-4 h-4 text-zinc-400" />
-      </div>
-      <p className="text-xs font-bold text-premium-main">{title}</p>
-      <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-        Coming Soon — Billing Integration Required
+    <div className="bg-[#181818] min-h-[180px] p-5 flex flex-col justify-center gap-2">
+      <h2 className="text-sm font-medium text-zinc-200">{title}</h2>
+      <span className="inline-flex w-fit px-2 py-1 text-[10px] font-semibold bg-[#3a2f18] text-[#d5a83d]">
+        Coming Soon · Billing Integration Required
       </span>
     </div>
   );
 }
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function SuperAdminOverview() {
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -121,33 +139,47 @@ export default function SuperAdminOverview() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
-  // Custom date range state
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
 
   const getDateRange = useCallback((range: TimeRange) => {
     if (range === 'custom') {
-      const from = customFrom ? new Date(customFrom) : new Date(Date.now() - 30 * 86400000);
-      const to = customTo ? new Date(customTo + 'T23:59:59') : new Date();
-      const days = Math.max(1, Math.ceil((to.getTime() - from.getTime()) / 86400000));
+      const from = customFrom
+        ? new Date(customFrom)
+        : new Date(Date.now() - 30 * 86400000);
+      const to = customTo ? new Date(`${customTo}T23:59:59`) : new Date();
+      const days = Math.max(
+        1,
+        Math.ceil((to.getTime() - from.getTime()) / 86400000)
+      );
       return { from: from.toISOString(), to: to.toISOString(), days };
     }
+
     const now = new Date();
     const days = TIME_RANGES.find((r) => r.value === range)?.days || 30;
-    const from = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-    return { from: from.toISOString(), to: now.toISOString(), days };
+    const from = new Date(now.getTime() - days * 86400000);
+
+    return {
+      from: from.toISOString(),
+      to: now.toISOString(),
+      days,
+    };
   }, [customFrom, customTo]);
 
   const fetchData = useCallback(async (range: TimeRange) => {
-    if (range === 'custom' && (!customFrom || !customTo)) return; // wait for both dates
+    if (range === 'custom' && (!customFrom || !customTo)) return;
+
     try {
       setLoading(true);
       setError(null);
+
       const { from, to, days } = getDateRange(range);
+
       const [overviewRes, growthRes] = await Promise.all([
         superAdminApi.getOverview({ from, to }),
         superAdminApi.getGrowthData(days),
       ]);
+
       setOverview(overviewRes.data);
       setGrowthData(growthRes.data);
     } catch (e: any) {
@@ -161,257 +193,217 @@ export default function SuperAdminOverview() {
     if (timeRange !== 'custom') fetchData(timeRange);
   }, [fetchData, timeRange]);
 
-  // Trigger fetch when custom dates are both set
   useEffect(() => {
-    if (timeRange === 'custom' && customFrom && customTo) fetchData('custom');
+    if (timeRange === 'custom' && customFrom && customTo) {
+      fetchData('custom');
+    }
   }, [customFrom, customTo, timeRange, fetchData]);
 
-  // Build chart data from growth response
   const chartData = growthData
     ? growthData.labels.map((date: string, i: number) => ({
-        date: date.slice(5), // Show MM-DD
+        date: date.slice(5),
         Orgs: growthData.orgs[i],
         Users: growthData.users[i],
-        Sessions: growthData.sessions[i],
         Events: growthData.auditEvents[i],
       }))
     : [];
 
-  // Build Platform Usage chart data from topPlatforms
-  const platformChartData = overview?.topPlatforms?.map((p) => ({
-    name: p.provider,
-    Sessions: p.activeSessions,
-  })) ?? [];
+  const platformChartData =
+    overview?.topPlatforms?.map((p) => ({
+      name: p.provider,
+      Sessions: p.activeSessions,
+    })) ?? [];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Page Header + Time Filter */}
-      <div className="pb-4 border-b border-premium flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-premium-main">Platform Dashboard</h1>
-            <p className="text-xs text-premium-muted mt-0.5">
-              Real-time analytics across WITHUS. Billing-dependent metrics are marked as Coming Soon.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* Time filter */}
-            <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 rounded p-1">
-              {TIME_RANGES.map((r) => (
-                <button
-                  key={r.value}
-                  onClick={() => setTimeRange(r.value)}
-                  className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide rounded transition-colors ${
-                    timeRange === r.value
-                      ? 'bg-white dark:bg-zinc-700 text-premium-main shadow-sm'
-                      : 'text-zinc-500 hover:text-premium-main'
-                  }`}
-                >
-                  {r.label}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => fetchData(timeRange)}
-              disabled={loading || (timeRange === 'custom' && (!customFrom || !customTo))}
-              className="flex items-center gap-1.5 premium-button-secondary py-1.5 px-3 text-xs font-semibold"
-            >
-              <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
-          </div>
+    <div className="max-w-7xl mx-auto space-y-7">
+      <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold text-white tracking-tight">
+            Platform Dashboard
+          </h1>
         </div>
 
-        {/* Custom date range picker — only shown when Custom is selected */}
-        {timeRange === 'custom' && (
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3 border-t border-premium">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 min-w-fit">
-              <Calendar className="w-3.5 h-3.5 text-zinc-400" />
-              <span>Custom Date Range:</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">From:</span>
-                <input
-                  type="date"
-                  value={customFrom}
-                  onChange={(e) => setCustomFrom(e.target.value)}
-                  className="h-8 px-2 text-xs font-medium text-zinc-900 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400"
-                />
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">To:</span>
-                <input
-                  type="date"
-                  value={customTo}
-                  onChange={(e) => setCustomTo(e.target.value)}
-                  max={new Date().toISOString().split('T')[0]}
-                  className="h-8 px-2 text-xs font-medium text-zinc-900 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400"
-                />
-              </div>
-            </div>
-            {(!customFrom || !customTo) && (
-              <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
-                Select both dates to load data
-              </p>
-            )}
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-0.5 bg-[#181818] p-1">
+            {TIME_RANGES.map((range) => (
+              <button
+                key={range.value}
+                onClick={() => setTimeRange(range.value)}
+                className={`px-2.5 py-1.5 text-xs transition-colors ${
+                  timeRange === range.value
+                    ? 'bg-[#2a2a2a] text-white'
+                    : 'text-zinc-500 hover:text-zinc-200'
+                }`}
+              >
+                {range.label}
+              </button>
+            ))}
           </div>
-        )}
-      </div>
+
+          <button
+            onClick={() => fetchData(timeRange)}
+            disabled={loading || (timeRange === 'custom' && (!customFrom || !customTo))}
+            className="flex items-center gap-2 bg-[#242424] hover:bg-[#2a2a2a] disabled:opacity-40 px-3 py-2 text-xs font-medium text-zinc-200"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      {timeRange === 'custom' && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-[#181818] p-4">
+          <div className="flex items-center gap-2 text-xs font-medium text-zinc-300">
+            <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+            <span>Date range</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 text-xs text-zinc-500">
+              From
+              <input
+                type="date"
+                value={customFrom}
+                onChange={(e) => setCustomFrom(e.target.value)}
+                className="h-8 px-2 text-xs text-zinc-200 bg-[#242424] focus:outline-none"
+              />
+            </label>
+
+            <label className="flex items-center gap-2 text-xs text-zinc-500">
+              To
+              <input
+                type="date"
+                value={customTo}
+                onChange={(e) => setCustomTo(e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+                className="h-8 px-2 text-xs text-zinc-200 bg-[#242424] focus:outline-none"
+              />
+            </label>
+          </div>
+
+          {(!customFrom || !customTo) && (
+            <p className="text-xs text-zinc-500">Select both dates.</p>
+          )}
+        </div>
+      )}
 
       {error && (
-        <div className="premium-card p-4 border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/20 text-xs text-red-600 dark:text-red-400 flex items-center gap-2 font-semibold">
-          <ShieldAlert className="w-4 h-4 flex-shrink-0" /> {error}
+        <div className="bg-[#241919] px-4 py-3 text-xs text-zinc-300 flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 flex-shrink-0 text-zinc-400" />
+          {error}
         </div>
       )}
 
       {loading && !overview ? (
-        <div className="flex items-center justify-center h-64 text-premium-muted text-xs font-semibold gap-2">
-          <Loader2 className="w-4 h-4 animate-spin text-premium-main" />
+        <div className="flex items-center justify-center h-64 text-zinc-500 text-sm gap-2">
+          <Loader2 className="w-4 h-4 animate-spin" />
           Loading platform analytics...
         </div>
       ) : (
         <>
-          {/* ─── Row 1: All 12 KPI Cards — Available + Coming Soon ──────────── */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Key Performance Indicators</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* 🟢 AVAILABLE */}
+          <section className="space-y-3">
+            <h2 className="text-xs font-medium text-zinc-500">Overview</h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <StatCard
                 icon={Building2}
-                label="Total Organisations"
+                label="Organisations"
                 value={overview?.organizations.total ?? 0}
-                sub={`${overview?.organizations.active} active · ${overview?.organizations.inactive} inactive`}
-                accentBorder="bg-blue-500"
-              />
-              <StatCard
-                icon={Building2}
-                label="Active Organisations"
-                value={overview?.organizations.active ?? 0}
-                sub={`${overview?.organizations.newInPeriod} new this period`}
-                accentBorder="bg-emerald-500"
+                sub={`${overview?.organizations.active ?? 0} active · ${overview?.organizations.inactive ?? 0} inactive`}
               />
               <StatCard
                 icon={Users}
-                label="Total Users"
+                label="Users"
                 value={overview?.users.total ?? 0}
-                sub={`${overview?.users.active} active · ${overview?.users.inactive} inactive`}
-                accentBorder="bg-purple-500"
-              />
-              <StatCard
-                icon={Users}
-                label="Active Users"
-                value={overview?.users.active ?? 0}
-                sub={`${overview?.users.newInPeriod} new this period`}
-                accentBorder="bg-indigo-500"
-              />
-              <StatCard
-                icon={Building2}
-                label="New Organisations"
-                value={overview?.organizations.newInPeriod ?? 0}
-                sub="New in selected period"
-                accentBorder="bg-sky-500"
-              />
-              <StatCard
-                icon={Users}
-                label="New Users"
-                value={overview?.users.newInPeriod ?? 0}
-                sub="New in selected period"
-                accentBorder="bg-cyan-500"
+                sub={`${overview?.users.active ?? 0} active · ${overview?.users.inactive ?? 0} inactive`}
               />
               <StatCard
                 icon={Wifi}
                 label="Platform Connections"
                 value={overview?.connections.total ?? 0}
-                sub={`${overview?.connections.healthy} healthy · ${overview?.connections.failed} failed`}
-                accentBorder="bg-teal-500"
+                sub={`${overview?.connections.healthy ?? 0} healthy · ${overview?.connections.failed ?? 0} failed`}
               />
               <StatCard
                 icon={WifiOff}
                 label="Failed Connections"
                 value={overview?.connections.failed ?? 0}
-                sub="Integration connections in error state"
-                accentBorder="bg-red-500"
+                sub="Currently in error state"
+              />
+              <StatCard
+                icon={Database}
+                label="Vaults"
+                value={overview?.vaults.total ?? 0}
+              />
+              <StatCard
+                icon={KeyRound}
+                label="Secrets"
+                value={overview?.secrets.total ?? 0}
+              />
+              <StatCard
+                icon={Activity}
+                label="Audit Events"
+                value={overview?.audit.eventsLast7Days ?? 0}
+                sub="Last 7 days"
+              />
+              <StatCard
+                icon={Activity}
+                label="Active Sessions"
+                value={overview?.sessions.active ?? 0}
+                sub={`${overview?.sessions.pending ?? 0} pending`}
               />
 
-              {/* 🟡 COMING SOON — Billing-dependent */}
               <ComingSoonStatCard icon={CreditCard} label="Free Organisations" />
               <ComingSoonStatCard icon={CreditCard} label="Pro Organisations" />
               <ComingSoonStatCard icon={TrendingDown} label="MRR" />
               <ComingSoonStatCard icon={AlertCircle} label="Churned Organisations" />
             </div>
-          </div>
+          </section>
 
-          {/* ─── Row 2: Sessions + Vault/Secrets ─────────────────────────── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Session Lifecycle */}
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted">
-                Delegated Session Lifecycle
-              </p>
+              <h2 className="text-xs font-medium text-zinc-500">
+                Session Lifecycle
+              </h2>
+
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { label: 'Active', value: overview?.sessions.active ?? 0, dot: 'bg-emerald-500', text: 'text-emerald-600 dark:text-emerald-400', note: 'Currently delegated' },
-                  { label: 'Pending', value: overview?.sessions.pending ?? 0, dot: 'bg-amber-500', text: 'text-amber-600 dark:text-amber-400', note: 'Awaiting approval' },
-                  { label: 'Revoked', value: overview?.sessions.revoked ?? 0, dot: 'bg-red-500', text: 'text-red-600 dark:text-red-400', note: 'Manual revocation' },
-                  { label: 'Expired', value: overview?.sessions.expired ?? 0, dot: 'bg-slate-400', text: 'text-slate-500 dark:text-slate-400', note: 'TTL lapsed' },
-                ].map((s) => (
-                  <div key={s.label} className="premium-card p-4 shadow-none space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className={`text-[10px] font-bold uppercase tracking-wider ${s.text}`}>{s.label}</span>
-                      <span className={`w-2 h-2 rounded-full ${s.dot}`} />
-                    </div>
-                    <div className="text-2xl font-bold text-premium-main font-number">{s.value}</div>
-                    <p className="text-[10px] text-premium-muted">{s.note}</p>
+                  { label: 'Active', value: overview?.sessions.active ?? 0 },
+                  { label: 'Pending', value: overview?.sessions.pending ?? 0 },
+                  { label: 'Revoked', value: overview?.sessions.revoked ?? 0 },
+                  { label: 'Expired', value: overview?.sessions.expired ?? 0 },
+                ].map((session) => (
+                  <div key={session.label} className="bg-[#181818] p-4">
+                    <p className="text-xs text-zinc-500">{session.label}</p>
+                    <p className="text-xl font-semibold text-white mt-2 tabular-nums">
+                      {session.value}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Vault & Secrets + Audit */}
             <div className="space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted">
-                Credential & Audit Summary
-              </p>
-              <div className="grid grid-cols-3 gap-3">
-                <div className="premium-card p-4 shadow-none space-y-1">
-                  <div className="flex items-center gap-1.5">
-                    <Database className="w-3.5 h-3.5 text-zinc-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-premium-muted">Vaults</span>
-                  </div>
-                  <div className="text-2xl font-bold text-premium-main font-number">{overview?.vaults.total ?? 0}</div>
-                </div>
-                <div className="premium-card p-4 shadow-none space-y-1">
-                  <div className="flex items-center gap-1.5">
-                    <KeyRound className="w-3.5 h-3.5 text-zinc-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-premium-muted">Secrets</span>
-                  </div>
-                  <div className="text-2xl font-bold text-premium-main font-number">{overview?.secrets.total ?? 0}</div>
-                </div>
-                <div className="premium-card p-4 shadow-none space-y-1">
-                  <div className="flex items-center gap-1.5">
-                    <Activity className="w-3.5 h-3.5 text-zinc-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-premium-muted">Events (7d)</span>
-                  </div>
-                  <div className="text-2xl font-bold text-premium-main font-number">{overview?.audit.eventsLast7Days ?? 0}</div>
-                </div>
-              </div>
+              <h2 className="text-xs font-medium text-zinc-500">
+                Active Integration Sessions
+              </h2>
 
-              {/* Top Platforms */}
-              <div className="premium-card p-4 shadow-none space-y-2">
-                <div className="flex items-center gap-2">
-                  <Server className="w-3.5 h-3.5 text-zinc-400" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-premium-muted">Top Platforms by Active Sessions</span>
-                </div>
-                {!overview?.topPlatforms.length ? (
-                  <p className="text-[10px] text-premium-muted py-2">No active integration sessions.</p>
+              <div className="bg-[#181818] p-4">
+                {!overview?.topPlatforms?.length ? (
+                  <p className="text-xs text-zinc-500 py-3">
+                    No active integration sessions.
+                  </p>
                 ) : (
-                  <div className="space-y-1.5">
-                    {overview.topPlatforms.map((p) => (
-                      <div key={p.provider} className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-premium-main">{p.provider}</span>
-                        <span className="text-[10px] font-bold text-premium-muted font-number">
-                          {p.activeSessions} session{p.activeSessions !== 1 ? 's' : ''}
+                  <div className="space-y-3">
+                    {overview.topPlatforms.map((platform) => (
+                      <div
+                        key={platform.provider}
+                        className="flex items-center justify-between"
+                      >
+                        <span className="text-sm text-zinc-200">
+                          {platform.provider}
+                        </span>
+                        <span className="text-xs text-zinc-500 tabular-nums">
+                          {platform.activeSessions}
                         </span>
                       </div>
                     ))}
@@ -419,129 +411,107 @@ export default function SuperAdminOverview() {
                 )}
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* ─── Row 3: Charts ────────────────────────────────────────────── */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-premium-muted mb-4">Analytics Charts</p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Organisation Growth */}
-              <div className="premium-card p-5 space-y-3">
-                <p className="text-[11px] font-bold text-premium-main uppercase tracking-wider">Organisation Growth</p>
+          <section className="space-y-3">
+            <h2 className="text-xs font-medium text-zinc-500">Analytics</h2>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <ChartCard title="Organisation Growth">
                 {loading || !chartData.length ? (
-                  <div className="h-44 animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded" />
+                  <ChartLoading />
                 ) : (
                   <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.12)" />
                       <XAxis dataKey="date" tick={{ fontSize: 9 }} tickLine={false} />
                       <YAxis tick={{ fontSize: 9 }} tickLine={false} width={28} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Line type="monotone" dataKey="Orgs" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                      <Line
+                        type="monotone"
+                        dataKey="Orgs"
+                        stroke="#a1a1aa"
+                        strokeWidth={2}
+                        dot={false}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 )}
-              </div>
+              </ChartCard>
 
-              {/* User Growth */}
-              <div className="premium-card p-5 space-y-3">
-                <p className="text-[11px] font-bold text-premium-main uppercase tracking-wider">User Growth</p>
+              <ChartCard title="User Growth">
                 {loading || !chartData.length ? (
-                  <div className="h-44 animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded" />
+                  <ChartLoading />
                 ) : (
                   <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.12)" />
                       <XAxis dataKey="date" tick={{ fontSize: 9 }} tickLine={false} />
                       <YAxis tick={{ fontSize: 9 }} tickLine={false} width={28} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Line type="monotone" dataKey="Users" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                      <Line
+                        type="monotone"
+                        dataKey="Users"
+                        stroke="#d4d4d8"
+                        strokeWidth={2}
+                        dot={false}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 )}
-              </div>
+              </ChartCard>
 
-              {/* Platform Usage — real data from active sessions per provider */}
-              <div className="premium-card p-5 space-y-3">
-                <div>
-                  <p className="text-[11px] font-bold text-premium-main uppercase tracking-wider">Platform Usage</p>
-                  <p className="text-[9px] text-premium-muted mt-0.5">Active delegated sessions by integration provider</p>
-                </div>
+              <ChartCard title="Platform Usage">
                 {loading || !overview ? (
-                  <div className="h-44 animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded" />
+                  <ChartLoading />
                 ) : platformChartData.length === 0 ? (
-                  <div className="h-44 flex items-center justify-center">
-                    <p className="text-xs text-premium-muted">No active sessions on any platform.</p>
+                  <div className="h-44 flex items-center justify-center text-xs text-zinc-500">
+                    No active sessions on any platform.
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={platformChartData} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" horizontal={false} />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="rgba(128,128,128,0.12)"
+                        horizontal={false}
+                      />
                       <XAxis type="number" tick={{ fontSize: 9 }} tickLine={false} />
-                      <YAxis type="category" dataKey="name" tick={{ fontSize: 9 }} tickLine={false} width={56} />
+                      <YAxis
+                        type="category"
+                        dataKey="name"
+                        tick={{ fontSize: 9 }}
+                        tickLine={false}
+                        width={70}
+                      />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="Sessions" fill="#06b6d4" radius={[0, 2, 2, 0]} />
+                      <Bar dataKey="Sessions" fill="#a1a1aa" radius={0} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
-              </div>
+              </ChartCard>
 
-              {/* Active vs Inactive Orgs */}
-              <div className="premium-card p-5 space-y-3">
-                <p className="text-[11px] font-bold text-premium-main uppercase tracking-wider">Active vs Inactive Organisations</p>
-                {loading || !overview ? (
-                  <div className="h-44 animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded" />
-                ) : (
-                  <ResponsiveContainer width="100%" height={180}>
-                    <BarChart
-                      data={[
-                        { name: 'Active', value: overview.organizations.active },
-                        { name: 'Inactive', value: overview.organizations.inactive },
-                      ]}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" />
-                      <XAxis dataKey="name" tick={{ fontSize: 10 }} tickLine={false} />
-                      <YAxis tick={{ fontSize: 9 }} tickLine={false} width={28} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" fill="#10b981" radius={[2, 2, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                )}
-              </div>
-
-              {/* Audit / Security Activity */}
-              <div className="premium-card p-5 space-y-3">
-                <p className="text-[11px] font-bold text-premium-main uppercase tracking-wider">Security & Audit Activity</p>
+              <ChartCard title="Security & Audit Activity">
                 {loading || !chartData.length ? (
-                  <div className="h-44 animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded" />
+                  <ChartLoading />
                 ) : (
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.12)" />
                       <XAxis dataKey="date" tick={{ fontSize: 9 }} tickLine={false} />
                       <YAxis tick={{ fontSize: 9 }} tickLine={false} width={28} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="Events" fill="#6366f1" radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="Events" fill="#a1a1aa" radius={0} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
-              </div>
+              </ChartCard>
 
-              {/* Free → Pro Conversion — Coming Soon (billing-dependent) */}
-              <ComingSoonChart title="Free → Pro Conversion — Billing Integration Required" />
-
-              {/* MRR Growth — Coming Soon */}
-              <ComingSoonChart title="MRR Growth — Billing Integration Required" />
-
-              {/* Org Churn — Coming Soon */}
-              <ComingSoonChart title="Organisation Churn — Billing Integration Required" />
+              <ComingSoonChart title="Free → Pro Conversion" />
+              <ComingSoonChart title="MRR Growth" />
+              <ComingSoonChart title="Organisation Churn" />
             </div>
-
-            {/* Support / Help Section */}
-            <div className="pt-4">
-              <SupportCard />
-            </div>
-          </div>
+          </section>
         </>
       )}
     </div>

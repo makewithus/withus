@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { superAdminApi } from '../../../lib/api/superadmin';
 import {
-  Bell,
   AlertCircle,
   Info,
   AlertTriangle,
@@ -93,12 +92,9 @@ export default function NotificationsPage() {
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="flex items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2">
-            <Bell className="h-4 w-4 text-[#888888]" />
-            <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
-              Notifications & Alerts
-            </h2>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-[#eeeeee]">
+            Notifications & Alerts
+          </h2>
         </div>
 
         <button
