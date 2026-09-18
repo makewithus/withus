@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { superAdminApi } from '../../../lib/api/superadmin';
-import { Search, ExternalLink, CheckCircle, XCircle, Loader2, Building2, Calendar, Filter, RotateCcw } from 'lucide-react';
+import { Search, ExternalLink, CheckCircle, XCircle, Loader2, Building2, Calendar, RotateCcw } from 'lucide-react';
 import { formatDate } from '../../../lib/formatters';
 
 export default function SuperAdminOrgsPage() {
@@ -24,32 +24,16 @@ export default function SuperAdminOrgsPage() {
       .finally(() => setLoading(false));
   }, [search]);
 
-  // Client-side multi-filtering for instant responsiveness
   const filteredOrgs = useMemo(() => {
     if (!data?.data) return [];
     return data.data.filter((org: any) => {
-      // Status filter
       if (statusFilter === 'ACTIVE' && !org.isActive) return false;
       if (statusFilter === 'INACTIVE' && org.isActive) return false;
-      // New = registered in last 30 days
       if (statusFilter === 'NEW' && new Date(org.createdAt) < THIRTY_DAYS_AGO) return false;
-      // High usage = 5+ delegated sessions
       if (statusFilter === 'HIGH_USAGE' && (org._count?.delegatedSessions ?? 0) < 5) return false;
-      // Low usage = 0 delegated sessions
       if (statusFilter === 'LOW_USAGE' && (org._count?.delegatedSessions ?? 0) > 0) return false;
-
-      // Date range filter
-      if (fromDate) {
-        const oDate = new Date(org.createdAt).getTime();
-        const fDate = new Date(fromDate).getTime();
-        if (oDate < fDate) return false;
-      }
-      if (toDate) {
-        const oDate = new Date(org.createdAt).getTime();
-        const tDate = new Date(toDate).getTime() + 86400000;
-        if (oDate > tDate) return false;
-      }
-
+      if (fromDate && new Date(org.createdAt).getTime() < new Date(fromDate).getTime()) return false;
+      if (toDate && new Date(org.createdAt).getTime() > new Date(toDate).getTime() + 86400000) return false;
       return true;
     });
   }, [data, statusFilter, fromDate, toDate]);
@@ -69,238 +53,134 @@ export default function SuperAdminOrgsPage() {
   const isFiltered = search || statusFilter !== 'ALL' || fromDate || toDate;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="pb-3 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between">
+    <div className="max-w-7xl mx-auto space-y-7">
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Organizations</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">All registered organizations on the WITHUS platform.</p>
-        </div>
-        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 font-number bg-slate-100 dark:bg-zinc-800 px-3 py-1 rounded border border-slate-200 dark:border-zinc-700">
-          Showing <span className="font-bold text-slate-900 dark:text-slate-100">{filteredOrgs.length}</span> of <span className="font-bold text-slate-900 dark:text-slate-100">{data?.total ?? 0}</span> organizations
-        </span>
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center bg-[#242424] text-[#999999]">
+              <Building2 className="h-4 w-4" />
+            </div>
+            <h1 className="text-xl font-semibold tracking-tight text-[#eeeeee]">Organizations</h1>
+          </div>
+          </div>
+        <p className="shrink-0 text-sm text-[#666666]">
+          <span className="font-medium text-[#dddddd]">{filteredOrgs.length}</span> of{' '}
+          <span className="font-medium text-[#dddddd]">{data?.total ?? 0}</span> organizations
+        </p>
       </div>
 
-      {/* Structured & Consistent Multi-Filter Bar */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg p-4 shadow-sm space-y-4">
-        {/* Row 1: Search & Status Dropdown */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-          {/* Direct Search on Type */}
-          <div className="relative md:col-span-8">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <div className="bg-[#181818] p-4">
+        <div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,1fr)_240px_auto]">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666]" />
             <input
               type="text"
-              placeholder="Search by organization name or owner email..."
+              placeholder="Search organization or owner email"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full h-9 pl-9 pr-3 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 placeholder:text-slate-400"
+              className="h-10 w-full bg-[#111111] pl-9 pr-3 text-sm text-[#eeeeee] outline-none placeholder:text-[#555555] focus:bg-[#151515]"
             />
           </div>
 
-          {/* Status Filter — includes derivable filters + billing Coming Soon note */}
-          <div className="md:col-span-3">
-            <select
-              value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              className="w-full h-9 px-3 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500"
-            >
-              <optgroup label="Status">
-                <option value="ALL">All Organizations</option>
-                <option value="ACTIVE">Active Organizations</option>
-                <option value="INACTIVE">Inactive Organizations</option>
-                <option value="NEW">New (Last 30 Days)</option>
-              </optgroup>
-              <optgroup label="Usage (from session data)">
-                <option value="HIGH_USAGE">High Usage (5+ Sessions)</option>
-                <option value="LOW_USAGE">Low Usage (0 Sessions)</option>
-              </optgroup>
-            </select>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            className="h-10 bg-[#111111] px-3 text-sm text-[#cccccc] outline-none focus:bg-[#151515]"
+          >
+            <option value="ALL">All Organizations</option>
+            <option value="ACTIVE">Active Organizations</option>
+            <option value="INACTIVE">Inactive Organizations</option>
+            <option value="NEW">New (Last 30 Days)</option>
+            <option value="HIGH_USAGE">High Usage (5+ Sessions)</option>
+            <option value="LOW_USAGE">Low Usage (0 Sessions)</option>
+          </select>
 
-          {/* Reset Filters button */}
-          <div className="md:col-span-1 flex items-center justify-end">
-            {isFiltered ? (
-              <button
-                onClick={clearFilters}
-                className="h-9 px-3 w-full text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 rounded hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors flex items-center justify-center gap-1.5"
-                title="Reset all filters"
-              >
-                <RotateCcw className="w-3 h-3" /> Reset
-              </button>
-            ) : (
-              <div className="h-9 px-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1 justify-center">
-                <Filter className="w-3 h-3" /> Filtered
-              </div>
-            )}
+          {isFiltered ? (
+            <button onClick={clearFilters} className="inline-flex h-10 items-center justify-center gap-2 bg-[#242424] px-3.5 text-sm font-medium text-[#cccccc] hover:bg-[#2b2b2b] hover:text-white">
+              <RotateCcw className="h-3.5 w-3.5" /> Reset
+            </button>
+          ) : <div className="hidden lg:block" />}
+        </div>
+
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-2 text-xs font-medium text-[#777777]">
+            <Calendar className="h-3.5 w-3.5" />
+            <span>Registration date</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <input type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setPage(1); }} className="h-9 bg-[#111111] px-2.5 text-xs text-[#cccccc] outline-none focus:bg-[#151515]" />
+            <span className="text-xs text-[#555555]">to</span>
+            <input type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setPage(1); }} className="h-9 bg-[#111111] px-2.5 text-xs text-[#cccccc] outline-none focus:bg-[#151515]" />
           </div>
         </div>
 
-        {/* Row 2: Clean Date Range Controls */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3 border-t border-slate-100 dark:border-zinc-800/80">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 min-w-fit">
-            <Calendar className="w-3.5 h-3.5 text-slate-400" />
-            <span>Filter by Registration Date:</span>
-          </div>
-
-          <div className="flex items-center gap-2 flex-1 sm:flex-none">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">From:</span>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => { setFromDate(e.target.value); setPage(1); }}
-                className="h-8 px-2 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500"
-              />
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">To:</span>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => { setToDate(e.target.value); setPage(1); }}
-                className="h-8 px-2 text-xs font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 rounded focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Billing-gated filters note */}
-        <div className="pt-2 border-t border-slate-100 dark:border-zinc-800/80">
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-            <span className="font-bold text-amber-600 dark:text-amber-500">Coming Soon (Billing Required):</span>
-            {' '}Free / Pro / Trial / Subscription Status filters will be available after payment gateway integration.
-          </p>
+        <div className="mt-3 flex items-center gap-2 text-xs text-[#666666]">
+          <span className="bg-[#3a2f18] px-2 py-1 text-[#d5a83d]">Coming Soon</span>
+          <span>Free, Pro, Trial, and subscription status filters require billing integration.</span>
         </div>
       </div>
 
-      {/* Consistent Table */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg overflow-hidden shadow-sm">
-        <div className="overflow-x-auto w-full">
-          <table className="min-w-full divide-y divide-slate-200 dark:divide-zinc-800">
-            <thead className="bg-slate-50 dark:bg-zinc-800/50">
+      <div className="overflow-hidden bg-[#181818]">
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead className="bg-[#202020]">
               <tr>
-                <th scope="col" className="px-5 py-3 text-left text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Organization</th>
-                <th scope="col" className="px-5 py-3 text-left text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Primary Owner</th>
-                <th scope="col" className="px-5 py-3 text-center text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Members</th>
-                <th scope="col" className="px-5 py-3 text-center text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Vaults</th>
-                <th scope="col" className="px-5 py-3 text-center text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Sessions</th>
-                <th scope="col" className="px-5 py-3 text-left text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Status</th>
-                <th scope="col" className="px-5 py-3 text-left text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Created Date</th>
-                <th scope="col" className="px-5 py-3 text-right text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Action</th>
+                {['Organization','Primary Owner','Members','Vaults','Sessions','Status','Created','Action'].map((h, i) => (
+                  <th key={h} className={`whitespace-nowrap px-4 py-3 text-xs font-medium text-[#999999] ${[2,3,4].includes(i) ? 'text-center' : i === 7 ? 'text-right' : 'text-left'}`}>{h}</th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
+            <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={8} className="px-5 py-12 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <Loader2 className="w-5 h-5 mx-auto mb-2 animate-spin text-slate-700 dark:text-slate-300" />
-                    Loading organizations...
-                  </td>
-                </tr>
+                <tr><td colSpan={8} className="px-5 py-14 text-center">
+                  <Loader2 className="mx-auto h-5 w-5 animate-spin text-[#777777]" />
+                  <p className="mt-3 text-sm text-[#666666]">Loading organizations...</p>
+                </td></tr>
               ) : paginatedOrgs.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-5 py-12 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    No matching organizations found for the selected filters.
+                <tr><td colSpan={8} className="px-5 py-14 text-center">
+                  <p className="text-sm font-medium text-[#aaaaaa]">No matching organizations</p>
+                  <p className="mt-1 text-xs text-[#5f5f5f]">Try changing or clearing the filters.</p>
+                </td></tr>
+              ) : paginatedOrgs.map((org: any) => (
+                <tr key={org.id} className="bg-[#181818] transition-colors hover:bg-[#1d1d1d]">
+                  <td className="whitespace-nowrap px-4 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-[#242424] text-[#999999]"><Building2 className="h-3.5 w-3.5" /></div>
+                      <span className="text-sm font-medium text-[#eeeeee]">{org.name}</span>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-4 text-sm text-[#b5b5b5]">{org.owner?.email || <span className="text-[#666666]">No Primary Owner</span>}</td>
+                  <td className="px-4 py-4 text-center text-sm text-[#dddddd]">{org._count?.members ?? 0}</td>
+                  <td className="px-4 py-4 text-center text-sm text-[#dddddd]">{org._count?.vaults ?? 0}</td>
+                  <td className="px-4 py-4 text-center text-sm text-[#dddddd]">{org._count?.delegatedSessions ?? 0}</td>
+                  <td className="whitespace-nowrap px-4 py-4">
+                    <div className="flex items-center gap-2 text-sm text-[#bdbdbd]">
+                      {org.isActive ? <CheckCircle className="h-3.5 w-3.5 text-[#dddddd]" /> : <XCircle className="h-3.5 w-3.5 text-[#777777]" />}
+                      <span>{org.isActive ? 'Active' : 'Inactive'}</span>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-4 text-sm text-[#999999]">{formatDate(org.createdAt)}</td>
+                  <td className="whitespace-nowrap px-4 py-4 text-right">
+                    <Link href={`/superadmin/organizations/${org.id}`} className="inline-flex items-center gap-1.5 bg-[#242424] px-3 py-2 text-xs font-medium text-[#cccccc] hover:bg-[#2b2b2b] hover:text-white">
+                      <ExternalLink className="h-3.5 w-3.5" /> View
+                    </Link>
                   </td>
                 </tr>
-              ) : (
-                paginatedOrgs.map((org: any) => (
-                  <tr key={org.id} className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/40 transition-colors">
-                    {/* Organization Name */}
-                    <td className="px-5 py-3.5 whitespace-nowrap">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded bg-slate-100 dark:bg-zinc-800 flex items-center justify-center border border-slate-200 dark:border-zinc-700 text-slate-900 dark:text-slate-100">
-                          <Building2 className="w-3.5 h-3.5" />
-                        </div>
-                        <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">{org.name}</span>
-                      </div>
-                    </td>
-
-                    {/* Owner Email */}
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-mono font-medium text-slate-800 dark:text-slate-200">
-                      {org.owner?.email ? (
-                        <span>{org.owner.email}</span>
-                      ) : (
-                        <span className="inline-block px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100/70 dark:bg-zinc-800/70 border border-slate-200/80 dark:border-zinc-700/80 rounded">
-                          No Primary Owner
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Counts */}
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-bold text-slate-900 dark:text-slate-100 font-number text-center">
-                      {org._count?.members ?? 0}
-                    </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-bold text-slate-900 dark:text-slate-100 font-number text-center">
-                      {org._count?.vaults ?? 0}
-                    </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-bold text-slate-900 dark:text-slate-100 font-number text-center">
-                      {org._count?.delegatedSessions ?? 0}
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs">
-                      {org.isActive ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                          <CheckCircle className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" /> Active
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
-                          <XCircle className="w-3 h-3 mr-1 text-rose-600 dark:text-rose-400" /> Inactive
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Created Date */}
-                    <td className="px-5 py-3.5 whitespace-nowrap text-xs font-semibold text-slate-800 dark:text-slate-200 font-number">
-                      {formatDate(org.createdAt)}
-                    </td>
-
-                    {/* Action */}
-                    <td className="px-5 py-3.5 whitespace-nowrap text-right text-xs">
-                      <Link
-                        href={`/superadmin/organizations/${org.id}`}
-                        className="inline-flex items-center px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 rounded hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
-                      >
-                        <ExternalLink className="w-3 h-3 mr-1" /> View Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="px-5 py-3 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-800/30">
-          <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-            Page <span className="font-bold text-slate-900 dark:text-slate-100 font-number">{page}</span> of{' '}
-            <span className="font-bold text-slate-900 dark:text-slate-100 font-number">{totalFilteredPages}</span>
-            {' '}· <span className="font-bold text-slate-900 dark:text-slate-100 font-number">{filteredOrgs.length}</span> matching orgs
-          </p>
-          <div className="flex gap-2">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              className="px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 rounded hover:bg-slate-50 dark:hover:bg-zinc-700 disabled:opacity-40 transition-colors"
-            >
-              Previous
-            </button>
-            <button
-              disabled={page >= totalFilteredPages}
-              onClick={() => setPage(p => Math.min(totalFilteredPages, p + 1))}
-              className="px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 rounded hover:bg-slate-50 dark:hover:bg-zinc-700 disabled:opacity-40 transition-colors"
-            >
-              Next
-            </button>
+        {filteredOrgs.length > 0 && (
+          <div className="flex items-center justify-between bg-[#141414] px-4 py-3">
+            <p className="text-xs text-[#666666]">Page <span className="text-[#aaaaaa]">{page}</span> of <span className="text-[#aaaaaa]">{totalFilteredPages}</span></p>
+            <div className="flex items-center gap-1">
+              <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))} className="bg-[#202020] px-3 py-2 text-xs font-medium text-[#aaaaaa] hover:bg-[#292929] hover:text-white disabled:cursor-not-allowed disabled:text-[#444444]">Previous</button>
+              <button disabled={page >= totalFilteredPages} onClick={() => setPage(p => Math.min(totalFilteredPages, p + 1))} className="bg-[#202020] px-3 py-2 text-xs font-medium text-[#aaaaaa] hover:bg-[#292929] hover:text-white disabled:cursor-not-allowed disabled:text-[#444444]">Next</button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
-
-
-
-
