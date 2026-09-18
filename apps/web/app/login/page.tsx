@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Shield, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { apiClient } from '../../lib/api/client';
 import { AuthSession } from '../../lib/auth/session';
@@ -66,148 +66,142 @@ function LoginForm() {
   };
 
   return (
-    <div className="h-screen overflow-y-auto lg:overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-premium-bg text-premium-main">
-      {/* Brand Side (Left) */}
-      <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none h-full">
+    <div className="min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-[46%_54%] bg-[#0b0b0b] text-[#f5f5f5] overflow-hidden">
+      {/* Brand panel */}
+      <aside className="hidden lg:flex flex-col justify-between bg-[#101010] px-10 xl:px-14 py-10 select-none">
+        <WithUsLogo height="h-9" />
 
-        {/* Brand Header */}
-        <div className="flex items-center relative z-10 pl-2">
-          <img src="/logo-dark.png" alt="WithUs" className="h-14 w-auto object-contain" />
-        </div>
-
-        {/* Hero Text */}
-        <div className="relative z-10 max-w-sm my-auto space-y-4">
-          <h2 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
-            Security first.<br />
-            Credentials simplified.
-          </h2>
-          <p className="text-zinc-400 text-xs leading-relaxed font-medium">
-            Manage delegated access to GitHub, Vercel, Stripe, and government portals with scoped sessions, automatic OTP extraction, and zero raw credential exposure.
+        <div className="max-w-xl -translate-y-2">
+          <h1 className="text-[3.15rem] xl:text-[4rem] font-semibold tracking-[-0.04em] leading-[1.05] text-[#f2f2f2]">
+            Secure access.<br />
+            Nothing extra.
+          </h1>
+          <p className="mt-6 max-w-lg text-base xl:text-lg leading-7 text-[#858585]">
+            One place to manage delegated access and credentials across the platforms your team uses.
           </p>
+
+          <div className="mt-9 flex flex-wrap gap-x-8 gap-y-3 text-sm text-[#686868]">
+            <span>Scoped sessions</span>
+            <span>Encrypted vaults</span>
+            <span>Audit trails</span>
+          </div>
         </div>
 
-        {/* Brand Footer */}
-        <div className="relative z-10 flex items-center gap-2 text-zinc-500 text-[10px] font-bold tracking-wider uppercase">
-          <svg className="w-4 h-4 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-          Enterprise Grade Protection
+        <p className="text-xs text-[#555555]">
+          Secure credential access
+        </p>
+      </aside>
+
+      {/* Authentication panel */}
+      <main className="min-h-screen lg:min-h-0 flex flex-col bg-[#0b0b0b] px-6 sm:px-10 lg:px-16 xl:px-24 py-8">
+        <div className="lg:hidden">
+          <WithUsLogo height="h-8" />
         </div>
-      </div>
 
-      {/* Form Side (Right) */}
-      <div className="lg:col-span-7 flex flex-col justify-between h-full p-8 relative overflow-y-auto">
-        <div className="h-8 hidden lg:block"></div>
-
-        <div className="flex-1 flex items-center justify-center py-6 w-full">
-          <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
-
-            {/* Header */}
-            <div className="text-center mb-8">
-              <div className="flex justify-center mb-4">
-                <WithUsLogo height="h-16" />
-              </div>
-              <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">Delegated Credential Access</p>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-[380px]">
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold tracking-tight text-[#f2f2f2]">
+                Welcome back
+              </h2>
+              <p className="mt-2 text-sm text-[#737373]">
+                Sign in to continue to your workspace.
+              </p>
             </div>
 
             {redirectParam?.includes('/invite') && (
-              <div className="mb-6 p-4 bg-zinc-100/50 dark:bg-zinc-900/40 border border-premium rounded-xl text-center text-xs font-semibold leading-relaxed">
-                <p className="text-premium-main font-bold mb-1">First time joining WithUs?</p>
-                <p className="text-premium-muted text-[11px]">
-                  If you don't have an account, click{' '}
-                  <Link href={`/register?redirect=${encodeURIComponent(redirectParam)}`} className="text-premium-main font-bold underline hover:text-zinc-800 transition-colors">
-                    Create Account
-                  </Link>{' '}
-                  using your invited email.
-                </p>
-                <p className="text-premium-muted text-[11px] mt-0.5">
-                  Already have an account? Simply sign in below.
-                </p>
+              <div className="mb-6 bg-[#151515] px-4 py-3.5 text-sm text-[#8a8a8a]">
+                <span className="text-[#d4d4d4]">Joining via invitation?</span>{' '}
+                <Link
+                  href={`/register?redirect=${encodeURIComponent(redirectParam)}`}
+                  className="text-[#e5e5e5] underline underline-offset-2 hover:text-white"
+                >
+                  Create an account
+                </Link>
               </div>
             )}
 
-            {/* Form */}
             <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-2">
-                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Email Address</label>
+              <div>
+                <label className="block mb-2 text-xs font-medium text-[#999999]">
+                  Email address
+                </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f5f5f]" />
                   <input
                     type="email"
                     required
                     autoComplete="email"
-                    className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
                     placeholder="you@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="h-11 w-full bg-[#151515] pl-10 pr-4 text-sm text-[#eeeeee] outline-none placeholder:text-[#4f4f4f] focus:bg-[#1b1b1b]"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
-                  {/* <Link href="/forgot-password" className="text-[11px] text-premium-muted hover:text-premium-main transition-colors font-medium">
-                    Forgot password?
-                  </Link> */}
-                </div>
+              <div>
+                <label className="block mb-2 text-xs font-medium text-[#999999]">
+                  Password
+                </label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted transition-colors" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f5f5f]" />
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     required
                     autoComplete="current-password"
-                    className="w-full pl-10 pr-10 py-2.5 premium-input text-xs font-medium"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="h-11 w-full bg-[#151515] pl-10 pr-11 text-sm text-[#eeeeee] outline-none placeholder:text-[#4f4f4f] focus:bg-[#1b1b1b]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-premium-muted hover:text-premium-main focus:outline-none transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#626262] hover:text-[#bdbdbd]"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
 
-
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full premium-button-primary py-2.5 text-xs shadow-md font-bold mt-2"
+                className="h-11 w-full inline-flex items-center justify-center gap-2 bg-[#ededed] text-sm font-medium text-[#111111] hover:bg-white disabled:cursor-not-allowed disabled:bg-[#292929] disabled:text-[#666666]"
               >
                 {loading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin mr-1.5" /> Authenticating...</>
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Authenticating...
+                  </>
                 ) : (
                   'Sign In'
                 )}
               </button>
-
-              <div className="text-center text-xs text-premium-muted pt-4 border-t border-premium mt-4">
-                Don't have an account?{' '}
-                <Link href={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'} className="text-premium-main font-bold hover:underline hover:text-zinc-800 transition-colors">
-                  {redirectParam?.includes('/invite') ? 'Create Account' : 'Create Workspace'}
-                </Link>
-              </div>
             </form>
+
+            <div className="mt-6 text-sm text-[#696969]">
+              Don&apos;t have an account?{' '}
+              <Link
+                href={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'}
+                className="text-[#d0d0d0] hover:text-white"
+              >
+                {redirectParam?.includes('/invite') ? 'Create Account' : 'Create Workspace'}
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="text-center text-[11px] text-premium-muted font-medium max-w-md mx-auto w-full pt-4 pb-2">
-          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5">
-            <Link href="/privacy" className="hover:text-premium-main transition-colors hover:underline">Privacy Policy</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/terms" className="hover:text-premium-main transition-colors hover:underline">Terms & Conditions</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/security" className="hover:text-premium-main transition-colors hover:underline">Security & Data Protection</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/cookie-policy" className="hover:text-premium-main transition-colors hover:underline">Cookie Policy</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/refund-policy" className="hover:text-premium-main transition-colors hover:underline">Refund & Cancellation Policy</Link>
+        <footer className="pt-6 text-[11px] text-[#505050]">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center lg:justify-end">
+            <Link href="/privacy" className="hover:text-[#888888]">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#888888]">Terms</Link>
+            <Link href="/security" className="hover:text-[#888888]">Security</Link>
           </div>
-        </div>
-
-      </div>
+        </footer>
+      </main>
     </div>
   );
 }
