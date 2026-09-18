@@ -71,16 +71,16 @@ function LoginForm() {
       <aside className="hidden lg:flex flex-col justify-between bg-[#101010] px-10 xl:px-14 py-10 select-none">
         <WithUsLogo height="h-9" />
 
-        <div className="max-w-xl -translate-y-2">
-          <h1 className="text-[3.15rem] xl:text-[4rem] font-semibold tracking-[-0.04em] leading-[1.05] text-[#f2f2f2]">
+        <div className="max-w-lg -translate-y-2">
+          <h1 className="text-4xl xl:text-5xl font-semibold tracking-[-0.03em] leading-[1.05] text-[#f2f2f2]">
             Secure access.<br />
             Nothing extra.
           </h1>
-          <p className="mt-6 max-w-lg text-base xl:text-lg leading-7 text-[#858585]">
+          <p className="mt-6 max-w-md text-base xl:text-lg leading-7 text-[#858585]">
             One place to manage delegated access and credentials across the platforms your team uses.
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-x-8 gap-y-3 text-sm text-[#686868]">
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#686868]">
             <span>Scoped sessions</span>
             <span>Encrypted vaults</span>
             <span>Audit trails</span>
