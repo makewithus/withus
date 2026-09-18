@@ -86,198 +86,257 @@ function RegisterForm() {
   };
 
   return (
-    <div className="h-screen overflow-y-auto lg:overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-premium-bg text-premium-main">
-      {/* Brand Side (Left) */}
-      <div className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white p-16 flex-col justify-between relative overflow-hidden border-r border-zinc-900 select-none h-full">
-
-        {/* Brand Header */}
-        <div className="flex items-center relative z-10 pl-2">
-          <img src="/logo-dark.png" alt="WithUs" className="h-14 w-auto object-contain" />
+    <div className="min-h-screen lg:h-screen overflow-y-auto lg:overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-premium-bg text-premium-main">
+      {/* Brand Side */}
+      <aside className="hidden lg:flex lg:col-span-5 bg-zinc-950 text-white px-12 xl:px-16 py-12 flex-col relative select-none">
+        <div className="flex items-center">
+          <img
+            src="/logo-dark.png"
+            alt="WithUs"
+            className="h-11 w-auto object-contain"
+          />
         </div>
 
-        {/* Hero Text */}
-        <div className="relative z-10 max-w-sm my-auto space-y-4">
-          <h2 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
-            Security first.<br />
-            Credentials simplified.
-          </h2>
-          <p className="text-zinc-400 text-xs leading-relaxed font-medium">
-            Manage delegated access to GitHub, Vercel, Stripe, and government portals with scoped sessions, automatic OTP extraction, and zero raw credential exposure.
-          </p>
-        </div>
+        <div className="flex-1 flex items-center">
+          <div className="max-w-lg">
 
-        {/* Brand Footer */}
-        <div className="relative z-10 flex items-center gap-2 text-zinc-500 text-[10px] font-bold tracking-wider uppercase">
-          <svg className="w-4 h-4 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-          Enterprise Grade Protection
-        </div>
-      </div>
-
-      {/* Form Side (Right) */}
-      <div className="lg:col-span-7 flex flex-col justify-between h-full p-8 relative overflow-y-auto">
-        <div className="h-8 hidden lg:block"></div>
-
-        <div className="flex-1 flex items-center justify-center py-6 w-full">
-          <div className="max-w-md w-full premium-card p-10 bg-premium-surface">
-
-            {/* Header */}
-            <div className="text-center mb-8">
-              <div className="flex justify-center mb-4">
-                <WithUsLogo height="h-16" />
-              </div>
-              {!isInviteFlow && (
-                <p className="text-[10px] text-premium-muted font-bold tracking-widest uppercase">
-                  Create your enterprise workspace
-                </p>
+            <h1 className="text-4xl xl:text-5xl font-semibold tracking-[-0.03em] leading-[1.05] text-white">
+              {isInviteFlow ? (
+                <>
+                  Your access.
+                  <br />
+                  One secure place.
+                </>
+              ) : (
+                <>
+                  Build your
+                  <br />
+                  secure workspace.
+                </>
               )}
+            </h1>
+
+            <p className="mt-6 max-w-md text-base xl:text-lg leading-7 text-zinc-400">
+              {isInviteFlow
+                ? 'Join your team and manage delegated credentials securely with WithUs.'
+                : 'Manage delegated access, credentials, and secure sessions from one workspace.'}
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-zinc-500">
+              <span>Scoped access</span>
+              <span>Secure vaults</span>
+              <span>Auditable sessions</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs text-zinc-600">
+          Secure access infrastructure
+        </div>
+      </aside>
+
+      {/* Registration Side */}
+      <main className="lg:col-span-7 min-h-screen lg:min-h-0 flex flex-col bg-[#101010] px-6 sm:px-10 lg:px-16 py-8 lg:py-10">
+        <div className="lg:hidden flex justify-center pb-8">
+          <img
+            src="/logo-dark.png"
+            alt="WithUs"
+            className="h-9 w-auto object-contain"
+          />
+        </div>
+
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-lg py-4">
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold tracking-tight text-[#eeeeee]">
+                {isInviteFlow ? 'Create your account' : 'Create your workspace'}
+              </h2>
+              <p className="mt-2 text-sm text-[#777777]">
+                {isInviteFlow
+                  ? 'Complete your details to join the team.'
+                  : 'Set up your WithUs workspace in a few steps.'}
+              </p>
             </div>
 
             {isInviteFlow && (
-              <div className="mb-6 p-4 bg-zinc-100/50 dark:bg-zinc-900/40 border border-premium rounded-xl text-center text-xs font-semibold leading-relaxed">
-                <p className="text-premium-main font-bold mb-1">First time joining WithUs?</p>
-                <p className="text-premium-muted text-[11px]">
-                  You are creating a new account using the invited email.
-                </p>
-                <p className="text-premium-muted text-[11px] mt-0.5">
-                  Already have an account? Click{' '}
-                  <Link href={`/login?redirect=${encodeURIComponent(redirectParam)}`} className="text-premium-main font-bold underline hover:text-zinc-800 transition-colors">
-                    Sign In
-                  </Link>{' '}
-                  instead to join the team.
-                </p>
+              <div className="mb-7 bg-[#181818] px-4 py-3.5 text-sm leading-6 text-[#999999]">
+                You’re joining via invitation. Your invited email will be used for this account.{' '}
+                <Link
+                  href={`/login?redirect=${encodeURIComponent(redirectParam)}`}
+                  className="text-[#dddddd] hover:text-white underline underline-offset-2 transition-colors"
+                >
+                  Sign in instead
+                </Link>
+                .
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleRegister} className="space-y-4">
-              {/* Full Name */}
-              <div className="space-y-2">
-                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-                  <input
-                    type="text"
-                    required
-                    autoComplete="name"
-                    className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                    placeholder="Jane Doe"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Company Name — only shown for normal signups */}
-              {!isInviteFlow && (
+            <form onSubmit={handleRegister} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Company Name</label>
+                  <label className="block text-sm font-medium text-[#999999]">
+                    Full name
+                  </label>
                   <div className="relative">
-                    <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
                     <input
                       type="text"
                       required
-                      className="w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium"
-                      placeholder="Acme Corp"
-                      value={companyName}
-                      onChange={(e) => setCompanyName(e.target.value)}
+                      autoComplete="name"
+                      className="w-full h-11 pl-10 pr-4 bg-[#181818] text-sm text-[#eeeeee] outline-none placeholder:text-[#555555] focus:bg-[#202020] transition-colors"
+                      placeholder="Jane Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                     />
                   </div>
                 </div>
-              )}
 
-              {/* Email */}
+                {!isInviteFlow && (
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-[#999999]">
+                      Company name
+                    </label>
+                    <div className="relative">
+                      <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+                      <input
+                        type="text"
+                        required
+                        className="w-full h-11 pl-10 pr-4 bg-[#181818] text-sm text-[#eeeeee] outline-none placeholder:text-[#555555] focus:bg-[#202020] transition-colors"
+                        placeholder="Acme Corp"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-2">
-                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Email Address</label>
+                <label className="block text-sm font-medium text-[#999999]">
+                  Email address
+                </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
                   <input
                     type="email"
                     required
                     autoComplete="email"
                     disabled={isInviteFlow}
-                    className={`w-full pl-10 pr-4 py-2.5 premium-input text-xs font-medium ${isInviteFlow ? 'text-zinc-500 cursor-not-allowed bg-zinc-100 dark:bg-zinc-900/50' : ''}`}
-                    placeholder="admin@company.com"
+                    className={`w-full h-11 pl-10 pr-4 bg-[#181818] text-sm text-[#eeeeee] outline-none placeholder:text-[#555555] focus:bg-[#202020] transition-colors ${
+                      isInviteFlow ? 'text-[#666666] cursor-not-allowed' : ''
+                    }`}
+                    placeholder="you@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 {isInviteFlow && (
-                  <p className="text-[10px] text-premium-muted mt-1 font-semibold">This is the email address that was invited.</p>
+                  <p className="text-xs text-[#666666]">
+                    This is the email address that was invited.
+                  </p>
                 )}
               </div>
 
-              {/* Password */}
-              <div className="space-y-2">
-                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    autoComplete="new-password"
-                    className="w-full pl-10 pr-10 py-2.5 premium-input text-xs font-medium"
-                    placeholder="Min. 8 characters"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-premium-muted hover:text-premium-main focus:outline-none transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-[#999999]">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      autoComplete="new-password"
+                      className="w-full h-11 pl-10 pr-10 bg-[#181818] text-sm text-[#eeeeee] outline-none placeholder:text-[#555555] focus:bg-[#202020] transition-colors"
+                      placeholder="Min. 8 characters"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#666666] hover:text-[#cccccc] transition-colors"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-[#999999]">
+                    Confirm password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      required
+                      autoComplete="new-password"
+                      className="w-full h-11 pl-10 pr-10 bg-[#181818] text-sm text-[#eeeeee] outline-none placeholder:text-[#555555] focus:bg-[#202020] transition-colors"
+                      placeholder="Repeat password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#666666] hover:text-[#cccccc] transition-colors"
+                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Confirm Password */}
-              <div className="space-y-2">
-                <label className="block text-[10px] font-bold text-premium-muted uppercase tracking-wider">Confirm Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-premium-muted" />
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    required
-                    autoComplete="new-password"
-                    className="w-full pl-10 pr-10 py-2.5 premium-input text-xs font-medium"
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-premium-muted hover:text-premium-main focus:outline-none transition-colors"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="text-[11px] text-premium-muted font-medium text-center leading-relaxed pt-1 pb-2 px-2">
+              <p className="text-xs leading-5 text-[#666666]">
                 By creating an account, you agree to our{' '}
-                <Link href="/terms" className="text-premium-main font-semibold hover:underline hover:text-zinc-800 transition-colors">Terms & Conditions</Link>
-                {' '}and acknowledge our{' '}
-                <Link href="/privacy" className="text-premium-main font-semibold hover:underline hover:text-zinc-800 transition-colors">Privacy Policy</Link>.
-              </div>
+                <Link
+                  href="/terms"
+                  className="text-[#bbbbbb] hover:text-white underline underline-offset-2"
+                >
+                  Terms
+                </Link>{' '}
+                and{' '}
+                <Link
+                  href="/privacy"
+                  className="text-[#bbbbbb] hover:text-white underline underline-offset-2"
+                >
+                  Privacy Policy
+                </Link>
+                .
+              </p>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full premium-button-primary py-2.5 text-xs shadow-md font-bold mt-3"
+                className="w-full h-11 inline-flex items-center justify-center gap-2 bg-[#eeeeee] text-sm font-semibold text-[#111111] hover:bg-white disabled:cursor-not-allowed disabled:bg-[#242424] disabled:text-[#555555] transition-colors"
               >
                 {loading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin mr-1.5" /> Creating Account...</>
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Creating Account...
+                  </>
                 ) : (
                   isInviteFlow ? 'Create Account & Join Team' : 'Create Workspace'
                 )}
               </button>
 
-              <div className="text-center text-xs text-premium-muted pt-4 border-t border-premium mt-4">
+              <div className="pt-2 text-sm text-[#777777]">
                 Already have an account?{' '}
                 <Link
                   href={isInviteFlow ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'}
-                  className="text-premium-main font-bold hover:underline hover:text-zinc-800 transition-colors"
+                  className="text-[#dddddd] hover:text-white underline underline-offset-2 transition-colors"
                 >
                   Sign In
                 </Link>
@@ -286,23 +345,22 @@ function RegisterForm() {
           </div>
         </div>
 
-        <div className="text-center text-[11px] text-premium-muted font-medium max-w-md mx-auto w-full pt-4 pb-2">
-          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5">
-            <Link href="/privacy" className="hover:text-premium-main transition-colors hover:underline">Privacy Policy</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/terms" className="hover:text-premium-main transition-colors hover:underline">Terms & Conditions</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/security" className="hover:text-premium-main transition-colors hover:underline">Security & Data Protection</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/cookie-policy" className="hover:text-premium-main transition-colors hover:underline">Cookie Policy</Link>
-            <span className="text-zinc-300 dark:text-zinc-700 select-none hidden sm:inline">&bull;</span>
-            <Link href="/refund-policy" className="hover:text-premium-main transition-colors hover:underline">Refund & Cancellation Policy</Link>
+        <footer className="pt-6 text-center text-xs text-[#555555]">
+          <div className="flex justify-center gap-5">
+            <Link href="/privacy" className="hover:text-[#888888] transition-colors">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-[#888888] transition-colors">
+              Terms
+            </Link>
+            <Link href="/security" className="hover:text-[#888888] transition-colors">
+              Security
+            </Link>
           </div>
-        </div>
-
-      </div>
+        </footer>
+      </main>
     </div>
-  );
+  )
 }
 
 export default function RegisterPage() {
